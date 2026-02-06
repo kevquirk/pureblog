@@ -70,6 +70,22 @@ if (!$isTag && $requestPath === '' && $homepageSlug !== '' && $homepageSlug !== 
     }
 }
 
+// If a path looks like a file (has an extension) but doesn't exist, show 404.
+if (
+    !$isTag
+    && $requestPath !== ''
+    && str_contains($requestPath, '.')
+    && !in_array($requestPath, $reservedPaths, true)
+    && !str_starts_with($requestPath, 'admin')
+    && !str_starts_with($requestPath, 'assets')
+    && !str_starts_with($requestPath, 'content')
+    && !str_starts_with($requestPath, 'config')
+    && !is_file(__DIR__ . '/' . $requestPath)
+) {
+    require __DIR__ . '/404.php';
+    exit;
+}
+
 // For single slugs, delegate to page/post templates.
 if ($isSingle) {
     $_GET['slug'] = $requestPath;
