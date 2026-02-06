@@ -8,8 +8,8 @@ Pure Blog is a simple, flat‑file blogging platform with a Markdown‑first edi
 - Draft previews so you can check your work before publishing.
 - Optional tags and tag archives for grouping related posts.
 - Automatic pagination when your post list grows long.
-- An [RSS feed](/feed) so readers can follow along however they like.
-- Built-in [search](/search.php) that helps readers find exactly what they’re looking for.
+- An RSS feed so readers can follow along however they like.
+- Built-in search that helps readers find exactly what they’re looking for.
 - A settings page that allows you to customise and configure your blog.
 
 ## Getting started
