@@ -1,0 +1,15 @@
+RewriteEngine On
+
+# Allow direct access to existing files and folders
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# RSS feed
+RewriteRule ^feed/?$ feed.php [L,QSA]
+
+# Search
+RewriteRule ^search/?$ search.php [L,QSA]
+
+# Everything else goes through the front controller
+RewriteRule ^ index.php [L,QSA]

@@ -1,0 +1,562 @@
+:root {
+    color-scheme: light;
+}
+
+/* Theme variables */
+:root {
+    --bg-color: var(--bg-light);
+    --text-color: var(--text-light);
+    --accent-color: var(--accent-light);
+    --border-color: var(--border-light);
+    --accent-bg-color: var(--accent-bg-light);
+}
+
+html[data-theme="dark"] {
+    --bg-color: var(--bg-dark);
+    --text-color: var(--text-dark);
+    --accent-color: var(--accent-dark);
+    --border-color: var(--border-dark);
+    --accent-bg-color: var(--accent-bg-dark);
+    color-scheme: dark;
+}
+
+html[data-theme="light"] {
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] {
+        --bg-color: var(--bg-dark);
+        --text-color: var(--text-dark);
+        --accent-color: var(--accent-dark);
+        --border-color: var(--border-dark);
+        --accent-bg-color: var(--accent-bg-dark);
+        color-scheme: dark;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-stack, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+    font-size: 1.15rem;
+    margin: 0;
+    padding: 0 1rem;
+    line-height: 1.6;
+}
+
+header {
+    display: block;
+    width: 100%;
+    max-width: 60rem;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+
+main,
+footer {
+    flex: 1;
+    display: block;
+    width: 100%;
+    max-width: 45rem;
+    margin: 0 auto;
+}
+
+footer {
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 4rem;
+    border-top: 1px solid var(--border-color);
+}
+
+header, footer {
+    margin-bottom: 2rem;
+}
+
+/* Format headers */
+h1 {
+  font-size: 3rem;
+  margin-top: 0;
+}
+
+header h1 {
+  margin-top: 0.5rem;
+}
+
+h2 {
+  font-size: 2.4rem;
+  margin-top: 3rem;
+}
+
+h3 {
+  font-size: 2rem;
+  margin-top: 3rem;
+}
+
+h4 {
+  font-size: 1.44rem;
+}
+
+h5 {
+  font-size: 1.15rem;
+}
+
+h6 {
+  font-size: 0.96rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    margin-bottom: 1rem;
+    overflow-wrap: break-word;
+}
+
+h1, h2, h3 {
+  line-height: 1.1;
+}
+
+/* Reduce header size on mobile */
+@media only screen and (max-width: 720px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2.1rem;
+  }
+
+  h3 {
+    font-size: 1.75rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+}
+
+p {
+    margin: 1.5rem 0;
+}
+
+p.post-date {
+  margin: -0.5rem 0 2rem 0;
+  font-size: 1rem;
+}
+
+a {
+    color: var(--accent-color);
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.site-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.site-nav li {
+    display: inline-block;
+    margin-right: 1rem;
+}
+
+.site-nav li:last-child {
+    margin-right: 0;
+}
+
+.site-nav a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a.current {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+nav.pagination {
+    margin: 4rem 0 2rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+article {
+    margin-bottom: 2rem;
+}
+
+/** Format archive view **/
+p.post-archive-view {
+  font-size: 1.25rem;
+  margin-bottom: -1rem;
+}
+
+p.post-archive-view time {
+  padding-right: 2rem;
+}
+
+/** Format excerpt view **/
+.excerpt-view,
+.tag-item {
+  margin-bottom: 4rem;
+}
+
+.excerpt-view h2,
+.tag-item h2 {
+  font-size: 1.8rem;
+  margin: 0 0 -1.5rem 0;
+}
+
+.excerpt-view p,
+.tag-item p {
+  font-size: 1rem;
+}
+
+/** Format full post view **/
+.full-post-view {
+  margin-bottom: 4rem;
+}
+
+.full-post-view hr {
+  border-color: var(--border-color);
+  margin-top: 4rem;
+  max-width: 70%;
+}
+
+.notice {
+    background-color: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1.5rem 0;
+}
+
+p.tagline {
+    margin: -1rem 0 1.5rem 0;
+}
+
+.site-search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 2rem;
+}
+
+.site-search-form input[type="search"] {
+    flex: 1 1 16rem;
+    max-width: none;
+}
+
+.site-search-form button {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+}
+
+@media (max-width: 600px) {
+    .site-search-form {
+        display: block;
+    }
+
+    .site-search-form button {
+        width: 100%;
+    }
+}
+
+input, button, textarea, select {
+    font: inherit;
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+textarea {
+    max-width: 100%;
+}
+
+button, a.button {
+    cursor: pointer;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    width: auto;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+}
+
+button:hover, a.button:hover {
+    background-color: var(--text-color);   
+}
+
+figure {
+    margin: 0;
+}
+
+figcaption,
+img+em {
+    display: block;
+    font-style: normal;
+    text-align: center;
+    font-size: 1rem;
+    margin-top: -2.5rem;
+}
+
+main img,
+main video {
+    max-width: 100%;
+    border-radius: 5px;
+    margin: 1.5rem 0;
+}
+
+pre {
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    margin: 2rem 0;
+    padding: 1rem;
+}
+
+pre code {
+    text-wrap: auto;
+    border: none;
+    padding: 0;
+}
+
+code {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--accent-bg-color);
+    padding: 0.1rem 0.25rem;
+    font-size: 1rem;
+}
+
+kbd {
+    font-size: 1rem;
+    border: 1px solid var(--text-color);
+    border-bottom: 3px solid var(--text-color);
+    border-radius: 5px;
+    padding: 0.25rem;
+}
+
+blockquote {
+    border-left: 3px solid var(--accent-color);
+    padding-left: 1rem;
+    margin: 2.5rem 0 2.5rem 2.5rem;
+    font-style: italic;
+}
+
+blockquote p {
+    opacity: 0.8;
+}
+
+cite {
+    font-size: 0.9rem;
+}
+
+details {
+  padding: 0.7rem 1rem;
+  margin: 2rem 0;
+  background: var(--accent-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+}
+
+summary {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0.7rem 1rem;
+  margin: -0.7rem -1rem;
+  word-break: break-all;
+}
+
+details[open] > summary + * {
+  margin-top: 0;
+}
+
+details[open] > summary {
+  margin-bottom: 0.5rem;
+}
+
+details[open] > :last-child {
+  margin-bottom: 0;
+}
+
+/* Format tables */
+table {
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+figure > table {
+  width: max-content;
+  margin: 0;
+}
+
+td,
+th {
+  border: 1px solid var(--border-color);
+  text-align: start;
+  padding: 0.5rem;
+}
+
+th {
+  background-color: var(--accent-bg-color);
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: var(--accent-bg-color);
+}
+
+/* Format forms */
+textarea,
+select,
+input,
+button,
+.button {
+  font-size: inherit;
+  font-family: inherit;
+  padding: 0.5em;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  box-shadow: none;
+  max-width: 100%;
+  display: inline-block;
+}
+
+textarea,
+select,
+input {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+}
+
+label {
+  display: block;
+}
+
+textarea:not([cols]) {
+  width: 100%;
+}
+
+/* checkbox and radio button style */
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: middle;
+  position: relative;
+  width: min-content;
+}
+
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+  display: inline-block;
+}
+
+input[type="radio"] {
+  border-radius: 100%;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background-color: var(--accent-color);
+}
+
+input[type="checkbox"]:checked::after {
+  /* Creates a rectangle with colored right and bottom borders which is rotated to look like a check mark */
+  content: " ";
+  width: 0.2em;
+  height: 0.4em;
+  border-radius: 0;
+  position: absolute;
+  top: 0.04em;
+  left: 0.18em;
+  background-color: transparent;
+  border-right: solid var(--bg) 0.08em;
+  border-bottom: solid var(--bg) 0.08em;
+  font-size: 1.8em;
+  transform: rotate(45deg);
+}
+
+input[type="radio"]:checked::after {
+  /* creates a colored circle for the checked radio button  */
+  content: " ";
+  width: 0.3em;
+  height: 0.3em;
+  border-radius: 100%;
+  position: absolute;
+  top: 0.125em;
+  background-color: var(--bg-color);
+  left: 0.125em;
+  font-size: 1.8em;
+}
+
+/* Makes input fields wider on smaller screens */
+@media only screen and (max-width: 720px) {
+  textarea,
+  select,
+  input {
+    width: 100%;
+  }
+}
+
+/* Set a height for color input */
+input[type="color"] {
+  height: 2.5rem;
+  padding:  0.2rem;
+}
+
+/* do not show border around file selector button */
+input[type="file"] {
+  border: 0;
+}
+
+.button[aria-disabled="true"], 
+input:disabled,
+textarea:disabled,
+select:disabled,
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.button[aria-disabled="true"]:hover, 
+button[disabled]:hover,
+button:disabled:hover {
+    background: var(--accent-color);
+}
+
+.icon {
+  position: relative;
+  top: 0.1em;
+  padding-right: .25rem;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  stroke-width: 0;
+  stroke: currentColor;
+  fill: currentColor;
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
