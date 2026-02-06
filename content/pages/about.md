@@ -1,9 +1,9 @@
 ---
-title: About Pure Blog
+title: About
 slug: about
 status: published
 description: About Pure Blog, a simple flat-file blogging platform with a Markdown-first editor.
-include_in_nav: false
+include_in_nav: true
 ---
 
 Pure Blog is a lightweight, flat-file blogging platform built for speed and simplicity. Posts and pages live as Markdown files, so there’s no database to manage and content is easy to edit, version, or move.
@@ -17,7 +17,7 @@ The admin area gives you a clean editor for drafting and publishing posts, manag
 - **Theme controls** for fonts, color modes, post layouts, and custom CSS.
 - **Image uploads** with copy‑ready Markdown.
 - **RSS feed** for subscribers.
-- **Search** for quick access to posts. Just visit `/search`
+- **Search** for quick access to posts.
 
 ## Why flat files?
 

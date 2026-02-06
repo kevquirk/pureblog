@@ -1,5 +1,5 @@
 ---
-title: Typography Demo
+title: Demo
 slug: demo
 status: published
 description: A demo page showing common Markdown elements.

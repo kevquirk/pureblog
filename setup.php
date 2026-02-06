@@ -69,6 +69,7 @@ require __DIR__ . '/includes/admin-head.php';
 ?>
     <main class="narrow">
         <h1>Setup your new site</h1>
+        <br>
         <?php if ($errors): ?>
             <div class="notice">
                 <ul>
