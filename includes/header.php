@@ -29,6 +29,7 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
         <meta property="og:image" content="<?= e($config['assets']['og_image']) ?>">
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="/feed.php">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         :root {
             --bg-light: <?= e($config['theme']['background_color']) ?>;
@@ -43,11 +44,10 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
             --accent-bg-dark: <?= e($config['theme']['accent_bg_color_dark']) ?>;
             --font-stack: <?= $fontStack ?>;
         }
+<?php if (is_file(__DIR__ . '/../assets/css/custom.css')): ?>
+<?php readfile(__DIR__ . '/../assets/css/custom.css'); ?>
+<?php endif; ?>
     </style>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <?php if (is_file(__DIR__ . '/../assets/css/custom.css')): ?>
-        <link rel="stylesheet" href="/assets/css/custom.css">
-    <?php endif; ?>
 </head>
 <body>
     <?php readfile(__DIR__ . '/../assets/icons/sprite.svg'); ?>

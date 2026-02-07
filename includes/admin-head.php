@@ -14,15 +14,15 @@ $hideAdminNav = $hideAdminNav ?? false;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/assets/images/favicon.png">
     <title><?= e($adminTitle) ?></title>
+    <link rel="stylesheet" href="/admin/css/admin.css">
     <style>
         :root {
             --font-stack: <?= $fontStack ?>;
         }
+<?php if (is_file(__DIR__ . '/../admin/css/admin-custom.css')): ?>
+<?php readfile(__DIR__ . '/../admin/css/admin-custom.css'); ?>
+<?php endif; ?>
     </style>
-    <link rel="stylesheet" href="/admin/css/admin.css">
-    <?php if (is_file(__DIR__ . '/../admin/css/admin-custom.css')): ?>
-        <link rel="stylesheet" href="/admin/css/admin-custom.css">
-    <?php endif; ?>
     <?php if ($codeMirror === 'markdown'): ?>
         <link rel="stylesheet" href="https://unpkg.com/codemirror@5.65.16/lib/codemirror.css">
         <script src="https://unpkg.com/codemirror@5.65.16/lib/codemirror.js"></script>
