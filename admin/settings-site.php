@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $siteTitle = trim($_POST['site_title'] ?? '');
     $siteTagline = trim($_POST['site_tagline'] ?? '');
     $siteDescription = trim($_POST['site_description'] ?? '');
+    $siteEmail = trim($_POST['site_email'] ?? '');
     $customNav = trim($_POST['custom_nav'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
     $baseUrl = trim($_POST['base_url'] ?? '');
@@ -50,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['site_title'] = $siteTitle;
         $config['site_tagline'] = $siteTagline;
         $config['site_description'] = $siteDescription;
+        $config['site_email'] = $siteEmail;
         $config['custom_nav'] = $customNav;
         $config['posts_per_page'] = $postsPerPage;
         $config['base_url'] = $baseUrl;
@@ -127,6 +129,9 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="site_description">Site description</label>
                 <textarea id="site_description" name="site_description" rows="4"><?= e($config['site_description'] ?? '') ?></textarea>
+
+                <label for="site_email">Site email (optional)</label>
+                <input type="email" id="site_email" name="site_email" value="<?= e($config['site_email'] ?? '') ?>" placeholder="you@example.com">
 
                 <label for="posts_per_page">Posts per page</label>
                 <input type="number" id="posts_per_page" name="posts_per_page" min="1" max="100" value="<?= e((string) ($config['posts_per_page'] ?? 20)) ?>">

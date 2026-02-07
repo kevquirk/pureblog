@@ -16,6 +16,7 @@ function default_config(): array
         'site_title' => 'My Blog',
         'site_tagline' => '',
         'site_description' => '',
+        'site_email' => '',
         'custom_nav' => '',
         'posts_per_page' => 20,
         'homepage_slug' => '',
