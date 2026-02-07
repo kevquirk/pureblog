@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $page['include_in_nav'] = $includeChoice === 'yes' || $includeChoice === '1';
     $page['content'] = trim($_POST['content'] ?? '');
     $originalSlug = trim($_POST['original_slug'] ?? '');
+    $originalStatus = trim($_POST['original_status'] ?? '');
 
     if ($page['title'] === '') {
         $errors[] = 'Title is required.';
@@ -71,7 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         $saveError = '';
-        $saved = save_page($page, $originalSlug === '' ? null : $originalSlug, $saveError);
+        $saved = save_page(
+            $page,
+            $originalSlug === '' ? null : $originalSlug,
+            $originalStatus === '' ? null : $originalStatus,
+            $saveError
+        );
         if ($saved) {
             $redirectSlug = $page['slug'] === '' ? slugify($page['title']) : $page['slug'];
             header('Location: /admin/edit-page.php?slug=' . urlencode($redirectSlug) . '&saved=1');
@@ -129,6 +135,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 <?php endif; ?>
                 <form method="post" class="editor-form" id="page-form">
                     <input type="hidden" name="original_slug" value="<?= e($originalSlug) ?>">
+                    <input type="hidden" name="original_status" value="<?= e($page['status']) ?>">
                     <?= csrf_field() ?>
 
                     <nav class="editor-actions">

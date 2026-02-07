@@ -8,6 +8,7 @@ const PUREBLOG_POSTS_PATH = PUREBLOG_BASE_PATH . '/content/posts';
 const PUREBLOG_PAGES_PATH = PUREBLOG_BASE_PATH . '/content/pages';
 const PUREBLOG_SEARCH_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/search-index.json';
 const PUREBLOG_TAG_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/tag-index.json';
+const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
 
 function default_config(): array
 {
@@ -60,6 +61,21 @@ function load_config(): array
     }
 
     return array_replace_recursive(default_config(), $config);
+}
+
+function load_hooks(): void
+{
+    if (is_file(PUREBLOG_HOOKS_PATH)) {
+        require_once PUREBLOG_HOOKS_PATH;
+    }
+}
+
+function call_hook(string $name, array $args = []): void
+{
+    load_hooks();
+    if (function_exists($name)) {
+        $name(...$args);
+    }
 }
 
 function save_config(array $config): bool
@@ -427,7 +443,7 @@ function get_page_by_slug(string $slug, bool $includeDrafts = false): ?array
     return null;
 }
 
-function save_page(array &$page, ?string $originalSlug = null, ?string &$error = null): bool
+function save_page(array &$page, ?string $originalSlug = null, ?string $originalStatus = null, ?string &$error = null): bool
 {
     $error = null;
     $title = trim($page['title'] ?? '');
@@ -494,6 +510,14 @@ function save_page(array &$page, ?string $originalSlug = null, ?string &$error =
         }
     }
 
+    if ($status === 'published') {
+        call_hook('on_page_updated', [$slug]);
+        if ($originalStatus !== 'published') {
+            call_hook('on_page_published', [$slug]);
+        }
+    }
+
+    call_hook('on_page_deleted', [$slug]);
     return true;
 }
 
@@ -566,6 +590,7 @@ function delete_post_by_slug(string $slug): bool
         }
         build_search_index();
         build_tag_index();
+        call_hook('on_post_deleted', [$slug]);
     }
     return $deleted;
 }
@@ -597,7 +622,7 @@ function slug_in_use(string $slug, string $type, ?string $originalSlug = null): 
     return false;
 }
 
-function save_post(array &$post, ?string $originalSlug = null, ?string $originalDate = null, ?string &$error = null): bool
+function save_post(array &$post, ?string $originalSlug = null, ?string $originalDate = null, ?string $originalStatus = null, ?string &$error = null): bool
 {
     $error = null;
     $title = trim($post['title'] ?? '');
@@ -688,6 +713,13 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 
     build_search_index();
     build_tag_index();
+
+    if ($status === 'published') {
+        call_hook('on_post_updated', [$slug]);
+        if ($originalStatus !== 'published') {
+            call_hook('on_post_published', [$slug]);
+        }
+    }
     return true;
 }
 

@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $post,
             $originalSlug === '' ? null : $originalSlug,
             $originalDate === '' ? null : $originalDate,
+            $originalStatus === '' ? null : $originalStatus,
             $saveError
         );
         if ($saved) {
