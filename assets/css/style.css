@@ -263,12 +263,14 @@ p.tagline {
 .site-search-form input[type="search"] {
     flex: 1 1 16rem;
     max-width: none;
+    margin-bottom: 0;
 }
 
 .site-search-form button {
     flex: 0 0 auto;
     width: auto;
     max-width: none;
+    padding: 0.75rem 1rem;
 }
 
 @media (max-width: 600px) {
@@ -281,7 +283,7 @@ p.tagline {
     }
 }
 
-input, button, textarea, select {
+input, textarea, select {
     font: inherit;
     padding: 0.5rem;
     width: 100%;
@@ -299,7 +301,9 @@ button, a.button {
     border: none;
     width: auto;
     border-radius: 5px;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem;
+    font-family: inherit;
+    font-size: inherit;
     text-decoration: none;
 }
 
@@ -351,6 +355,7 @@ code {
 
 kbd {
     font-size: 1rem;
+    background: var(--accent-bg-color);
     border: 1px solid var(--text-color);
     border-bottom: 3px solid var(--text-color);
     border-radius: 5px;
@@ -430,9 +435,7 @@ tr:nth-child(even) {
 /* Format forms */
 textarea,
 select,
-input,
-button,
-.button {
+input {
   font-size: inherit;
   font-family: inherit;
   padding: 0.5em;
