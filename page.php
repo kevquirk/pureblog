@@ -28,7 +28,6 @@ require __DIR__ . '/includes/header.php';
             ?>
             <article>
                 <?php if (!$hidePageTitle): ?>
-                    <h1 ><?= e($page['title']) ?></h1>
                 <?php endif; ?>
                 <?= render_markdown($page['content']) ?>
             </article>

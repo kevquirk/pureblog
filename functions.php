@@ -8,6 +8,7 @@ const PUREBLOG_POSTS_PATH = PUREBLOG_BASE_PATH . '/content/posts';
 const PUREBLOG_PAGES_PATH = PUREBLOG_BASE_PATH . '/content/pages';
 const PUREBLOG_SEARCH_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/search-index.json';
 const PUREBLOG_TAG_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/tag-index.json';
+const PUREBLOG_DATA_PATH = PUREBLOG_BASE_PATH . '/data';
 const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
 
 function default_config(): array
@@ -726,6 +727,7 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 
 function render_markdown(string $markdown): string
 {
+    $markdown = filter_content($markdown);
     static $parsedown = null;
     if ($parsedown === null) {
         require_once __DIR__ . '/lib/Parsedown.php';
@@ -734,6 +736,114 @@ function render_markdown(string $markdown): string
     }
 
     return $parsedown->text($markdown);
+}
+
+function load_yaml_list(string $path): array
+{
+    if (!is_file($path)) {
+        return [];
+    }
+
+    $lines = file($path, FILE_IGNORE_NEW_LINES);
+    if ($lines === false) {
+        return [];
+    }
+
+    $items = [];
+    $current = null;
+    foreach ($lines as $line) {
+        $line = rtrim($line);
+        if ($line === '' || str_starts_with(ltrim($line), '#')) {
+            continue;
+        }
+
+        if (preg_match('/^\s*-\s*(.*)$/', $line, $matches)) {
+            if ($current !== null) {
+                $items[] = $current;
+            }
+            $current = [];
+            $rest = trim($matches[1]);
+            if ($rest !== '' && strpos($rest, ':') !== false) {
+                [$key, $value] = array_map('trim', explode(':', $rest, 2));
+                $current[$key] = trim($value, "\"'");
+            }
+            continue;
+        }
+
+        if ($current === null || strpos(ltrim($line), ':') === false) {
+            continue;
+        }
+
+        [$key, $value] = array_map('trim', explode(':', trim($line), 2));
+        $current[$key] = trim($value, "\"'");
+    }
+
+    if ($current !== null) {
+        $items[] = $current;
+    }
+
+    return $items;
+}
+
+function render_markdown_fragment(string $markdown): string
+{
+    if (!class_exists('Parsedown')) {
+        require_once __DIR__ . '/lib/Parsedown.php';
+    }
+    $parsedown = new Parsedown();
+    $parsedown->setSafeMode(false);
+    return $parsedown->text($markdown);
+}
+
+function render_liquid_loop(string $markdown, string $dataFile, string $pattern): string
+{
+    if (!preg_match($pattern, $markdown, $matches)) {
+        return $markdown;
+    }
+
+    $items = load_yaml_list($dataFile);
+    if (!$items) {
+        return preg_replace($pattern, '', $markdown, 1);
+    }
+
+    $template = $matches[1];
+    $rendered = '';
+    foreach ($items as $item) {
+        $chunk = preg_replace_callback('/\{\%\s*if\s+site\.feed\s*\%\}(.*?)\{\%\s*endif\s*\%\}/s', function ($m) use ($item) {
+            return !empty($item['feed']) ? $m[1] : '';
+        }, $template);
+
+        $chunk = preg_replace_callback('/\{\{\s*site\.([a-zA-Z0-9_]+)\s*\|\s*markdownify\s*\}\}/', function ($m) use ($item) {
+            $value = $item[$m[1]] ?? '';
+            return render_markdown_fragment($value);
+        }, $chunk);
+
+        $chunk = preg_replace_callback('/\{\{\s*site\.([a-zA-Z0-9_]+)\s*\}\}/', function ($m) use ($item) {
+            $value = $item[$m[1]] ?? '';
+            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }, $chunk);
+
+        $rendered .= $chunk;
+    }
+
+    return preg_replace($pattern, $rendered, $markdown, 1);
+}
+
+function filter_content(string $markdown): string
+{
+    $markdown = render_liquid_loop(
+        $markdown,
+        PUREBLOG_DATA_PATH . '/blogroll.yml',
+        '/\{\%\s*for\s+site\s+in\s+site\.data\.blogroll\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
+    );
+
+    $markdown = render_liquid_loop(
+        $markdown,
+        PUREBLOG_DATA_PATH . '/projects.yml',
+        '/\{\%\s*for\s+site\s+in\s+site\.data\.projects\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
+    );
+
+    return $markdown;
 }
 
 function get_excerpt(string $markdown, int $length = 200): string
