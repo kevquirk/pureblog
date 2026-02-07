@@ -29,6 +29,9 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
         <meta property="og:image" content="<?= e($config['assets']['og_image']) ?>">
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="/feed.php">
+    <style>
+        body { background: <?= e($config['theme']['background_color']) ?>; }
+    </style>
     <link rel="stylesheet" href="/assets/css/style.css">
     <style>
         :root {
@@ -44,7 +47,10 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
             --accent-bg-dark: <?= e($config['theme']['accent_bg_color_dark']) ?>;
             --font-stack: <?= $fontStack ?>;
         }
-<?php if (is_file(__DIR__ . '/../assets/css/custom.css')): ?>
+        body {
+            background: var(--bg-light);
+        }
+    <?php if (is_file(__DIR__ . '/../assets/css/custom.css')): ?>
 <?php readfile(__DIR__ . '/../assets/css/custom.css'); ?>
 <?php endif; ?>
     </style>
