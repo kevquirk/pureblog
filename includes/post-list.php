@@ -20,7 +20,13 @@
                     <?php if ($post['date']): ?>
                         <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
                     <?php endif; ?>
-                    <p class="post-excerpt"><?= e(get_excerpt($post['content'])) ?></p>
+                    <?php
+                    $excerptSource = trim((string) ($post['description'] ?? ''));
+                    if ($excerptSource === '') {
+                        $excerptSource = get_excerpt($post['content']);
+                    }
+                    ?>
+                    <p class="post-excerpt"><?= e($excerptSource) ?></p>
                     <?php if (!empty($post['tags'])): ?>
                         <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-tag"></use></svg> <?= render_tag_links($post['tags']) ?></p>
                     <?php endif; ?>
