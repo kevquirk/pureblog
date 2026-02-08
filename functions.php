@@ -833,8 +833,42 @@ function render_liquid_loop(string $markdown, string $dataFile, string $pattern)
     return preg_replace($pattern, $rendered, $markdown, 1);
 }
 
+function protect_fenced_code_blocks(string $markdown, array &$blocks): string
+{
+    $blocks = [];
+    $index = 0;
+    $patterns = [
+        '/```[\s\S]*?```/',
+        '/~~~[\s\S]*?~~~/',
+    ];
+
+    foreach ($patterns as $pattern) {
+        $markdown = preg_replace_callback($pattern, function (array $matches) use (&$blocks, &$index): string {
+            $token = '__PUREBLOG_CODE_BLOCK_' . $index . '__';
+            $blocks[$token] = $matches[0];
+            $index++;
+            return $token;
+        }, $markdown) ?? $markdown;
+    }
+
+    return $markdown;
+}
+
+function restore_fenced_code_blocks(string $markdown, array $blocks): string
+{
+    if (!$blocks) {
+        return $markdown;
+    }
+
+    return strtr($markdown, $blocks);
+}
+
 function filter_content(string $markdown): string
 {
+    // Do not process loop syntax inside fenced code examples.
+    $codeBlocks = [];
+    $markdown = protect_fenced_code_blocks($markdown, $codeBlocks);
+
     $markdown = render_liquid_loop(
         $markdown,
         PUREBLOG_DATA_PATH . '/blogroll.yml',
@@ -847,7 +881,7 @@ function filter_content(string $markdown): string
         '/\{\%\s*for\s+site\s+in\s+site\.data\.projects\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
     );
 
-    return $markdown;
+    return restore_fenced_code_blocks($markdown, $codeBlocks);
 }
 
 function get_excerpt(string $markdown, int $length = 200): string
