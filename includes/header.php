@@ -7,6 +7,14 @@ $siteDescription = trim((string) ($config['site_description'] ?? ''));
 $metaDescription = $metaDescription !== '' ? $metaDescription : $siteDescription;
 $mode = $config['theme']['color_mode'] ?? 'light';
 $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
+$isPostView = isset($post) && is_array($post);
+$isPageView = isset($page) && is_array($page);
+$headInject = '';
+if ($isPostView) {
+    $headInject = (string) ($config['head_inject_post'] ?? '');
+} elseif ($isPageView) {
+    $headInject = (string) ($config['head_inject_page'] ?? '');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= e($mode) ?>">
@@ -51,6 +59,9 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
 <?php readfile(__DIR__ . '/../content/css/custom.css'); ?>
 <?php endif; ?>
     </style>
+    <?php if (trim($headInject) !== ''): ?>
+<?= $headInject . "\n" ?>
+    <?php endif; ?>
 </head>
 <body>
     <?php readfile(__DIR__ . '/../assets/icons/sprite.svg'); ?>

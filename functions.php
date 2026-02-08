@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-const PUREBLOG_VERSION = 'v1.2.1';
+const PUREBLOG_VERSION = 'v1.3.0';
 
 const PUREBLOG_BASE_PATH = __DIR__;
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
@@ -23,6 +23,10 @@ function default_config(): array
         'site_description' => '',
         'site_email' => '',
         'custom_nav' => '',
+        'head_inject_page' => '',
+        'head_inject_post' => '',
+        'footer_inject_page' => '',
+        'footer_inject_post' => '',
         'posts_per_page' => 20,
         'homepage_slug' => '',
         'blog_page_slug' => '',
@@ -729,9 +733,9 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     return true;
 }
 
-function render_markdown(string $markdown): string
+function render_markdown(string $markdown, array $context = []): string
 {
-    $markdown = filter_content($markdown);
+    $markdown = filter_content($markdown, $context);
     static $parsedown = null;
     if ($parsedown === null) {
         require_once __DIR__ . '/lib/Parsedown.php';
@@ -863,11 +867,67 @@ function restore_fenced_code_blocks(string $markdown, array $blocks): string
     return strtr($markdown, $blocks);
 }
 
-function filter_content(string $markdown): string
+function protect_inline_code_spans(string $markdown, array &$spans): string
+{
+    $spans = [];
+    $index = 0;
+
+    return preg_replace_callback('/`[^`\n]*`/', function (array $matches) use (&$spans, &$index): string {
+        $token = '__PUREBLOG_INLINE_CODE_' . $index . '__';
+        $spans[$token] = $matches[0];
+        $index++;
+        return $token;
+    }, $markdown) ?? $markdown;
+}
+
+function restore_inline_code_spans(string $markdown, array $spans): string
+{
+    if (!$spans) {
+        return $markdown;
+    }
+
+    return strtr($markdown, $spans);
+}
+
+function render_global_shortcodes(string $markdown, array $context = []): string
+{
+    static $siteEmail = null;
+    if ($siteEmail === null) {
+        $config = load_config();
+        $siteEmail = trim((string) ($config['site_email'] ?? ''));
+    }
+
+    $postTitle = trim((string) ($context['post_title'] ?? ''));
+    $pageTitle = trim((string) ($context['page_title'] ?? ''));
+    $contentTitle = trim((string) ($context['content_title'] ?? ($postTitle !== '' ? $postTitle : $pageTitle)));
+
+    $shortcodes = [
+        'site_email' => $siteEmail,
+        'site.email' => $siteEmail,
+        'post_title' => $postTitle,
+        'page_title' => $pageTitle,
+        'content_title' => $contentTitle,
+    ];
+
+    return preg_replace_callback('/\{\{\s*([a-zA-Z0-9_.]+)\s*\}\}/', function (array $matches) use ($shortcodes): string {
+        $key = $matches[1];
+        if (!array_key_exists($key, $shortcodes)) {
+            return $matches[0];
+        }
+
+        return (string) $shortcodes[$key];
+    }, $markdown) ?? $markdown;
+}
+
+function filter_content(string $markdown, array $context = []): string
 {
     // Do not process loop syntax inside fenced code examples.
     $codeBlocks = [];
     $markdown = protect_fenced_code_blocks($markdown, $codeBlocks);
+    $inlineCodeSpans = [];
+    $markdown = protect_inline_code_spans($markdown, $inlineCodeSpans);
+
+    $markdown = render_global_shortcodes($markdown, $context);
 
     $markdown = render_liquid_loop(
         $markdown,
@@ -880,6 +940,8 @@ function filter_content(string $markdown): string
         PUREBLOG_DATA_PATH . '/projects.yml',
         '/\{\%\s*for\s+site\s+in\s+site\.data\.projects\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
     );
+
+    $markdown = restore_inline_code_spans($markdown, $inlineCodeSpans);
 
     return restore_fenced_code_blocks($markdown, $codeBlocks);
 }
@@ -923,6 +985,34 @@ function render_tag_links(array $tags): string
     }
 
     return implode(', ', $links);
+}
+
+function render_layout_partial(string $name, array $context = []): string
+{
+    $name = trim($name);
+    if ($name === '') {
+        return '';
+    }
+
+    $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? '';
+    if ($safeName !== $name) {
+        return '';
+    }
+
+    $userPath = PUREBLOG_BASE_PATH . '/content/layouts/' . $safeName . '.php';
+    $corePath = PUREBLOG_BASE_PATH . '/includes/layouts/' . $safeName . '.php';
+    $partialPath = is_file($userPath) ? $userPath : (is_file($corePath) ? $corePath : null);
+    if ($partialPath === null) {
+        return '';
+    }
+
+    extract($context, EXTR_SKIP);
+
+    ob_start();
+    include $partialPath;
+    $output = (string) ob_get_clean();
+
+    return render_global_shortcodes($output, $context);
 }
 
 function parse_custom_nav(string $raw): array

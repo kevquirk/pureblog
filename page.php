@@ -29,7 +29,7 @@ require __DIR__ . '/includes/header.php';
             <article>
                 <?php if (!$hidePageTitle): ?>
                 <?php endif; ?>
-                <?= render_markdown($page['content']) ?>
+                <?= render_markdown($page['content'], ['page_title' => (string) ($page['title'] ?? '')]) ?>
             </article>
             <?php if ($isBlogPage): ?>
                 <?php

@@ -39,7 +39,7 @@
                     <?php if ($post['date']): ?>
                         <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
                     <?php endif; ?>
-                    <?= render_markdown($post['content']) ?>
+                    <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
                     <?php if (!empty($post['tags'])): ?>
                         <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-tag"></use></svg> <?= render_tag_links($post['tags']) ?></p>
                     <?php endif; ?>

@@ -28,11 +28,13 @@ require __DIR__ . '/includes/header.php';
                     <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
                 <?php endif; ?>
                 
-                <?= render_markdown($post['content']) ?>
-
-                <?php if (!empty($post['tags'])): ?>
-                    <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-tag"></use></svg> <?= render_tag_links($post['tags']) ?></p>
-                <?php endif; ?>
+                <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
+                <?= render_layout_partial('post-meta', [
+                    'post' => $post,
+                    'config' => $config,
+                    'post_title' => (string) ($post['title'] ?? ''),
+                    'content_title' => (string) ($post['title'] ?? ''),
+                ]) ?>
             </article>
         <?php endif; ?>
     </main>

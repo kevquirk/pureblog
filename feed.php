@@ -47,7 +47,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
             <?php
             $postUrl = $baseUrl . '/' . $post['slug'];
             $pubDate = $post['date'] ? date(DATE_RSS, strtotime($post['date'])) : date(DATE_RSS);
-            $content = render_markdown($post['content']);
+            $content = render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]);
             $content = absolutize_feed_html($content, $baseUrl);
             ?>
             <item>

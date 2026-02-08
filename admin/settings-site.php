@@ -24,6 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $siteDescription = trim($_POST['site_description'] ?? '');
     $siteEmail = trim($_POST['site_email'] ?? '');
     $customNav = trim($_POST['custom_nav'] ?? '');
+    $headInjectPage = trim($_POST['head_inject_page'] ?? '');
+    $headInjectPost = trim($_POST['head_inject_post'] ?? '');
+    $footerInjectPage = trim($_POST['footer_inject_page'] ?? '');
+    $footerInjectPost = trim($_POST['footer_inject_post'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
     $baseUrl = trim($_POST['base_url'] ?? '');
     $homepageSlug = trim($_POST['homepage_slug'] ?? '');
@@ -53,6 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['site_description'] = $siteDescription;
         $config['site_email'] = $siteEmail;
         $config['custom_nav'] = $customNav;
+        $config['head_inject_page'] = $headInjectPage;
+        $config['head_inject_post'] = $headInjectPost;
+        $config['footer_inject_page'] = $footerInjectPage;
+        $config['footer_inject_post'] = $footerInjectPost;
         $config['posts_per_page'] = $postsPerPage;
         $config['base_url'] = $baseUrl;
         $config['homepage_slug'] = $homepageSlug;
@@ -64,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $config['assets'] = ['favicon' => '', 'og_image' => ''];
         }
 
-        $assetDir = __DIR__ . '/../assets/images';
+        $assetDir = PUREBLOG_CONTENT_IMAGES_PATH;
         if (!is_dir($assetDir)) {
             mkdir($assetDir, 0755, true);
         }
@@ -78,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($name !== '') {
                 $dest = $assetDir . '/' . $name;
                 if (move_uploaded_file($_FILES['favicon']['tmp_name'], $dest)) {
-                    $config['assets']['favicon'] = '/assets/images/' . $name;
+                    $config['assets']['favicon'] = '/content/images/' . $name;
                 }
             }
         }
@@ -92,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($name !== '') {
                 $dest = $assetDir . '/' . $name;
                 if (move_uploaded_file($_FILES['og_image']['tmp_name'], $dest)) {
-                    $config['assets']['og_image'] = '/assets/images/' . $name;
+                    $config['assets']['og_image'] = '/content/images/' . $name;
                 }
             }
         }
@@ -181,6 +189,24 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="custom_nav">Custom nav items <span class="tip">(one per line)</span></label>
                 <textarea id="custom_nav" name="custom_nav" rows="4" placeholder="GitHub | https://github.com/you&#10;Projects | /projects"><?= e($config['custom_nav'] ?? '') ?></textarea>
+            </section>
+
+            <section class="section-divider">
+                <span class="title">Header Injects</span>
+                <label for="head_inject_page">Page head HTML <span class="tip">(optional)</span></label>
+                <textarea id="head_inject_page" name="head_inject_page" rows="6" placeholder="&lt;link rel=&quot;stylesheet&quot; href=&quot;/content/css/comments.css&quot;&gt;"><?= e($config['head_inject_page'] ?? '') ?></textarea>
+
+                <label for="head_inject_post">Post head HTML <span class="tip">(optional)</span></label>
+                <textarea id="head_inject_post" name="head_inject_post" rows="6" placeholder="&lt;meta name=&quot;x-custom&quot; content=&quot;value&quot;&gt;"><?= e($config['head_inject_post'] ?? '') ?></textarea>
+            </section>
+
+            <section class="section-divider">
+                <span class="title">Footer Injects</span>
+                <label for="footer_inject_page">Page footer HTML <span class="tip">(optional)</span></label>
+                <textarea id="footer_inject_page" name="footer_inject_page" rows="6" placeholder="&lt;script src=&quot;/assets/js/page-only.js&quot; defer&gt;&lt;/script&gt;"><?= e($config['footer_inject_page'] ?? '') ?></textarea>
+
+                <label for="footer_inject_post">Post footer HTML <span class="tip">(optional)</span></label>
+                <textarea id="footer_inject_post" name="footer_inject_post" rows="6" placeholder="&lt;script src=&quot;/assets/js/post-only.js&quot; defer&gt;&lt;/script&gt;"><?= e($config['footer_inject_post'] ?? '') ?></textarea>
             </section>
         </form>
     </main>
