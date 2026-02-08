@@ -44,7 +44,7 @@ if ($error === '') {
     } else {
         $folder = $slug;
     }
-    $uploadDir = __DIR__ . '/../assets/images/' . $folder;
+    $uploadDir = __DIR__ . '/../content/images/' . $folder;
 
     if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
         $error = 'Unable to create image folder.';
@@ -68,7 +68,7 @@ if ($error === '') {
             if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
                 $error = 'Unable to save uploaded file.';
             } else {
-                $url = '/assets/images/' . $folder . '/' . $filename;
+                $url = '/content/images/' . $folder . '/' . $filename;
                 $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
                 $message = '![' . $altText . '](' . $url . ')';
             }

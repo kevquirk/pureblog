@@ -14,8 +14,8 @@ $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $errors = [];
 $notice = '';
 
-$frontCssDir = __DIR__ . '/../assets/css';
-$adminCssDir = __DIR__ . '/css';
+$frontCssDir = __DIR__ . '/../content/css';
+$adminCssDir = __DIR__ . '/../content/css';
 $frontCssPath = $frontCssDir . '/custom.css';
 $adminCssPath = $adminCssDir . '/admin-custom.css';
 $frontCss = is_file($frontCssPath) ? (string) file_get_contents($frontCssPath) : '';

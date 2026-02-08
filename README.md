@@ -21,7 +21,7 @@ All you need to run Pure Blog is a host that supports PHP (pretty much all of th
 4. Once your site is setup, visit `/admin` and login to your new blog.
 
 ## Content
-Posts live in `content/posts` and pages live in `content/pages`. When images are uploaded they are stored in `/assets/images/[post/page-slug]`.
+Posts live in `content/posts` and pages live in `content/pages`. When images are uploaded they are stored in `/content/images/[post/page-slug]`.
 
 ## Notes
 - Pure Blog is intentionally minimal and designed for personal sites.

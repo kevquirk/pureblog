@@ -148,17 +148,17 @@ body {
 
 Images within your main content are always full width and have rounded corners to them. The `figcaption` element is also formatted in Pure Blog. Here are examples of images with and without a caption:
 
-![A dog at an iPad](/assets/images/demo/dog-ipad.jpg)
+![A dog at an iPad](/content/images/demo/dog-ipad.jpg)
 
-![A black swan](/assets/images/demo/goose.jpg)
+![A black swan](/content/images/demo/goose.jpg)
 *This is a black swan*
 
 ```
 # Standard image
-![A dog at an iPad](/assets/images/demo/dog-ipad.jpg)
+![A dog at an iPad](/content/images/demo/dog-ipad.jpg)
 
 # Image with a caption 
-![A black swan](/assets/images/demo/goose.jpg)
+![A black swan](/content/images/demo/goose.jpg)
 *This is a black swan*
 ```
 

@@ -5,6 +5,7 @@ $settingsItems = [
     '/admin/settings-theme.php' => ['label' => 'Theme', 'icon' => 'paintbrush'],
     '/admin/settings-css.php' => ['label' => 'CSS', 'icon' => 'braces'],
     '/admin/settings-user.php' => ['label' => 'User', 'icon' => 'user'],
+    '/admin/settings-updates.php' => ['label' => 'Updates', 'icon' => 'upgrade'],
 ];
 $settingsSaveFormId = $settingsSaveFormId ?? '';
 ?>

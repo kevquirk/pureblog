@@ -281,7 +281,7 @@
         }
 
         const alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
-        const pathBase = `/assets/images/${slugValue}`;
+        const pathBase = `/content/images/${slugValue}`;
         const url = `${pathBase}/${file.name}`;
         const markdown = `![${alt}](${url})`;
         const doc = cm.getDoc();

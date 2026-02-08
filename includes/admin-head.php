@@ -12,15 +12,15 @@ $hideAdminNav = $hideAdminNav ?? false;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/assets/images/favicon.png">
+    <link rel="icon" href="<?= e($config['assets']['favicon'] ?? '/assets/images/favicon.png') ?>">
     <title><?= e($adminTitle) ?></title>
     <link rel="stylesheet" href="/admin/css/admin.css">
     <style>
         :root {
             --font-stack: <?= $fontStack ?>;
         }
-<?php if (is_file(__DIR__ . '/../admin/css/admin-custom.css')): ?>
-<?php readfile(__DIR__ . '/../admin/css/admin-custom.css'); ?>
+<?php if (is_file(__DIR__ . '/../content/css/admin-custom.css')): ?>
+<?php readfile(__DIR__ . '/../content/css/admin-custom.css'); ?>
 <?php endif; ?>
     </style>
     <?php if ($codeMirror === 'markdown'): ?>

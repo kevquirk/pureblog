@@ -89,14 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $imageFolder = '';
 if ($page['slug'] !== '') {
-    $imageFolder = __DIR__ . '/../assets/images/' . $page['slug'];
+    $imageFolder = __DIR__ . '/../content/images/' . $page['slug'];
     if (is_dir($imageFolder)) {
         $files = glob($imageFolder . '/*') ?: [];
         foreach ($files as $file) {
             if (is_file($file)) {
                 $basename = basename($file);
                 $altText = pathinfo($basename, PATHINFO_FILENAME) ?: 'image';
-                $url = '/assets/images/' . $page['slug'] . '/' . $basename;
+                $url = '/content/images/' . $page['slug'] . '/' . $basename;
                 $images[] = [
                     'filename' => $basename,
                     'markdown' => '![' . $altText . '](' . $url . ')',

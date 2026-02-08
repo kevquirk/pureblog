@@ -27,7 +27,7 @@ if ($slug === '' || ($editorType !== 'page' && $date === '') || $filename === ''
 $folderName = $editorType === 'page'
     ? $slug
     : $slug;
-$baseDir = realpath(__DIR__ . '/../assets/images');
+$baseDir = realpath(__DIR__ . '/../content/images');
 if ($baseDir === false) {
     header('Location: ' . $redirect . '&upload_error=' . urlencode('Image folder not found.'));
     exit;

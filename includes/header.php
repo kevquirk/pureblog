@@ -47,8 +47,8 @@ $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
             --accent-bg-dark: <?= e($config['theme']['accent_bg_color_dark']) ?>;
             --font-stack: <?= $fontStack ?>;
         }
-    <?php if (is_file(__DIR__ . '/../assets/css/custom.css')): ?>
-<?php readfile(__DIR__ . '/../assets/css/custom.css'); ?>
+    <?php if (is_file(__DIR__ . '/../content/css/custom.css')): ?>
+<?php readfile(__DIR__ . '/../content/css/custom.css'); ?>
 <?php endif; ?>
     </style>
 </head>

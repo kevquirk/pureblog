@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+const PUREBLOG_VERSION = 'v1.2.0';
+
 const PUREBLOG_BASE_PATH = __DIR__;
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
 const PUREBLOG_POSTS_PATH = PUREBLOG_BASE_PATH . '/content/posts';
@@ -9,6 +11,8 @@ const PUREBLOG_PAGES_PATH = PUREBLOG_BASE_PATH . '/content/pages';
 const PUREBLOG_SEARCH_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/search-index.json';
 const PUREBLOG_TAG_INDEX_PATH = PUREBLOG_BASE_PATH . '/content/tag-index.json';
 const PUREBLOG_DATA_PATH = PUREBLOG_BASE_PATH . '/data';
+const PUREBLOG_CONTENT_IMAGES_PATH = PUREBLOG_BASE_PATH . '/content/images';
+const PUREBLOG_CONTENT_CSS_PATH = PUREBLOG_BASE_PATH . '/content/css';
 const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
 
 function default_config(): array
@@ -535,7 +539,7 @@ function delete_page_by_slug(string $slug): bool
         return false;
     }
 
-    $imageDir = PUREBLOG_BASE_PATH . '/assets/images/' . $slug;
+    $imageDir = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug;
     if (is_dir($imageDir)) {
         $files = glob($imageDir . '/*') ?: [];
         foreach ($files as $file) {
@@ -578,7 +582,7 @@ function delete_post_by_slug(string $slug): bool
 
     $deleted = unlink($path);
     if ($deleted) {
-        $imageDir = PUREBLOG_BASE_PATH . '/assets/images/' . $slug;
+        $imageDir = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug;
         if (is_dir($imageDir)) {
             $files = glob($imageDir . '/*') ?: [];
             foreach ($files as $file) {
