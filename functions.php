@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-const PUREBLOG_VERSION = 'v1.2.0';
+const PUREBLOG_VERSION = 'v1.2.1';
 
 const PUREBLOG_BASE_PATH = __DIR__;
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
