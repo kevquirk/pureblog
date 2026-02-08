@@ -11,9 +11,9 @@ if ($isPostView) {
 ?>
 <footer>
     <p>&copy; <?= e(date('Y')) ?> <?= e($config['site_title']) ?></p>
-</footer>
-<?php if (trim($footerInject) !== ''): ?>
+    <?php if (trim($footerInject) !== ''): ?>
 <?= $footerInject . "\n" ?>
-<?php endif; ?>
+    <?php endif; ?>
+</footer>
 </body>
 </html>
