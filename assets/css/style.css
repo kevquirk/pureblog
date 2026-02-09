@@ -579,10 +579,6 @@ button:disabled:hover {
   font-weight: bold;
 }
 
-.post-nav a:hover {
-  background: var(--accent-bg);
-}
-
 .post-nav p {
   padding: 1rem 0;
 }
