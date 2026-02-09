@@ -22,6 +22,7 @@ require __DIR__ . '/includes/header.php';
             <h2>Post not found</h2>
             <p>The post you requested could not be found.</p>
         <?php else: ?>
+            <?php $adjacentPosts = get_adjacent_posts_by_slug((string) ($post['slug'] ?? ''), false); ?>
             <article>
                 <h1 ><?= e($post['title']) ?></h1>
                 <?php if ($post['date']): ?>
@@ -34,6 +35,8 @@ require __DIR__ . '/includes/header.php';
                     'config' => $config,
                     'post_title' => (string) ($post['title'] ?? ''),
                     'content_title' => (string) ($post['title'] ?? ''),
+                    'previous_post' => $adjacentPosts['previous'] ?? null,
+                    'next_post' => $adjacentPosts['next'] ?? null,
                 ]) ?>
             </article>
         <?php endif; ?>

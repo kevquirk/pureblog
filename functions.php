@@ -400,6 +400,27 @@ function get_post_by_slug(string $slug, bool $includeDrafts = false): ?array
     return null;
 }
 
+function get_adjacent_posts_by_slug(string $slug, bool $includeDrafts = false): array
+{
+    $posts = get_all_posts($includeDrafts);
+    $count = count($posts);
+    for ($i = 0; $i < $count; $i++) {
+        if (($posts[$i]['slug'] ?? '') !== $slug) {
+            continue;
+        }
+
+        return [
+            'previous' => $posts[$i + 1] ?? null,
+            'next' => $posts[$i - 1] ?? null,
+        ];
+    }
+
+    return [
+        'previous' => null,
+        'next' => null,
+    ];
+}
+
 function get_all_pages(bool $includeDrafts = false, bool $bustCache = false): array
 {
     static $cache = null;

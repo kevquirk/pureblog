@@ -564,3 +564,40 @@ button:disabled:hover {
 .hidden {
   display: none;
 }
+
+/* Post navigation */
+.post-nav {
+  display: flex;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 3rem auto;
+  max-width: 100%;
+  padding: 0;
+}
+
+.post-nav a {
+  font-weight: bold;
+}
+
+.post-nav a:hover {
+  background: var(--accent-bg);
+}
+
+.post-nav p {
+  padding: 1rem 0;
+}
+
+.post-nav div {
+  flex: 1 1 0;
+}
+
+.post-nav-next {
+  text-align: right;
+}
+
+/* Change behaviour on smaller screens */
+@media (max-width:800px) {
+  .post-nav {
+    display: block;
+  }
+}
