@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-const PUREBLOG_VERSION = 'v1.3.0';
+const PUREBLOG_VERSION = 'v1.3.1';
 
 const PUREBLOG_BASE_PATH = __DIR__;
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
@@ -541,14 +541,23 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         }
     }
 
-    if ($status === 'published') {
+    $wasPublished = ($originalStatus === 'published');
+    $isPublished = ($status === 'published');
+
+    if ($isPublished) {
         call_hook('on_page_updated', [$slug]);
-        if ($originalStatus !== 'published') {
+        if (!$wasPublished) {
             call_hook('on_page_published', [$slug]);
         }
+        if ($wasPublished && $originalSlug !== null && $originalSlug !== '' && $originalSlug !== $slug) {
+            // Old URL can remain cached when a published page slug changes.
+            call_hook('on_page_deleted', [$originalSlug]);
+        }
+    } elseif ($wasPublished) {
+        // Page was removed from public output (unpublished).
+        call_hook('on_page_deleted', [$slug]);
     }
 
-    call_hook('on_page_deleted', [$slug]);
     return true;
 }
 

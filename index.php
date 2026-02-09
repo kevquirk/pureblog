@@ -54,10 +54,12 @@ $homepageSlug = trim((string) ($config['homepage_slug'] ?? ''));
 $blogPageSlug = trim((string) ($config['blog_page_slug'] ?? ''));
 
 if ($isSingle && $homepageSlug !== '' && $requestPath === $homepageSlug) {
-    header('Location: /');
+    $queryString = $_SERVER['QUERY_STRING'] ?? '';
+    $location = '/' . ($queryString !== '' ? ('?' . $queryString) : '');
+    header('Location: ' . $location);
     exit;
 }
-if (!$isTag && $requestPath === '' && $homepageSlug !== '' && $homepageSlug !== $blogPageSlug) {
+if (!$isTag && $requestPath === '' && $homepageSlug !== '') {
     $homepage = get_page_by_slug($homepageSlug, true);
     if ($homepage) {
         $page = $homepage;

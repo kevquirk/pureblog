@@ -41,7 +41,8 @@ require __DIR__ . '/includes/header.php';
                 $totalPages = $pagination['totalPages'];
                 $currentPage = $pagination['currentPage'];
                 $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
-                $paginationBase = '/' . $page['slug'];
+                $isHomepagePage = !empty($config['homepage_slug']) && ($config['homepage_slug'] === ($page['slug'] ?? ''));
+                $paginationBase = $isHomepagePage ? '/' : ('/' . $page['slug']);
                 ?>
                 <section class="blog-feed">
                     <?php require __DIR__ . '/includes/post-list.php'; ?>
