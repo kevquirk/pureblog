@@ -25,11 +25,17 @@ if ($isPostView) {
     $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/');
     $isHome = $currentPath === '';
     $fullTitle = $isHome ? $pageTitle : trim($pageTitle . ' - ' . $siteTitle);
+    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    if ($requestPath === '' || $requestPath === '/index.php') {
+        $requestPath = '/';
+    }
+    $canonicalUrl = rtrim(get_base_url(), '/') . $requestPath;
     ?>
     <title><?= e($fullTitle) ?></title>
     <?php if ($metaDescription !== ''): ?>
         <meta name="description" content="<?= e($metaDescription) ?>">
     <?php endif; ?>
+    <link rel="canonical" href="<?= e($canonicalUrl) ?>">
     <?php if (!empty($config['assets']['favicon'])): ?>
         <link rel="icon" href="<?= e($config['assets']['favicon']) ?>">
     <?php endif; ?>
