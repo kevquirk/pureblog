@@ -6,6 +6,24 @@ $adminColorMode = $adminColorMode ?? ($config['theme']['admin_color_mode'] ?? 'a
 $extraHead = $extraHead ?? '';
 $codeMirror = $codeMirror ?? null; // 'markdown' or 'css'
 $hideAdminNav = $hideAdminNav ?? false;
+
+if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['admin_action_id'])) {
+    verify_csrf();
+    $actionId = strtolower(trim((string) ($_POST['admin_action_id'] ?? '')));
+    $actionId = preg_replace('/[^a-z0-9_-]/', '', $actionId) ?? '';
+    if ($actionId !== '') {
+        $_SESSION['admin_action_flash'] = run_admin_action($actionId);
+    } else {
+        $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => 'Invalid admin action.'];
+    }
+    $redirectTo = (string) ($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php');
+    header('Location: ' . $redirectTo);
+    exit;
+}
+
+$adminActionButtons = !$hideAdminNav ? get_admin_action_buttons() : [];
+$adminActionFlash = $_SESSION['admin_action_flash'] ?? null;
+unset($_SESSION['admin_action_flash']);
 ?>
 <!DOCTYPE html>
 <html lang="en" data-admin-theme="<?= e($adminColorMode) ?>">
@@ -53,6 +71,24 @@ $hideAdminNav = $hideAdminNav ?? false;
                 <li><a href="/admin/pages.php"<?= $adminPath === 'admin/pages.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-file-text"></use></svg> Pages</a></li>
                 <li><a href="/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-settings"></use></svg> Settings</a></li>
                 <li><a target="_blank" rel="noopener noreferrer" href="/"><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-eye"></use></svg> View site</a></li>
+                <?php foreach ($adminActionButtons as $actionButton): ?>
+                    <?php
+                    $buttonClass = trim('link-button ' . $actionButton['class']);
+                    $confirmAttr = $actionButton['confirm'] !== '' ? ' onclick="return confirm(\'' . e($actionButton['confirm']) . '\');"' : '';
+                    ?>
+                    <li>
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="admin_action_id" value="<?= e($actionButton['id']) ?>">
+                            <button type="submit" class="<?= e($buttonClass) ?>"<?= $confirmAttr ?>>
+                                <?php if ($actionButton['icon'] !== ''): ?>
+                                    <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-<?= e($actionButton['icon']) ?>"></use></svg>
+                                <?php endif; ?>
+                                <?= e($actionButton['label']) ?>
+                            </button>
+                        </form>
+                    </li>
+                <?php endforeach; ?>
                 <li>
                     <form method="post" action="/admin/logout.php" class="inline-form">
                         <?= csrf_field() ?>
@@ -64,4 +100,8 @@ $hideAdminNav = $hideAdminNav ?? false;
                 </li>
             </ul>
         </nav>
+        <?php if (is_array($adminActionFlash) && isset($adminActionFlash['message'])): ?>
+            <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
+            <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
+        <?php endif; ?>
     <?php endif; ?>

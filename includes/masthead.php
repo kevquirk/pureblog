@@ -12,7 +12,12 @@
                     <li><a href="/<?= e($navPage['slug']) ?>"<?= $isCurrent ? ' class="current"' : '' ?>><?= e($navPage['title']) ?></a></li>
                 <?php endforeach; ?>
                 <?php foreach ($customNavItems as $item): ?>
-                    <li><a href="<?= e($item['url']) ?>"><?= e($item['label']) ?></a></li>
+                    <?php
+                    $itemPath = parse_url($item['url'], PHP_URL_PATH) ?? '';
+                    $itemPath = trim($itemPath, '/');
+                    $isCurrentCustom = $itemPath !== '' && $itemPath === $currentPath;
+                    ?>
+                    <li><a href="<?= e($item['url']) ?>"<?= $isCurrentCustom ? ' class="current"' : '' ?>><?= e($item['label']) ?></a></li>
                 <?php endforeach; ?>
             </ul>
         </nav>

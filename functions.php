@@ -88,6 +88,88 @@ function call_hook(string $name, array $args = []): void
     }
 }
 
+/**
+ * @return list<array{id:string,label:string,class:string,confirm:string,icon:string}>
+ */
+function get_admin_action_buttons(): array
+{
+    load_hooks();
+    if (!function_exists('admin_action_buttons')) {
+        return [];
+    }
+
+    $raw = admin_action_buttons();
+    if (!is_array($raw)) {
+        return [];
+    }
+
+    $buttons = [];
+    foreach ($raw as $item) {
+        if (!is_array($item)) {
+            continue;
+        }
+
+        $id = strtolower(trim((string) ($item['id'] ?? '')));
+        $id = preg_replace('/[^a-z0-9_-]/', '', $id) ?? '';
+        $label = trim((string) ($item['label'] ?? ''));
+        if ($id === '' || $label === '') {
+            continue;
+        }
+
+        $class = trim((string) ($item['class'] ?? ''));
+        $class = preg_replace('/[^a-zA-Z0-9_ -]/', '', $class) ?? '';
+
+        $buttons[] = [
+            'id' => $id,
+            'label' => $label,
+            'class' => $class,
+            'confirm' => trim((string) ($item['confirm'] ?? '')),
+            'icon' => trim((string) ($item['icon'] ?? '')),
+        ];
+    }
+
+    return $buttons;
+}
+
+/**
+ * @return array{ok:bool,message:string}
+ */
+function run_admin_action(string $actionId): array
+{
+    load_hooks();
+    if (!function_exists('on_admin_action')) {
+        return ['ok' => false, 'message' => 'No admin action handler is configured.'];
+    }
+
+    try {
+        $result = on_admin_action($actionId);
+    } catch (Throwable $e) {
+        return ['ok' => false, 'message' => 'Action failed: ' . $e->getMessage()];
+    }
+
+    if (is_array($result)) {
+        $ok = (bool) ($result['ok'] ?? false);
+        $message = trim((string) ($result['message'] ?? ''));
+        if ($message === '') {
+            $message = $ok ? 'Action completed.' : 'Action failed.';
+        }
+        return ['ok' => $ok, 'message' => $message];
+    }
+
+    if (is_bool($result)) {
+        return [
+            'ok' => $result,
+            'message' => $result ? 'Action completed.' : 'Action failed.',
+        ];
+    }
+
+    if (is_string($result) && trim($result) !== '') {
+        return ['ok' => true, 'message' => trim($result)];
+    }
+
+    return ['ok' => true, 'message' => 'Action completed.'];
+}
+
 function save_config(array $config): bool
 {
     $data = "<?php\nreturn " . var_export($config, true) . ";\n";

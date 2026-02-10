@@ -57,3 +57,36 @@ function on_page_deleted(string $slug): void
     // Example: purge CDN for deleted page.
     bunny_purge();
 }
+
+/**
+ * Optional: add custom admin action buttons (shown in top admin nav).
+ *
+ * @return array<int,array<string,string>>
+ */
+function admin_action_buttons(): array
+{
+    return [
+        [
+            'id' => 'purge_cache',
+            'label' => 'Purge cache',
+            'class' => 'delete',
+            'confirm' => 'Purge CDN cache now?',
+            'icon' => 'circle-x',
+        ],
+    ];
+}
+
+/**
+ * Optional: handle custom admin actions.
+ *
+ * @return array{ok:bool,message:string}
+ */
+function on_admin_action(string $actionId): array
+{
+    if ($actionId !== 'purge_cache') {
+        return ['ok' => false, 'message' => 'Unknown action.'];
+    }
+
+    bunny_purge();
+    return ['ok' => true, 'message' => 'CDN cache purge requested.'];
+}
