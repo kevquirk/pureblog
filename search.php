@@ -37,6 +37,7 @@ $pageTitle = $query !== '' ? 'Search: ' . $query : 'Search';
 $metaDescription = '';
 
 require __DIR__ . '/includes/header.php';
+render_masthead_layout($config, ['page' => $page ?? null]);
 ?>
     <main>
         <h1 >Search</h1>
@@ -55,4 +56,6 @@ require __DIR__ . '/includes/header.php';
             <?php require __DIR__ . '/includes/post-list.php'; ?>
         <?php endif; ?>
     </main>
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php render_footer_layout($config, ['page' => $page ?? null]); ?>
+</body>
+</html>

@@ -125,9 +125,8 @@ $metaDescription = '';
 $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
 
 ?>
-<?php
-require __DIR__ . '/includes/header.php';
-?>
+<?php require __DIR__ . '/includes/header.php'; ?>
+<?php render_masthead_layout($config, ['post' => $post ?? null, 'page' => $page ?? null]); ?>
     <main>
         <!-- Tag archive view -->
         <?php if ($isTag): ?>
@@ -151,4 +150,6 @@ require __DIR__ . '/includes/header.php';
             ?>
         <?php endif; ?>
     </main>
-    <?php require __DIR__ . '/includes/footer.php'; ?>
+    <?php render_footer_layout($config, ['post' => $post ?? null, 'page' => $page ?? null]); ?>
+</body>
+</html>

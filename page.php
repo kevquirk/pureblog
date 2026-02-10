@@ -14,9 +14,8 @@ $pageTitle = $pageTitle ?? ($page['title'] ?? 'Page not found');
 $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['description'] : '');
 
 ?>
-<?php
-require __DIR__ . '/includes/header.php';
-?>
+<?php require __DIR__ . '/includes/header.php'; ?>
+<?php render_masthead_layout($config, ['page' => $page ?? null]); ?>
     <main>
         <?php if (!$page): ?>
             <h2>Page not found</h2>
@@ -50,4 +49,6 @@ require __DIR__ . '/includes/header.php';
             <?php endif; ?>
         <?php endif; ?>
     </main>
-    <?php require __DIR__ . '/includes/footer.php'; ?>
+    <?php render_footer_layout($config, ['page' => $page ?? null]); ?>
+</body>
+</html>

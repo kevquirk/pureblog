@@ -597,3 +597,19 @@ button:disabled:hover {
     display: block;
   }
 }
+
+.footnotes {
+  font-size: 1rem;
+  font-style: italic;
+  margin-top: 2.5rem;
+  border-bottom: 1px solid var(--border-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.footnotes hr {
+  display: none;
+}
+
+hr {
+  border-color: var(--border-color);
+}

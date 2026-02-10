@@ -1,20 +1,15 @@
 <?php
-// Shared site head + header. Expects $config and $fontStack to be defined.
+// Shared site document head + body open. Expects $config and $fontStack to be defined.
 $siteTitle = $config['site_title'] ?? '';
 $pageTitle = $pageTitle ?? $siteTitle;
 $metaDescription = $metaDescription ?? '';
 $siteDescription = trim((string) ($config['site_description'] ?? ''));
 $metaDescription = $metaDescription !== '' ? $metaDescription : $siteDescription;
 $mode = $config['theme']['color_mode'] ?? 'light';
-$siteTagline = trim((string) ($config['site_tagline'] ?? ''));
-$isPostView = isset($post) && is_array($post);
-$isPageView = isset($page) && is_array($page);
-$headInject = '';
-if ($isPostView) {
-    $headInject = (string) ($config['head_inject_post'] ?? '');
-} elseif ($isPageView) {
-    $headInject = (string) ($config['head_inject_page'] ?? '');
-}
+$headInject = get_contextual_inject($config, 'head', [
+    'post' => $post ?? null,
+    'page' => $page ?? null,
+]);
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= e($mode) ?>">
@@ -65,41 +60,9 @@ if ($isPostView) {
 <?php readfile(__DIR__ . '/../content/css/custom.css'); ?>
 <?php endif; ?>
     </style>
-    <?php if (trim($headInject) !== ''): ?>
+<?php if (trim($headInject) !== ''): ?>
 <?= $headInject . "\n" ?>
     <?php endif; ?>
 </head>
 <body>
     <?php readfile(__DIR__ . '/../assets/icons/sprite.svg'); ?>
-<header>
-    <h1 ><?= e($config['site_title']) ?></h1>
-    <?php if ($siteTagline !== ''): ?>
-    <p class="tagline"><?= e($siteTagline) ?></p>
-    <?php endif; ?>
-    <?php
-    $navPages = get_all_pages(false);
-    $navPages = array_values(array_filter($navPages, fn($page) => ($page['include_in_nav'] ?? true)));
-    $customNavItems = array_values(array_filter(parse_custom_nav($config['custom_nav'] ?? ''), function (array $item): bool {
-        $url = $item['url'] ?? '';
-        if ($url === '' || $url[0] === '/') {
-            return true;
-        }
-        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-        return in_array($scheme, ['http', 'https'], true);
-    }));
-    ?>
-    <?php if ($navPages || $customNavItems): ?>
-        <nav class="site-nav">
-            <ul>
-                <li><a href="/"<?= $currentPath === '' ? ' class="current"' : '' ?>>Home</a></li>
-                <?php foreach ($navPages as $navPage): ?>
-                    <?php $isCurrent = $currentPath === $navPage['slug']; ?>
-                    <li><a href="/<?= e($navPage['slug']) ?>"<?= $isCurrent ? ' class="current"' : '' ?>><?= e($navPage['title']) ?></a></li>
-                <?php endforeach; ?>
-                <?php foreach ($customNavItems as $item): ?>
-                    <li><a href="<?= e($item['url']) ?>"><?= e($item['label']) ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-        </nav>
-    <?php endif; ?>
-</header>

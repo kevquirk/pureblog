@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-const PUREBLOG_VERSION = 'v1.3.1';
+const PUREBLOG_VERSION = 'v1.4.0';
 
 const PUREBLOG_BASE_PATH = __DIR__;
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
@@ -766,14 +766,31 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 function render_markdown(string $markdown, array $context = []): string
 {
     $markdown = filter_content($markdown, $context);
-    static $parsedown = null;
-    if ($parsedown === null) {
-        require_once __DIR__ . '/lib/Parsedown.php';
-        $parsedown = new Parsedown();
-        $parsedown->setSafeMode(false);
-    }
+    $parsedown = get_markdown_parser();
 
     return $parsedown->text($markdown);
+}
+
+function get_markdown_parser(): object
+{
+    static $parsedown = null;
+    if ($parsedown !== null) {
+        return $parsedown;
+    }
+
+    require_once __DIR__ . '/lib/Parsedown.php';
+    if (is_file(__DIR__ . '/lib/ParsedownExtra.php')) {
+        require_once __DIR__ . '/lib/ParsedownExtra.php';
+    }
+
+    if (class_exists('ParsedownExtra')) {
+        $parsedown = new ParsedownExtra();
+    } else {
+        $parsedown = new Parsedown();
+    }
+    $parsedown->setSafeMode(false);
+
+    return $parsedown;
 }
 
 function load_yaml_list(string $path): array
@@ -825,11 +842,7 @@ function load_yaml_list(string $path): array
 
 function render_markdown_fragment(string $markdown): string
 {
-    if (!class_exists('Parsedown')) {
-        require_once __DIR__ . '/lib/Parsedown.php';
-    }
-    $parsedown = new Parsedown();
-    $parsedown->setSafeMode(false);
+    $parsedown = get_markdown_parser();
     return $parsedown->text($markdown);
 }
 
@@ -1019,19 +1032,7 @@ function render_tag_links(array $tags): string
 
 function render_layout_partial(string $name, array $context = []): string
 {
-    $name = trim($name);
-    if ($name === '') {
-        return '';
-    }
-
-    $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? '';
-    if ($safeName !== $name) {
-        return '';
-    }
-
-    $userPath = PUREBLOG_BASE_PATH . '/content/layouts/' . $safeName . '.php';
-    $corePath = PUREBLOG_BASE_PATH . '/includes/layouts/' . $safeName . '.php';
-    $partialPath = is_file($userPath) ? $userPath : (is_file($corePath) ? $corePath : null);
+    $partialPath = resolve_template_file($name, PUREBLOG_BASE_PATH . '/content/includes', PUREBLOG_BASE_PATH . '/includes');
     if ($partialPath === null) {
         return '';
     }
@@ -1043,6 +1044,94 @@ function render_layout_partial(string $name, array $context = []): string
     $output = (string) ob_get_clean();
 
     return render_global_shortcodes($output, $context);
+}
+
+function resolve_layout_file(string $name): ?string
+{
+    return resolve_template_file($name, PUREBLOG_BASE_PATH . '/content/includes', PUREBLOG_BASE_PATH . '/includes');
+}
+
+function resolve_template_file(string $name, string $userDir, string $coreDir): ?string
+{
+    $name = trim($name);
+    if ($name === '') {
+        return null;
+    }
+
+    $safeName = preg_replace('/[^a-zA-Z0-9_-]/', '', $name) ?? '';
+    if ($safeName !== $name) {
+        return null;
+    }
+
+    $userPath = rtrim($userDir, '/') . '/' . $safeName . '.php';
+    if (is_file($userPath)) {
+        return $userPath;
+    }
+
+    $corePath = rtrim($coreDir, '/') . '/' . $safeName . '.php';
+    if (is_file($corePath)) {
+        return $corePath;
+    }
+
+    return null;
+}
+
+function get_contextual_inject(array $config, string $region, array $context = []): string
+{
+    $postKey = $region . '_inject_post';
+    $pageKey = $region . '_inject_page';
+    $isPostView = isset($context['post']) && is_array($context['post']);
+
+    if ($isPostView) {
+        return (string) ($config[$postKey] ?? '');
+    }
+
+    // Fallback: page inject applies to page views and all other front-end views.
+    return (string) ($config[$pageKey] ?? '');
+}
+
+function render_footer_layout(array $config, array $context = []): void
+{
+    $footerPath = resolve_layout_file('footer') ?? (PUREBLOG_BASE_PATH . '/includes/footer.php');
+
+    extract($context, EXTR_SKIP);
+    ob_start();
+    include $footerPath;
+    $output = (string) ob_get_clean();
+
+    $footerInject = trim(get_contextual_inject($config, 'footer', $context));
+    if ($footerInject !== '') {
+        $needle = '</footer>';
+        $pos = strripos($output, $needle);
+        if ($pos !== false) {
+            $output = substr($output, 0, $pos) . $footerInject . "\n" . substr($output, $pos);
+        } else {
+            $output .= "\n" . $footerInject . "\n";
+        }
+    }
+
+    echo $output;
+}
+
+function render_masthead_layout(array $config, array $context = []): void
+{
+    $mastheadPath = resolve_layout_file('masthead') ?? (PUREBLOG_BASE_PATH . '/includes/masthead.php');
+
+    $siteTagline = trim((string) ($config['site_tagline'] ?? ''));
+    $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/');
+    $navPages = get_all_pages(false);
+    $navPages = array_values(array_filter($navPages, fn($page) => ($page['include_in_nav'] ?? true)));
+    $customNavItems = array_values(array_filter(parse_custom_nav($config['custom_nav'] ?? ''), function (array $item): bool {
+        $url = $item['url'] ?? '';
+        if ($url === '' || $url[0] === '/') {
+            return true;
+        }
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        return in_array($scheme, ['http', 'https'], true);
+    }));
+
+    extract($context, EXTR_SKIP);
+    include $mastheadPath;
 }
 
 function parse_custom_nav(string $raw): array

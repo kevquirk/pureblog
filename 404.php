@@ -12,9 +12,12 @@ $metaDescription = '';
 
 http_response_code(404);
 require __DIR__ . '/includes/header.php';
+render_masthead_layout($config, ['page' => $page ?? null]);
 ?>
     <main>
         <h1>Page not found</h1>
         <p>The page you requested could not be found.</p>
     </main>
-    <?php require __DIR__ . '/includes/footer.php'; ?>
+    <?php render_footer_layout($config, ['page' => $page ?? null]); ?>
+</body>
+</html>

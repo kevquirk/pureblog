@@ -14,9 +14,8 @@ $pageTitle = $pageTitle ?? ($post['title'] ?? 'Post not found');
 $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['description'] : '');
 
 ?>
-<?php
-require __DIR__ . '/includes/header.php';
-?>
+<?php require __DIR__ . '/includes/header.php'; ?>
+<?php render_masthead_layout($config, ['post' => $post ?? null]); ?>
     <main>
         <?php if (!$post): ?>
             <h2>Post not found</h2>
@@ -41,4 +40,6 @@ require __DIR__ . '/includes/header.php';
             </article>
         <?php endif; ?>
     </main>
-    <?php require __DIR__ . '/includes/footer.php'; ?>
+    <?php render_footer_layout($config, ['post' => $post ?? null]); ?>
+</body>
+</html>
