@@ -624,8 +624,13 @@ class ParsedownExtra extends Parsedown
 
         $DOMDocument = new DOMDocument;
 
-        # http://stackoverflow.com/q/11309194/200145
-        $elementMarkup = mb_convert_encoding($elementMarkup, 'HTML-ENTITIES', 'UTF-8');
+        # PHP 8.3: mb_convert_encoding(..., 'HTML-ENTITIES', ...) is deprecated.
+        # Encode non-ASCII chars without touching markup.
+        $elementMarkup = mb_encode_numericentity(
+            $elementMarkup,
+            [0x80, 0x10FFFF, 0, 0x10FFFF],
+            'UTF-8'
+        );
 
         # http://stackoverflow.com/q/4879946/200145
         $DOMDocument->loadHTML($elementMarkup);
