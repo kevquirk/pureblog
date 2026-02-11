@@ -237,6 +237,52 @@ function collect_relative_files(string $root): array
     return $files;
 }
 
+function is_htaccess_path(string $relativePath): bool
+{
+    return basename(str_replace('\\', '/', $relativePath)) === '.htaccess';
+}
+
+/**
+ * Capture all existing .htaccess files so they can be restored after update.
+ *
+ * @return array<string,string> Map of relative path => file contents
+ */
+function collect_existing_htaccess_files(): array
+{
+    $files = [];
+    $all = collect_relative_files(PUREBLOG_BASE_PATH);
+    foreach ($all as $relative) {
+        if (!is_htaccess_path($relative)) {
+            continue;
+        }
+        $fullPath = PUREBLOG_BASE_PATH . '/' . $relative;
+        $content = @file_get_contents($fullPath);
+        if (!is_string($content)) {
+            continue;
+        }
+        $files[$relative] = $content;
+    }
+
+    return $files;
+}
+
+/**
+ * @param array<string,string> $files
+ */
+function restore_htaccess_files(array $files): void
+{
+    foreach ($files as $relative => $content) {
+        $target = PUREBLOG_BASE_PATH . '/' . $relative;
+        $dir = dirname($target);
+        if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new RuntimeException('Unable to create directory for preserved .htaccess: ' . $relative);
+        }
+        if (@file_put_contents($target, $content) === false) {
+            throw new RuntimeException('Unable to restore preserved .htaccess: ' . $relative);
+        }
+    }
+}
+
 /**
  * Build a file-level, read-only plan from a downloaded release package.
  *
@@ -291,6 +337,10 @@ function build_package_upgrade_plan(string $zipballUrl): array
         $sourceCoreSet = [];
 
         foreach ($sourceFiles as $relative) {
+            if (is_htaccess_path($relative)) {
+                $willSkip[] = '/' . $relative;
+                continue;
+            }
             $top = strtok($relative, '/');
             if (in_array($top, $preserveTop, true)) {
                 $willSkip[] = '/' . $relative;
@@ -319,6 +369,9 @@ function build_package_upgrade_plan(string $zipballUrl): array
         foreach ($localFiles as $relative) {
             $top = strtok($relative, '/');
             if (!isset($localCoreTop[$top])) {
+                continue;
+            }
+            if (is_htaccess_path($relative)) {
                 continue;
             }
             if (in_array($top, $preserveTop, true)) {
@@ -591,10 +644,15 @@ function apply_release_update(string $zipballUrl): array
             return ['ok' => false, 'error' => 'Release archive does not look like a valid Pure Blog package.'];
         }
 
+        $preservedHtaccessFiles = collect_existing_htaccess_files();
         backup_core_paths($tmpBackup);
 
         $corePaths = core_top_level_paths();
+        $preserveTop = ['config', 'content', 'data', '.htaccess'];
         foreach ($corePaths as $relative) {
+            if (in_array($relative, $preserveTop, true)) {
+                continue;
+            }
             $source = $sourceRoot . '/' . $relative;
             $target = PUREBLOG_BASE_PATH . '/' . $relative;
 
@@ -606,6 +664,7 @@ function apply_release_update(string $zipballUrl): array
                 copy_path_recursive($source, $target);
             }
         }
+        restore_htaccess_files($preservedHtaccessFiles);
 
         return [
             'ok' => true,
@@ -768,7 +827,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 <li><strong>Add:</strong> <?= e((string) ($packagePlan['counts']['add'] ?? 0)) ?></li>
                 <li><strong>Replace:</strong> <?= e((string) ($packagePlan['counts']['replace'] ?? 0)) ?></li>
                 <li><strong>Unchanged:</strong> <?= e((string) ($packagePlan['counts']['unchanged'] ?? 0)) ?></li>
-                <li><strong>Preserved files (<code>/config</code>, <code>/content</code>, <code>/data</code>):</strong> <?= e((string) ($packagePlan['counts']['skip'] ?? 0)) ?></li>
+                <li><strong>Preserved files (<code>/config</code>, <code>/content</code>, <code>/data</code>, all <code>.htaccess</code> files):</strong> <?= e((string) ($packagePlan['counts']['skip'] ?? 0)) ?></li>
                 <li><strong>Local files not in upstream release (will be deleted):</strong> <?= e((string) ($packagePlan['counts']['local_only'] ?? 0)) ?></li>
             </ul>
 
@@ -799,7 +858,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 </ul>
             <?php endif; ?>
 
-            <form method="post" action="/admin/settings-updates.php" onsubmit="return confirm('Apply latest update now? This will replace core files and keep /config, /content, and /data.');">
+            <form method="post" action="/admin/settings-updates.php" onsubmit="return confirm('Apply latest update now? This will replace core files and keep /config, /content, /data, and all .htaccess files.');">
                 <?= csrf_field() ?>
                 <button class="button save" type="submit" name="apply_update" value="1">
                     <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-upgrade"></use></svg>
