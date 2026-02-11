@@ -75,7 +75,7 @@ foreach ($tagCounts as $tag => $count) {
 }
 
 $topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : 'No tags yet';
-$timeSinceLastPublished = 'No published posts yet';
+$timeSinceLastPublished = '0';
 if ($lastPublishedTimestamp > 0) {
     $delta = time() - $lastPublishedTimestamp;
     if ($delta < 60) {

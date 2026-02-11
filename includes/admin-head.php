@@ -6,6 +6,7 @@ $adminColorMode = $adminColorMode ?? ($config['theme']['admin_color_mode'] ?? 'a
 $extraHead = $extraHead ?? '';
 $codeMirror = $codeMirror ?? null; // 'markdown' or 'css'
 $hideAdminNav = $hideAdminNav ?? false;
+$adminCssVersion = (string) @filemtime(__DIR__ . '/../admin/css/admin.css');
 
 if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['admin_action_id'])) {
     verify_csrf();
@@ -32,7 +33,7 @@ unset($_SESSION['admin_action_flash']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?= e($config['assets']['favicon'] ?? '/assets/images/favicon.png') ?>">
     <title><?= e($adminTitle) ?></title>
-    <link rel="stylesheet" href="/admin/css/admin.css">
+    <link rel="stylesheet" href="/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
     <style>
         :root {
             --font-stack: <?= $fontStack ?>;

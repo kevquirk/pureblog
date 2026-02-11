@@ -10,6 +10,7 @@ $headInject = get_contextual_inject($config, 'head', [
     'post' => $post ?? null,
     'page' => $page ?? null,
 ]);
+$frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= e($mode) ?>">
@@ -41,7 +42,7 @@ $headInject = get_contextual_inject($config, 'head', [
     <style>
         body { background: <?= e($config['theme']['background_color']) ?>; }
     </style>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {
             --bg-light: <?= e($config['theme']['background_color']) ?>;

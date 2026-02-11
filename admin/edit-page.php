@@ -238,5 +238,5 @@ require __DIR__ . '/../includes/admin-head.php';
             csrfToken: '<?= e(csrf_token()) ?>',
         };
     </script>
-    <script src="/admin/js/editor.js"></script>
+    <script src="/admin/js/editor.js?v=<?= e((string) @filemtime(__DIR__ . '/js/editor.js')) ?>"></script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>
