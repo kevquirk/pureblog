@@ -1,5 +1,5 @@
 <header>
-    <h1 ><?= e($config['site_title']) ?></h1>
+    <h1><a href="/"><?= e($config['site_title']) ?></a></h1>
     <?php if ($siteTagline !== ''): ?>
     <p class="tagline"><?= e($siteTagline) ?></p>
     <?php endif; ?>

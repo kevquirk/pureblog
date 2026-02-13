@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-const PUREBLOG_VERSION = 'v1.5.3';
-
 const PUREBLOG_BASE_PATH = __DIR__;
+const PUREBLOG_VERSION_FILE = PUREBLOG_BASE_PATH . '/VERSION';
 const PUREBLOG_CONFIG_PATH = PUREBLOG_BASE_PATH . '/config/config.php';
 const PUREBLOG_POSTS_PATH = PUREBLOG_BASE_PATH . '/content/posts';
 const PUREBLOG_PAGES_PATH = PUREBLOG_BASE_PATH . '/content/pages';
@@ -14,6 +13,25 @@ const PUREBLOG_DATA_PATH = PUREBLOG_BASE_PATH . '/data';
 const PUREBLOG_CONTENT_IMAGES_PATH = PUREBLOG_BASE_PATH . '/content/images';
 const PUREBLOG_CONTENT_CSS_PATH = PUREBLOG_BASE_PATH . '/content/css';
 const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
+
+function detect_pureblog_version(): string
+{
+    if (!is_file(PUREBLOG_VERSION_FILE)) {
+        return 'unknown';
+    }
+
+    $raw = @file_get_contents(PUREBLOG_VERSION_FILE);
+    if (!is_string($raw)) {
+        return 'unknown';
+    }
+
+    $version = trim($raw);
+    return $version !== '' ? $version : 'unknown';
+}
+
+if (!defined('PUREBLOG_VERSION')) {
+    define('PUREBLOG_VERSION', detect_pureblog_version());
+}
 
 function default_config(): array
 {
