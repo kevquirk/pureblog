@@ -73,6 +73,28 @@ function fetch_latest_pureblog_release(): array
 
 function detect_current_pureblog_version(): string
 {
+    if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '' && strtolower(PUREBLOG_VERSION) !== 'unknown') {
+        return PUREBLOG_VERSION;
+    }
+
+    $versionFile = dirname(__DIR__) . '/VERSION';
+    if (is_file($versionFile)) {
+        $raw = @file_get_contents($versionFile);
+        if (is_string($raw)) {
+            $fromFile = trim($raw);
+            if ($fromFile !== '') {
+                return $fromFile;
+            }
+        }
+    }
+
+    if (function_exists('detect_pureblog_version')) {
+        $detected = (string) detect_pureblog_version();
+        if ($detected !== '' && strtolower($detected) !== 'unknown') {
+            return $detected;
+        }
+    }
+
     if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '') {
         return PUREBLOG_VERSION;
     }
@@ -114,6 +136,7 @@ function core_top_level_paths(): array
     return [
         '404.php',
         '.htaccess',
+        'VERSION',
         'admin',
         'assets',
         'feed.php',
