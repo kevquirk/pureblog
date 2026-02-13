@@ -284,6 +284,26 @@ function restore_htaccess_files(array $files): void
 }
 
 /**
+ * Remove any .htaccess files that were not present before update.
+ *
+ * @param array<string,string> $preservedFiles
+ */
+function remove_non_preserved_htaccess(array $preservedFiles): void
+{
+    $preservedSet = array_fill_keys(array_keys($preservedFiles), true);
+    $all = collect_relative_files(PUREBLOG_BASE_PATH);
+    foreach ($all as $relative) {
+        if (!is_htaccess_path($relative)) {
+            continue;
+        }
+        if (isset($preservedSet[$relative])) {
+            continue;
+        }
+        @unlink(PUREBLOG_BASE_PATH . '/' . $relative);
+    }
+}
+
+/**
  * Build a file-level, read-only plan from a downloaded release package.
  *
  * @return array{ok:bool,error?:string,counts?:array<string,int>,will_add?:list<string>,will_replace?:list<string>,unchanged?:list<string>,will_skip?:list<string>,local_only?:list<string>}
@@ -665,6 +685,7 @@ function apply_release_update(string $zipballUrl): array
             }
         }
         restore_htaccess_files($preservedHtaccessFiles);
+        remove_non_preserved_htaccess($preservedHtaccessFiles);
 
         return [
             'ok' => true,
@@ -722,7 +743,7 @@ if (isset($_GET['package_plan'])) {
     }
 }
 $applyResult = null;
-if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     if (isset($_POST['apply_update'])) {
         $latestForApply = fetch_latest_pureblog_release();

@@ -17,7 +17,7 @@ $pages = get_all_pages(true);
 $pageOptions = array_values(array_filter($pages, fn($page) => ($page['slug'] ?? '') !== ''));
 $pageSlugLookup = array_fill_keys(array_map(fn($page) => $page['slug'], $pageOptions), true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $siteTitle = trim($_POST['site_title'] ?? '');
     $siteTagline = trim($_POST['site_tagline'] ?? '');

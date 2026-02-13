@@ -21,7 +21,7 @@ $adminCssPath = $adminCssDir . '/admin-custom.css';
 $frontCss = is_file($frontCssPath) ? (string) file_get_contents($frontCssPath) : '';
 $adminCss = is_file($adminCssPath) ? (string) file_get_contents($adminCssPath) : '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $frontCss = $_POST['front_css'] ?? '';
     $adminCss = $_POST['admin_css'] ?? '';

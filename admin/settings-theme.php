@@ -14,7 +14,7 @@ $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $errors = [];
 $notice = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $resetThemeLight = ($_POST['reset_theme_light'] ?? '') === '1';
     $resetThemeDark = ($_POST['reset_theme_dark'] ?? '') === '1';

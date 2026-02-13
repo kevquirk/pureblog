@@ -15,7 +15,7 @@ $slug = '';
 $post = null;
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $slug = trim($_POST['slug'] ?? '');
     $post = $slug !== '' ? get_post_by_slug($slug, true) : null;
