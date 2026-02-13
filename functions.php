@@ -868,7 +868,21 @@ function render_markdown(string $markdown, array $context = []): string
     $markdown = filter_content($markdown, $context);
     $parsedown = get_markdown_parser();
 
-    return $parsedown->text($markdown);
+    $html = $parsedown->text($markdown);
+
+    return restore_private_use_emoji($html);
+}
+
+function restore_private_use_emoji(string $html): string
+{
+    if (!preg_match('/[\x{F000}-\x{F8FF}]/u', $html)) {
+        return $html;
+    }
+
+    return preg_replace_callback('/[\x{F000}-\x{F8FF}]/u', static function (array $match): string {
+        $codepoint = mb_ord($match[0], 'UTF-8');
+        return mb_chr($codepoint + 0x10000, 'UTF-8');
+    }, $html) ?? $html;
 }
 
 function get_markdown_parser(): object
