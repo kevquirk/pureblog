@@ -73,10 +73,6 @@ function fetch_latest_pureblog_release(): array
 
 function detect_current_pureblog_version(): string
 {
-    if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '' && strtolower(PUREBLOG_VERSION) !== 'unknown') {
-        return PUREBLOG_VERSION;
-    }
-
     $versionFile = dirname(__DIR__) . '/VERSION';
     if (is_file($versionFile)) {
         $raw = @file_get_contents($versionFile);
@@ -86,6 +82,10 @@ function detect_current_pureblog_version(): string
                 return $fromFile;
             }
         }
+    }
+
+    if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '' && strtolower(PUREBLOG_VERSION) !== 'unknown') {
+        return PUREBLOG_VERSION;
     }
 
     if (function_exists('detect_pureblog_version')) {
@@ -126,6 +126,20 @@ function versions_match(string $current, string $latest): bool
     $b = ltrim($b, 'v');
 
     return $a === $b;
+}
+
+/**
+ * @return list<string>
+ */
+function preserved_top_level_paths(): array
+{
+    return [
+        'config',
+        'content',
+        'data',
+        '.htaccess',
+        'VERSION',
+    ];
 }
 
 /**
@@ -372,7 +386,7 @@ function build_package_upgrade_plan(string $zipballUrl): array
             return ['ok' => false, 'error' => 'Release archive did not contain readable files.'];
         }
 
-        $preserveTop = ['config', 'content', 'data'];
+        $preserveTop = preserved_top_level_paths();
         $willAdd = [];
         $willReplace = [];
         $unchanged = [];
@@ -635,7 +649,7 @@ function delete_named_backup(string $backupName): array
     ];
 }
 
-function apply_release_update(string $zipballUrl): array
+function apply_release_update(string $zipballUrl, string $releaseTag = ''): array
 {
     if ($zipballUrl === '') {
         return ['ok' => false, 'error' => 'No zipball URL found for this release.'];
@@ -691,7 +705,7 @@ function apply_release_update(string $zipballUrl): array
         backup_core_paths($tmpBackup);
 
         $corePaths = core_top_level_paths();
-        $preserveTop = ['config', 'content', 'data', '.htaccess'];
+        $preserveTop = preserved_top_level_paths();
         foreach ($corePaths as $relative) {
             if (in_array($relative, $preserveTop, true)) {
                 continue;
@@ -707,6 +721,14 @@ function apply_release_update(string $zipballUrl): array
                 copy_path_recursive($source, $target);
             }
         }
+
+        // Set /VERSION from the release tag (zipballs may omit /VERSION).
+        $versionFile = PUREBLOG_BASE_PATH . '/VERSION';
+        $versionFromTag = normalize_version_label($releaseTag);
+        if ($versionFromTag !== 'unknown') {
+            @file_put_contents($versionFile, $versionFromTag . PHP_EOL);
+        }
+
         restore_htaccess_files($preservedHtaccessFiles);
         remove_non_preserved_htaccess($preservedHtaccessFiles);
 
@@ -776,7 +798,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
                 'error' => (string) ($latestForApply['error'] ?? 'Unable to fetch latest release metadata.'),
             ];
         } else {
-            $applyResult = apply_release_update((string) ($latestForApply['zipball_url'] ?? ''));
+            $applyResult = apply_release_update(
+                (string) ($latestForApply['zipball_url'] ?? ''),
+                (string) ($latestForApply['tag'] ?? '')
+            );
             if (($applyResult['ok'] ?? false) && !empty($latestForApply['tag'])) {
                 $currentVersionDisplay = normalize_version_label((string) $latestForApply['tag']);
             }
