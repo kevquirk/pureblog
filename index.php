@@ -8,7 +8,30 @@ require_setup_redirect();
 
 // Basic request parsing + route flags.
 $config = load_config();
-$requestPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/');
+$requestUriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+$requestPath = trim($requestUriPath, '/');
+$requestPathWithSlash = $requestPath === '' ? '/' : ('/' . $requestPath);
+
+$customRoutes = parse_custom_routes((string) ($config['custom_routes'] ?? ''));
+foreach ($customRoutes as $customRoute) {
+    if (($customRoute['path'] ?? '') !== $requestPathWithSlash) {
+        continue;
+    }
+
+    $templatePath = resolve_custom_route_template((string) ($customRoute['target'] ?? ''));
+    if ($templatePath === null) {
+        break;
+    }
+
+    $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
+    $pageTitle = $config['site_title'] ?? 'Page';
+    $metaDescription = $config['site_description'] ?? '';
+    $post = null;
+    $page = null;
+    include $templatePath;
+    exit;
+}
+
 $isTag = str_starts_with($requestPath, 'tag/');
 $tagParam = $isTag ? substr($requestPath, 4) : '';
 $reservedPaths = [

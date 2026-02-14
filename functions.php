@@ -41,6 +41,7 @@ function default_config(): array
         'site_description' => '',
         'site_email' => '',
         'custom_nav' => '',
+        'custom_routes' => '',
         'head_inject_page' => '',
         'head_inject_post' => '',
         'footer_inject_page' => '',
@@ -1264,6 +1265,91 @@ function parse_custom_nav(string $raw): array
         $items[] = ['label' => $label, 'url' => $url];
     }
     return $items;
+}
+
+/**
+ * @return list<array{path:string,target:string}>
+ */
+function parse_custom_routes(string $raw): array
+{
+    $items = [];
+    $seen = [];
+    $lines = preg_split('/\r\n|\r|\n/', $raw) ?: [];
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#') || !str_contains($line, '|')) {
+            continue;
+        }
+
+        [$path, $target] = array_map('trim', explode('|', $line, 2));
+        if ($path === '' || $target === '') {
+            continue;
+        }
+
+        if ($path[0] !== '/') {
+            $path = '/' . $path;
+        }
+
+        if ($path !== '/') {
+            $path = rtrim($path, '/');
+        }
+
+        if (
+            !preg_match('#^/[a-zA-Z0-9/_-]+$#', $path)
+            || str_contains($path, '//')
+            || str_contains($path, '..')
+        ) {
+            continue;
+        }
+
+        if (isset($seen[$path])) {
+            continue;
+        }
+        $seen[$path] = true;
+
+        $items[] = [
+            'path' => $path,
+            'target' => $target,
+        ];
+    }
+
+    return $items;
+}
+
+function resolve_custom_route_template(string $target): ?string
+{
+    $target = str_replace('\\', '/', trim($target));
+    if ($target === '') {
+        return null;
+    }
+
+    $targetPath = $target;
+    if (!str_starts_with($targetPath, '/')) {
+        $targetPath = '/content/includes/' . ltrim($targetPath, '/');
+    }
+
+    if (!str_starts_with($targetPath, '/content/includes/')) {
+        return null;
+    }
+
+    if (!str_ends_with(strtolower($targetPath), '.php')) {
+        return null;
+    }
+
+    $fullPath = PUREBLOG_BASE_PATH . $targetPath;
+    $resolvedPath = realpath($fullPath);
+    $allowedRoot = realpath(PUREBLOG_BASE_PATH . '/content/includes');
+
+    if ($resolvedPath === false || $allowedRoot === false) {
+        return null;
+    }
+
+    if (!str_starts_with($resolvedPath, $allowedRoot . DIRECTORY_SEPARATOR)) {
+        return null;
+    }
+
+    return is_file($resolvedPath) ? $resolvedPath : null;
 }
 
 function filter_posts_by_query(array $posts, string $query): array

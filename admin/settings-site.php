@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $siteDescription = trim($_POST['site_description'] ?? '');
     $siteEmail = trim($_POST['site_email'] ?? '');
     $customNav = trim($_POST['custom_nav'] ?? '');
+    $customRoutes = trim($_POST['custom_routes'] ?? '');
     $headInjectPage = trim($_POST['head_inject_page'] ?? '');
     $headInjectPost = trim($_POST['head_inject_post'] ?? '');
     $footerInjectPage = trim($_POST['footer_inject_page'] ?? '');
@@ -57,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['site_description'] = $siteDescription;
         $config['site_email'] = $siteEmail;
         $config['custom_nav'] = $customNav;
+        $config['custom_routes'] = $customRoutes;
         $config['head_inject_page'] = $headInjectPage;
         $config['head_inject_post'] = $headInjectPost;
         $config['footer_inject_page'] = $footerInjectPage;
@@ -189,6 +191,9 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="custom_nav">Custom nav items <span class="tip">(one per line)</span></label>
                 <textarea id="custom_nav" name="custom_nav" rows="4" placeholder="GitHub | https://github.com/you&#10;Projects | /projects"><?= e($config['custom_nav'] ?? '') ?></textarea>
+
+                <label for="custom_routes">Custom routes <span class="tip">(one per line)</span></label>
+                <textarea id="custom_routes" name="custom_routes" rows="4" placeholder="/archive | /content/includes/archive.php&#10;/reading | reading.php"><?= e($config['custom_routes'] ?? '') ?></textarea>
             </section>
 
             <section class="section-divider">
