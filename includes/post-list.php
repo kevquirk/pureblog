@@ -1,5 +1,7 @@
 <?php
 // Expects: $posts, $postListLayout, $currentPage, $totalPages, $paginationBase
+// Optional: $paginationQueryParams (associative array of extra query params to preserve)
+$paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQueryParams)) ? $paginationQueryParams : [];
 ?>
 <?php if (!$posts): ?>
     <p>No posts yet, get writing! 🙃</p>
@@ -51,10 +53,18 @@
     <?php if ($totalPages > 1): ?>
         <nav class="pagination">
             <?php if ($currentPage > 1): ?>
-                <a href="<?= e($paginationBase) ?>?page=<?= e((string) ($currentPage - 1)) ?>">&larr; Newer posts</a>
+                <?php
+                $prevParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage - 1)]);
+                $prevHref = e($paginationBase) . '?' . e(http_build_query($prevParams));
+                ?>
+                <a href="<?= $prevHref ?>">&larr; Newer posts</a>
             <?php endif; ?>
             <?php if ($currentPage < $totalPages): ?>
-                <a href="<?= e($paginationBase) ?>?page=<?= e((string) ($currentPage + 1)) ?>">Older posts &rarr;</a>
+                <?php
+                $nextParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage + 1)]);
+                $nextHref = e($paginationBase) . '?' . e(http_build_query($nextParams));
+                ?>
+                <a href="<?= $nextHref ?>">Older posts &rarr;</a>
             <?php endif; ?>
         </nav>
     <?php endif; ?>

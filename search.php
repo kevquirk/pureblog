@@ -32,6 +32,7 @@ $totalPages = $pagination['totalPages'];
 $currentPage = $pagination['currentPage'];
 $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
 $paginationBase = '/search.php';
+$paginationQueryParams = $query !== '' ? ['q' => $query] : [];
 
 $pageTitle = $query !== '' ? 'Search: ' . $query : 'Search';
 $metaDescription = '';
