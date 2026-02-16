@@ -995,6 +995,51 @@ function render_liquid_loop(string $markdown, string $dataFile, string $pattern)
     return preg_replace($pattern, $rendered, $markdown, 1);
 }
 
+function render_liquid_template_items(string $template, array $items): string
+{
+    $rendered = '';
+    foreach ($items as $item) {
+        $chunk = preg_replace_callback('/\{\%\s*if\s+site\.feed\s*\%\}(.*?)\{\%\s*endif\s*\%\}/s', function ($m) use ($item) {
+            return !empty($item['feed']) ? $m[1] : '';
+        }, $template);
+
+        $chunk = preg_replace_callback('/\{\{\s*site\.([a-zA-Z0-9_]+)\s*\|\s*markdownify\s*\}\}/', function ($m) use ($item) {
+            $value = $item[$m[1]] ?? '';
+            return render_markdown_fragment($value);
+        }, $chunk);
+
+        $chunk = preg_replace_callback('/\{\{\s*site\.([a-zA-Z0-9_]+)\s*\}\}/', function ($m) use ($item) {
+            $value = $item[$m[1]] ?? '';
+            return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }, $chunk);
+
+        $rendered .= $chunk;
+    }
+
+    return $rendered;
+}
+
+function render_any_data_loops(string $markdown): string
+{
+    $pattern = '/\{\%\s*for\s+site\s+in\s+site\.data\.([a-zA-Z0-9_-]+)\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s';
+
+    return preg_replace_callback($pattern, function (array $matches): string {
+        $dataName = $matches[1] ?? '';
+        $template = $matches[2] ?? '';
+        if ($dataName === '') {
+            return '';
+        }
+
+        $dataFile = PUREBLOG_DATA_PATH . '/' . $dataName . '.yml';
+        $items = load_yaml_list($dataFile);
+        if (!$items) {
+            return '';
+        }
+
+        return render_liquid_template_items($template, $items);
+    }, $markdown) ?? $markdown;
+}
+
 function protect_fenced_code_blocks(string $markdown, array &$blocks): string
 {
     $blocks = [];
@@ -1086,18 +1131,7 @@ function filter_content(string $markdown, array $context = []): string
     $markdown = protect_inline_code_spans($markdown, $inlineCodeSpans);
 
     $markdown = render_global_shortcodes($markdown, $context);
-
-    $markdown = render_liquid_loop(
-        $markdown,
-        PUREBLOG_DATA_PATH . '/blogroll.yml',
-        '/\{\%\s*for\s+site\s+in\s+site\.data\.blogroll\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
-    );
-
-    $markdown = render_liquid_loop(
-        $markdown,
-        PUREBLOG_DATA_PATH . '/projects.yml',
-        '/\{\%\s*for\s+site\s+in\s+site\.data\.projects\s*\%\}(.*?)\{\%\s*endfor\s*\%\}/s'
-    );
+    $markdown = render_any_data_loops($markdown);
 
     $markdown = restore_inline_code_spans($markdown, $inlineCodeSpans);
 
@@ -1157,8 +1191,8 @@ function render_layout_partial(string $name, array $context = []): string
     ob_start();
     include $partialPath;
     $output = (string) ob_get_clean();
-
-    return render_global_shortcodes($output, $context);
+    $output = render_global_shortcodes($output, $context);
+    return render_any_data_loops($output);
 }
 
 function resolve_layout_file(string $name): ?string
