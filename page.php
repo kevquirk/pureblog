@@ -12,6 +12,7 @@ $config = $config ?? [];
 $fontStack = $fontStack ?? font_stack_css($config['theme']['font_stack'] ?? 'sans');
 $pageTitle = $pageTitle ?? ($page['title'] ?? 'Page not found');
 $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['description'] : '');
+$blogFeedHidden = (($config['blog_page_slug'] ?? '') === '__hidden__');
 
 ?>
 <?php require __DIR__ . '/includes/header.php'; ?>
@@ -22,7 +23,7 @@ $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['de
             <p>The page you requested could not be found.</p>
         <?php else: ?>
             <?php
-            $isBlogPage = !empty($config['blog_page_slug']) && ($page['slug'] ?? '') === $config['blog_page_slug'];
+            $isBlogPage = !$blogFeedHidden && !empty($config['blog_page_slug']) && ($page['slug'] ?? '') === $config['blog_page_slug'];
             $hidePageTitle = $hidePageTitle ?? ($isBlogPage ? !empty($config['hide_blog_page_title']) : false);
             ?>
             <article>

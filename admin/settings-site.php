@@ -13,6 +13,7 @@ $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
 $errors = [];
 $notice = '';
+$hiddenBlogValue = '__hidden__';
 $pages = get_all_pages(true);
 $pageOptions = array_values(array_filter($pages, fn($page) => ($page['slug'] ?? '') !== ''));
 $pageSlugLookup = array_fill_keys(array_map(fn($page) => $page['slug'], $pageOptions), true);
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $errors[] = 'Homepage must reference an existing page.';
     }
 
-    if ($blogPageSlug !== '' && !isset($pageSlugLookup[$blogPageSlug])) {
+    if ($blogPageSlug !== '' && $blogPageSlug !== $hiddenBlogValue && !isset($pageSlugLookup[$blogPageSlug])) {
         $errors[] = 'Blog page must reference an existing page.';
     }
 
@@ -163,6 +164,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 <label for="blog_page_slug">Blog page</label>
                 <select id="blog_page_slug" name="blog_page_slug">
                     <option value="">Use homepage</option>
+                    <option value="<?= e($hiddenBlogValue) ?>"<?= ($config['blog_page_slug'] ?? '') === $hiddenBlogValue ? ' selected' : '' ?>>Hidden (disable blog page)</option>
                     <?php foreach ($pageOptions as $pageOption): ?>
                         <option value="<?= e($pageOption['slug']) ?>"<?= ($config['blog_page_slug'] ?? '') === $pageOption['slug'] ? ' selected' : '' ?>>
                             <?= e($pageOption['title']) ?> (<?= e($pageOption['slug']) ?>)

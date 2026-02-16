@@ -75,6 +75,7 @@ if ($isTag && $tagSlug !== '') {
 
 $homepageSlug = trim((string) ($config['homepage_slug'] ?? ''));
 $blogPageSlug = trim((string) ($config['blog_page_slug'] ?? ''));
+$blogFeedHidden = ($blogPageSlug === '__hidden__');
 
 if ($isSingle && $homepageSlug !== '' && $requestPath === $homepageSlug) {
     $queryString = $_SERVER['QUERY_STRING'] ?? '';
@@ -167,10 +168,12 @@ $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
         <?php else: ?>
             
             <!-- Home page list view -->
-            <?php
-            $paginationBase = '/';
-            require __DIR__ . '/includes/post-list.php';
-            ?>
+            <?php if (!$blogFeedHidden): ?>
+                <?php
+                $paginationBase = '/';
+                require __DIR__ . '/includes/post-list.php';
+                ?>
+            <?php endif; ?>
         <?php endif; ?>
     </main>
     <?php render_footer_layout($config, ['post' => $post ?? null, 'page' => $page ?? null]); ?>
