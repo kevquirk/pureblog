@@ -9,7 +9,7 @@ require_setup_redirect();
 // Basic request parsing + route flags.
 $config = load_config();
 $requestUriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-$requestPath = trim($requestUriPath, '/');
+$requestPath = trim(rawurldecode($requestUriPath), '/');
 $requestPathWithSlash = $requestPath === '' ? '/' : ('/' . $requestPath);
 
 $customRoutes = parse_custom_routes((string) ($config['custom_routes'] ?? ''));
@@ -33,7 +33,7 @@ foreach ($customRoutes as $customRoute) {
 }
 
 $isTag = str_starts_with($requestPath, 'tag/');
-$tagParam = $isTag ? substr($requestPath, 4) : '';
+$tagParam = $isTag ? rawurldecode(substr($requestPath, 4)) : '';
 $reservedPaths = [
     '',
     'index.php',
@@ -161,7 +161,7 @@ $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
                 <p>No posts found for this tag.</p>
             <?php else: ?>
                 <?php
-                $paginationBase = '/tag/' . $tagSlug;
+                $paginationBase = '/tag/' . rawurlencode($tagSlug);
                 require __DIR__ . '/includes/post-list.php';
                 ?>
             <?php endif; ?>

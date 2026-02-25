@@ -319,10 +319,15 @@ function font_stack_css(string $fontStack): string
 
 function slugify(string $value): string
 {
-    $value = strtolower(trim($value));
-    $value = preg_replace('/[^a-z0-9\s-]/', '', $value) ?? '';
-    $value = preg_replace('/\s+/', '-', $value) ?? '';
-    $value = preg_replace('/-+/', '-', $value) ?? '';
+    $value = trim($value);
+    if (function_exists('mb_strtolower')) {
+        $value = mb_strtolower($value, 'UTF-8');
+    } else {
+        $value = strtolower($value);
+    }
+
+    $value = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $value) ?? '';
+    $value = preg_replace('/[\s-]+/u', '-', $value) ?? '';
 
     return trim($value, '-');
 }
@@ -1173,7 +1178,7 @@ function render_tag_links(array $tags): string
     $links = [];
     foreach ($tags as $tag) {
         $slug = normalize_tag($tag);
-        $links[] = '<a href="/tag/' . e($slug) . '">' . e($tag) . '</a>';
+        $links[] = '<a href="/tag/' . e(rawurlencode($slug)) . '">' . e($tag) . '</a>';
     }
 
     return implode(', ', $links);
