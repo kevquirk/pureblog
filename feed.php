@@ -46,7 +46,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         <?php foreach ($posts as $post): ?>
             <?php
             $postUrl = $baseUrl . '/' . $post['slug'];
-            $pubDate = $post['date'] ? date(DATE_RSS, strtotime($post['date'])) : date(DATE_RSS);
+            $pubDate = format_post_date_for_rss((string) ($post['date'] ?? ''), $config);
             $content = render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]);
             $content = absolutize_feed_html($content, $baseUrl);
             ?>

@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $footerInjectPage = trim($_POST['footer_inject_page'] ?? '');
     $footerInjectPost = trim($_POST['footer_inject_post'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
+    $timezone = trim($_POST['timezone'] ?? '');
+    $dateFormat = trim($_POST['date_format'] ?? '');
     $baseUrl = trim($_POST['base_url'] ?? '');
     $homepageSlug = trim($_POST['homepage_slug'] ?? '');
     $blogPageSlug = trim($_POST['blog_page_slug'] ?? '');
@@ -43,6 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
 
     if ($postsPerPage < 1 || $postsPerPage > 100) {
         $errors[] = 'Posts per page must be between 1 and 100.';
+    }
+    if ($timezone === '' || !in_array($timezone, DateTimeZone::listIdentifiers(), true)) {
+        $errors[] = 'Timezone must be a valid PHP timezone identifier (e.g. UTC, Europe/London).';
+    }
+    if ($dateFormat === '') {
+        $errors[] = 'Date format is required.';
     }
 
     if ($homepageSlug !== '' && !isset($pageSlugLookup[$homepageSlug])) {
@@ -65,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['footer_inject_page'] = $footerInjectPage;
         $config['footer_inject_post'] = $footerInjectPost;
         $config['posts_per_page'] = $postsPerPage;
+        $config['timezone'] = $timezone;
+        $config['date_format'] = $dateFormat;
         $config['base_url'] = $baseUrl;
         $config['homepage_slug'] = $homepageSlug;
         $config['blog_page_slug'] = $blogPageSlug;
@@ -146,6 +156,12 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="posts_per_page">Posts per page</label>
                 <input type="number" id="posts_per_page" name="posts_per_page" min="1" max="100" value="<?= e((string) ($config['posts_per_page'] ?? 20)) ?>">
+
+                <label for="timezone">Timezone <span class="tip">(<a href="https://www.php.net/manual/en/timezones.php" target="_blank" rel="noopener noreferrer">PHP timezone list</a>)</span></label>
+                <input type="text" id="timezone" name="timezone" value="<?= e((string) ($config['timezone'] ?? date_default_timezone_get())) ?>" placeholder="UTC" required>
+
+                <label for="date_format">Date format <span class="tip">(<a href="https://www.php.net/manual/en/datetime.format.php" target="_blank" rel="noopener noreferrer">PHP date format docs</a>)</span></label>
+                <input type="text" id="date_format" name="date_format" value="<?= e((string) ($config['date_format'] ?? 'F j, Y')) ?>" placeholder="F j, Y" required>
 
                 <label for="homepage_slug">Homepage</label>
                 <select id="homepage_slug" name="homepage_slug">

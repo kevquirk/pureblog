@@ -11,7 +11,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
             <!-- Archive view -->
             <?php if ($postListLayout === 'archive'): ?>
                 <p class="post-archive-view">
-                    <time><?= e(date('Y-m-d', strtotime($post['date']))) ?></time>
+                    <time><?= e(format_post_date_for_display((string) ($post['date'] ?? ''), $config ?? [])) ?></time>
                     <span class="post-archive-title"><a href="/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></span>
                 </p>
             
@@ -20,7 +20,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
                 <div class="excerpt-view">
                     <h2><a href="/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h2>
                     <?php if ($post['date']): ?>
-                        <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
+                        <p><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?php
                     $excerptSource = trim((string) ($post['description'] ?? ''));
@@ -39,7 +39,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
                 <div class="full-post-view">
                     <h1><a href="/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h1>
                     <?php if ($post['date']): ?>
-                        <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
+                        <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
                     <?php if (!empty($post['tags'])): ?>

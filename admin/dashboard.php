@@ -27,7 +27,7 @@ $posts = array_slice($filteredPosts, $offset, $perPage);
 
 $publishedPosts = array_values(array_filter($allPosts, static fn(array $post): bool => ($post['status'] ?? 'draft') === 'published'));
 $publishedCount = count($publishedPosts);
-$currentYear = (int) date('Y');
+$currentYear = (int) (new DateTimeImmutable('now', site_timezone_object($config)))->format('Y');
 $publishedThisYear = 0;
 $lastPublishedTimestamp = 0;
 $tagCounts = [];
@@ -35,7 +35,10 @@ $tagCounts = [];
 foreach ($publishedPosts as $post) {
     $timestamp = (int) ($post['timestamp'] ?? 0);
     if ($timestamp > 0) {
-        if ((int) date('Y', $timestamp) === $currentYear) {
+        $postYear = (int) (new DateTimeImmutable('@' . $timestamp))
+            ->setTimezone(site_timezone_object($config))
+            ->format('Y');
+        if ($postYear === $currentYear) {
             $publishedThisYear++;
         }
         if ($timestamp > $lastPublishedTimestamp) {
@@ -150,7 +153,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             <?= e($post['title']) ?>
                         </a>
                         <div class="admin-list-meta">
-                            <span><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-calendar"></use></svg> <?= e($post['date'] ? date('Y-m-d @ H:i', strtotime($post['date'])) : '') ?></span>
+                            <span><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-calendar"></use></svg> <?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config, 'Y-m-d @ H:i')) ?></span>
                             <span class="status <?= e($post['status']) ?>"><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-toggle-right"></use></svg> <?= e($post['status']) ?></span>
                         </div>
                     </li>

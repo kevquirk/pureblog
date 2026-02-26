@@ -25,7 +25,7 @@ $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['de
             <article>
                 <h1 ><?= e($post['title']) ?></h1>
                 <?php if ($post['date']): ?>
-                    <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(date('F j, Y', strtotime($post['date']))) ?></time></p>
+                    <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config)) ?></time></p>
                 <?php endif; ?>
                 
                 <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>

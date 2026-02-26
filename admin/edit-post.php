@@ -20,7 +20,7 @@ $isEditing = $slugParam !== '';
 $post = [
     'title' => '',
     'slug' => '',
-    'date' => date('Y-m-d H:i'),
+    'date' => current_site_datetime_for_storage($config),
     'status' => 'draft',
     'tags' => [],
     'description' => '',
@@ -35,7 +35,7 @@ if ($isEditing) {
         $post = [
             'title' => $existing['title'] ?? '',
             'slug' => $existing['slug'] ?? '',
-            'date' => $existing['date'] ?? date('Y-m-d H:i'),
+            'date' => $existing['date'] ?? current_site_datetime_for_storage($config),
             'status' => $existing['status'] ?? 'draft',
             'tags' => $existing['tags'] ?? [],
             'description' => $existing['description'] ?? '',
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
 
     if (!$errors) {
         if ($post['status'] === 'published' && $originalStatus !== 'published') {
-            $post['date'] = date('Y-m-d H:i');
+            $post['date'] = current_site_datetime_for_storage($config);
         }
         $saveError = '';
         $saved = save_post(

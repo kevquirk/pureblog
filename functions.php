@@ -52,6 +52,8 @@ function default_config(): array
         'hide_homepage_title' => true,
         'hide_blog_page_title' => true,
         'base_url' => '',
+        'timezone' => date_default_timezone_get(),
+        'date_format' => 'F j, Y',
         'admin_username' => '',
         'admin_password_hash' => '',
         'theme' => [
@@ -448,6 +450,92 @@ function normalize_date_value(string $value): ?string
     return null;
 }
 
+function site_timezone_identifier(array $config): string
+{
+    $timezone = trim((string) ($config['timezone'] ?? ''));
+    if ($timezone === '') {
+        return date_default_timezone_get();
+    }
+
+    return in_array($timezone, DateTimeZone::listIdentifiers(), true)
+        ? $timezone
+        : date_default_timezone_get();
+}
+
+function site_timezone_object(array $config): DateTimeZone
+{
+    return new DateTimeZone(site_timezone_identifier($config));
+}
+
+function site_date_format(array $config): string
+{
+    $format = trim((string) ($config['date_format'] ?? ''));
+    return $format !== '' ? $format : 'F j, Y';
+}
+
+function current_site_datetime_for_storage(array $config): string
+{
+    return (new DateTimeImmutable('now', site_timezone_object($config)))->format('Y-m-d H:i');
+}
+
+function parse_post_datetime_with_timezone(?string $value, array $config): ?DateTimeImmutable
+{
+    $raw = trim((string) $value);
+    if ($raw === '') {
+        return null;
+    }
+
+    $tz = site_timezone_object($config);
+    $formats = [
+        'Y-m-d H:i',
+        'Y-m-d H:i:s',
+        'Y-m-d\\TH:i:s.u\\Z',
+        'Y-m-d\\TH:i:s\\Z',
+        'Y-m-d\\TH:i:s.uP',
+        'Y-m-d\\TH:i:sP',
+    ];
+
+    foreach ($formats as $format) {
+        $dt = DateTimeImmutable::createFromFormat($format, $raw, $tz);
+        if ($dt instanceof DateTimeImmutable) {
+            return $dt->setTimezone($tz);
+        }
+    }
+
+    $timestamp = strtotime($raw);
+    if ($timestamp === false) {
+        return null;
+    }
+
+    return (new DateTimeImmutable('@' . $timestamp))->setTimezone($tz);
+}
+
+function format_post_date_for_display(?string $value, array $config): string
+{
+    return format_datetime_for_display($value, $config, null);
+}
+
+function format_datetime_for_display(?string $value, array $config, ?string $format = null): string
+{
+    $dt = parse_post_datetime_with_timezone($value, $config);
+    if (!$dt) {
+        return '';
+    }
+
+    $effectiveFormat = $format !== null && trim($format) !== '' ? $format : site_date_format($config);
+    return $dt->format($effectiveFormat);
+}
+
+function format_post_date_for_rss(?string $value, array $config): string
+{
+    $dt = parse_post_datetime_with_timezone($value, $config);
+    if (!$dt) {
+        return (new DateTimeImmutable('now', site_timezone_object($config)))->format(DATE_RSS);
+    }
+
+    return $dt->format(DATE_RSS);
+}
+
 function get_all_posts(bool $includeDrafts = false, bool $bustCache = false): array
 {
     static $cache = null;
@@ -461,13 +549,15 @@ function get_all_posts(bool $includeDrafts = false, bool $bustCache = false): ar
             $files = glob(PUREBLOG_POSTS_PATH . '/*.md') ?: [];
             $posts = [];
 
+            $config = load_config();
             foreach ($files as $file) {
                 $parsed = parse_post_file($file);
                 $front = $parsed['front_matter'];
                 $status = $front['status'] ?? 'draft';
 
                 $dateString = $front['date'] ?? '';
-                $timestamp = $dateString ? strtotime($dateString) : 0;
+                $dt = parse_post_datetime_with_timezone($dateString, $config);
+                $timestamp = $dt ? $dt->getTimestamp() : 0;
 
                 $posts[] = [
                     'title' => $front['title'] ?? 'Untitled',
@@ -793,11 +883,16 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     }
     $post['slug'] = $slug;
 
+    $config = load_config();
+
     if ($date === '') {
-        $date = date('Y-m-d H:i');
+        $date = current_site_datetime_for_storage($config);
     }
 
-    $datePrefix = date('Y-m-d', strtotime($date));
+    $datePrefix = format_datetime_for_display($date, $config, 'Y-m-d');
+    if ($datePrefix === '') {
+        $datePrefix = format_datetime_for_display(current_site_datetime_for_storage($config), $config, 'Y-m-d');
+    }
     $filename = $datePrefix . '-' . $slug . '.md';
     $path = PUREBLOG_POSTS_PATH . '/' . $filename;
 
@@ -830,7 +925,16 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     if ($originalSlug !== null && $originalSlug !== $slug) {
         $existingPath = find_post_filepath_by_slug($originalSlug);
     } elseif ($originalDate !== null && $originalDate !== '') {
-        $originalPrefix = date('Y-m-d', strtotime($originalDate));
+        $originalPrefix = format_datetime_for_display($originalDate, $config, 'Y-m-d');
+        if ($originalPrefix === '') {
+            $normalizedOriginal = normalize_date_value($originalDate);
+            $originalPrefix = $normalizedOriginal !== null
+                ? format_datetime_for_display($normalizedOriginal, $config, 'Y-m-d')
+                : '';
+        }
+        if ($originalPrefix === '') {
+            $originalPrefix = $datePrefix;
+        }
         $originalFilename = $originalPrefix . '-' . $slug . '.md';
         $candidate = PUREBLOG_POSTS_PATH . '/' . $originalFilename;
         if (is_file($candidate) && $candidate !== $path) {

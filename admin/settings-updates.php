@@ -872,7 +872,7 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php if ($latest !== null && ($latest['ok'] ?? false)): ?>
                 <p><strong>Latest release:</strong> <?= e($latest['tag'] !== '' ? $latest['tag'] : ($latest['name'] ?? 'Unknown')) ?></p>
                 <?php if (($latest['published_at'] ?? '') !== ''): ?>
-                    <p><strong>Published:</strong> <?= e((string) date('Y-m-d', strtotime($latest['published_at']))) ?></p>
+                    <p><strong>Published:</strong> <?= e(format_datetime_for_display((string) $latest['published_at'], $config, 'Y-m-d')) ?></p>
                 <?php endif; ?>
                 <p><a href="<?= e($latest['url'] ?? 'https://github.com/kevquirk/pureblog/releases') ?>" target="_blank" rel="noopener noreferrer">View release notes</a></p>
             <?php endif; ?>
