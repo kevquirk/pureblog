@@ -201,7 +201,7 @@ require __DIR__ . '/../includes/admin-head.php';
                     <p class="current-image">Current: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a></p>
                 <?php endif; ?>
 
-                <label for="og_image">Open Graph image <span class="tip">(1360x712 works best)</span></label>
+                <label for="og_image">Open Graph image <span class="tip">(1360x712 for banner, or 1200x1200 for square)</span></label>
                 <input type="file" id="og_image" name="og_image" accept="image/*">
                 <?php if (!empty($config['assets']['og_image'])): ?>
                     <p class="current-image">Current: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
