@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['hide_blog_page_title'] = $hideBlogPageTitle;
 
         if (!isset($config['assets'])) {
-            $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_square' => '', 'og_image_preferred' => 'banner'];
+            $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
         }
         $config['assets']['og_image_preferred'] = $ogImagePreferred;
 
@@ -119,20 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
                 $dest = $assetDir . '/' . $name;
                 if (move_uploaded_file($_FILES['og_image']['tmp_name'], $dest)) {
                     $config['assets']['og_image'] = '/content/images/' . $name;
-                }
-            }
-        }
-
-        if (!empty($_FILES['og_image_square']['name']) && $_FILES['og_image_square']['error'] === UPLOAD_ERR_OK) {
-            $name = basename($_FILES['og_image_square']['name']);
-            $name = strtolower($name);
-            $name = preg_replace('/[^a-z0-9._-]/', '-', $name) ?? $name;
-            $name = preg_replace('/-+/', '-', $name) ?? $name;
-            $name = trim($name, '-');
-            if ($name !== '') {
-                $dest = $assetDir . '/' . $name;
-                if (move_uploaded_file($_FILES['og_image_square']['tmp_name'], $dest)) {
-                    $config['assets']['og_image_square'] = '/content/images/' . $name;
                 }
             }
         }
@@ -224,12 +210,6 @@ require __DIR__ . '/../includes/admin-head.php';
                 <input type="file" id="og_image" name="og_image" accept="image/*">
                 <?php if (!empty($config['assets']['og_image'])): ?>
                     <p class="current-image">Current: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
-                <?php endif; ?>
-
-                <label for="og_image_square">Open Graph image (square) <span class="tip">(1200x1200 works best)</span></label>
-                <input type="file" id="og_image_square" name="og_image_square" accept="image/*">
-                <?php if (!empty($config['assets']['og_image_square'])): ?>
-                    <p class="current-image">Current square: <a href="<?= e($config['assets']['og_image_square']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image_square']) ?></a></p>
                 <?php endif; ?>
 
                 <label for="og_image_preferred">Open Graph image format</label>

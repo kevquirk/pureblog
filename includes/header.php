@@ -12,10 +12,8 @@ $headInject = get_contextual_inject($config, 'head', [
 ]);
 $frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
 $ogImagePreferred = $config['assets']['og_image_preferred'] ?? 'banner';
-$ogImageBanner = $config['assets']['og_image'] ?? '';
-$ogImageSquare = $config['assets']['og_image_square'] ?? '';
-$ogImage = $ogImagePreferred === 'square' && $ogImageSquare !== '' ? $ogImageSquare : $ogImageBanner;
-$isSquareOgImage = $ogImagePreferred === 'square' && $ogImageSquare !== '';
+$ogImage = $config['assets']['og_image'] ?? '';
+$isSquareOgImage = $ogImagePreferred === 'square';
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= e($mode) ?>">
