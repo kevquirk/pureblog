@@ -11,6 +11,11 @@ $headInject = get_contextual_inject($config, 'head', [
     'page' => $page ?? null,
 ]);
 $frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
+$ogImagePreferred = $config['assets']['og_image_preferred'] ?? 'banner';
+$ogImageBanner = $config['assets']['og_image'] ?? '';
+$ogImageSquare = $config['assets']['og_image_square'] ?? '';
+$ogImage = $ogImagePreferred === 'square' && $ogImageSquare !== '' ? $ogImageSquare : $ogImageBanner;
+$isSquareOgImage = $ogImagePreferred === 'square' && $ogImageSquare !== '';
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?= e($mode) ?>">
@@ -35,8 +40,12 @@ $frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
     <?php if (!empty($config['assets']['favicon'])): ?>
         <link rel="icon" href="<?= e($config['assets']['favicon']) ?>">
     <?php endif; ?>
-    <?php if (!empty($config['assets']['og_image'])): ?>
-        <meta property="og:image" content="<?= e($config['assets']['og_image']) ?>">
+    <?php if ($ogImage !== ''): ?>
+        <meta property="og:image" content="<?= e($ogImage) ?>">
+        <?php if ($isSquareOgImage): ?>
+            <meta property="og:image:width" content="600">
+            <meta property="og:image:height" content="600">
+        <?php endif; ?>
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="/feed.php">
     <style>
