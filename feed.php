@@ -7,6 +7,19 @@ require_once __DIR__ . '/functions.php';
 require_setup_redirect();
 
 $config = load_config();
+
+$feedCacheEnabled = !empty($config['cache']['enabled']);
+$feedTtl = (int) ($config['cache']['rss_ttl'] ?? 3600);
+if ($feedCacheEnabled) {
+    $cachedXml = cache_read('__feed__', $feedTtl, 'xml');
+    if ($cachedXml !== null) {
+        header('Content-Type: application/rss+xml; charset=UTF-8');
+        echo $cachedXml;
+        exit;
+    }
+    ob_start();
+}
+
 $posts = array_slice(get_all_posts(false), 0, 10);
 
 $baseUrl = trim($config['base_url'] ?? '');
@@ -60,3 +73,10 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         <?php endforeach; ?>
     </channel>
 </rss>
+<?php
+if ($feedCacheEnabled) {
+    $xml = ob_get_clean();
+    cache_write('__feed__', $xml, 'xml');
+    echo $xml;
+}
+?>

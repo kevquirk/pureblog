@@ -13,6 +13,7 @@ const PUREBLOG_DATA_PATH = PUREBLOG_BASE_PATH . '/data';
 const PUREBLOG_CONTENT_IMAGES_PATH = PUREBLOG_BASE_PATH . '/content/images';
 const PUREBLOG_CONTENT_CSS_PATH = PUREBLOG_BASE_PATH . '/content/css';
 const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
+const PUREBLOG_CACHE_PATH = PUREBLOG_BASE_PATH . '/cache';
 
 function detect_pureblog_version(): string
 {
@@ -56,6 +57,10 @@ function default_config(): array
         'date_format' => 'F j, Y',
         'admin_username' => '',
         'admin_password_hash' => '',
+        'cache' => [
+            'enabled' => false,
+            'rss_ttl' => 3600,
+        ],
         'theme' => [
             'color_mode' => 'auto',
             'font_stack' => 'sans',
@@ -755,6 +760,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         call_hook('on_page_deleted', [$slug]);
     }
 
+    cache_clear();
     return true;
 }
 
@@ -783,6 +789,7 @@ function delete_page_by_slug(string $slug): bool
         }
     }
 
+    cache_clear();
     return true;
 }
 
@@ -827,6 +834,7 @@ function delete_post_by_slug(string $slug): bool
         }
         build_search_index();
         build_tag_index();
+        cache_clear();
         call_hook('on_post_deleted', [$slug]);
     }
     return $deleted;
@@ -964,6 +972,7 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 
     build_search_index();
     build_tag_index();
+    cache_clear();
 
     if ($status === 'published') {
         call_hook('on_post_updated', [$slug]);
@@ -1610,4 +1619,62 @@ function paginate_posts(array $posts, int $perPage, int $currentPage): array
         'totalPages' => $totalPages,
         'currentPage' => $currentPage,
     ];
+}
+
+function cache_should_bypass(array $config): bool
+{
+    if (empty($config['cache']['enabled'])) {
+        return true;
+    }
+    if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
+        return true;
+    }
+    $queryString = $_SERVER['QUERY_STRING'] ?? '';
+    return $queryString !== '';
+}
+
+function get_cache_file_path(string $key, string $ext = 'html'): string
+{
+    return PUREBLOG_CACHE_PATH . '/' . md5($key) . '.' . $ext;
+}
+
+function cache_read(string $key, int $ttl = 0, string $ext = 'html'): ?string
+{
+    $path = get_cache_file_path($key, $ext);
+    if (!is_file($path)) {
+        return null;
+    }
+    if ($ttl > 0 && (time() - filemtime($path)) > $ttl) {
+        @unlink($path);
+        return null;
+    }
+    $content = file_get_contents($path);
+    return $content !== false ? $content : null;
+}
+
+function cache_write(string $key, string $content, string $ext = 'html'): void
+{
+    if (!is_dir(PUREBLOG_CACHE_PATH)) {
+        mkdir(PUREBLOG_CACHE_PATH, 0755, true);
+    }
+    $timestamp = gmdate('Y-m-d H:i:s') . ' UTC';
+    if ($ext === 'xml') {
+        $content = str_replace('</rss>', '<!-- Cached at ' . $timestamp . " -->\n</rss>", $content);
+    } else {
+        $content .= "\n<!-- Cached at " . $timestamp . ' -->';
+    }
+    file_put_contents(get_cache_file_path($key, $ext), $content, LOCK_EX);
+}
+
+function cache_clear(): void
+{
+    if (!is_dir(PUREBLOG_CACHE_PATH)) {
+        return;
+    }
+    $files = glob(PUREBLOG_CACHE_PATH . '/*') ?: [];
+    foreach ($files as $file) {
+        if (is_file($file)) {
+            @unlink($file);
+        }
+    }
 }

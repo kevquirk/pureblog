@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $ogImagePreferred = trim($_POST['og_image_preferred'] ?? 'banner');
     $hideHomepageTitle = !empty($_POST['hide_homepage_title']);
     $hideBlogPageTitle = !empty($_POST['hide_blog_page_title']);
+    $cacheEnabled = !empty($_POST['cache_enabled']);
+    $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
 
     if ($siteTitle === '') {
         $errors[] = 'Site title is required.';
@@ -84,6 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['blog_page_slug'] = $blogPageSlug;
         $config['hide_homepage_title'] = $hideHomepageTitle;
         $config['hide_blog_page_title'] = $hideBlogPageTitle;
+        $config['cache']['enabled'] = $cacheEnabled;
+        $config['cache']['rss_ttl'] = $rssttl;
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
@@ -241,6 +245,17 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="footer_inject_post">Post footer HTML <span class="tip">(optional)</span></label>
                 <textarea id="footer_inject_post" name="footer_inject_post" rows="6" placeholder="&lt;script src=&quot;/assets/js/post-only.js&quot; defer&gt;&lt;/script&gt;"><?= e($config['footer_inject_post'] ?? '') ?></textarea>
+            </section>
+
+            <section class="section-divider">
+                <span class="title">Cache</span>
+                <label class="inline-checkbox" for="cache_enabled">
+                    <input type="checkbox" id="cache_enabled" name="cache_enabled" <?= !empty($config['cache']['enabled']) ? 'checked' : '' ?>>
+                    Enable page cache
+                </label>
+
+                <label for="rss_ttl">RSS cache duration <span class="tip">(seconds, 0 to disable)</span></label>
+                <input type="number" id="rss_ttl" name="rss_ttl" min="0" value="<?= e((string) ($config['cache']['rss_ttl'] ?? 3600)) ?>">
             </section>
         </form>
     </main>

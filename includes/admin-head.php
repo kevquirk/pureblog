@@ -12,7 +12,10 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
     verify_csrf();
     $actionId = strtolower(trim((string) ($_POST['admin_action_id'] ?? '')));
     $actionId = preg_replace('/[^a-z0-9_-]/', '', $actionId) ?? '';
-    if ($actionId !== '') {
+    if ($actionId === 'clear_cache') {
+        cache_clear();
+        $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => 'Cache cleared.'];
+    } elseif ($actionId !== '') {
         $_SESSION['admin_action_flash'] = run_admin_action($actionId);
     } else {
         $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => 'Invalid admin action.'];
@@ -72,6 +75,18 @@ unset($_SESSION['admin_action_flash']);
                 <li><a href="/admin/pages.php"<?= $adminPath === 'admin/pages.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-file-text"></use></svg> Pages</a></li>
                 <li><a href="/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-settings"></use></svg> Settings</a></li>
                 <li><a target="_blank" rel="noopener noreferrer" href="/"><svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-eye"></use></svg> View site</a></li>
+                <?php if (!empty($config['cache']['enabled'])): ?>
+                    <li>
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="admin_action_id" value="clear_cache">
+                            <button class="delete" type="submit" class="link-button">
+                                <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-x"></use></svg>
+                                Clear cache
+                            </button>
+                        </form>
+                    </li>
+                <?php endif; ?>
                 <?php foreach ($adminActionButtons as $actionButton): ?>
                     <?php
                     $buttonClass = trim('link-button ' . $actionButton['class']);

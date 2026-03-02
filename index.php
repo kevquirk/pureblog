@@ -12,6 +12,24 @@ $requestUriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/'
 $requestPath = trim(rawurldecode($requestUriPath), '/');
 $requestPathWithSlash = $requestPath === '' ? '/' : ('/' . $requestPath);
 
+if (!cache_should_bypass($config)) {
+    $cached = cache_read($requestPathWithSlash);
+    if ($cached !== null) {
+        echo $cached;
+        exit;
+    }
+    ob_start();
+    register_shutdown_function(function () use ($requestPathWithSlash): void {
+        $html = ob_get_clean();
+        if ($html !== false && $html !== '' && http_response_code() === 200) {
+            cache_write($requestPathWithSlash, $html);
+        }
+        if ($html !== false) {
+            echo $html;
+        }
+    });
+}
+
 $customRoutes = parse_custom_routes((string) ($config['custom_routes'] ?? ''));
 foreach ($customRoutes as $customRoute) {
     if (($customRoute['path'] ?? '') !== $requestPathWithSlash) {
