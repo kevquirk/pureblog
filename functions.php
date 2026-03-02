@@ -1629,8 +1629,7 @@ function cache_should_bypass(array $config): bool
     if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
         return true;
     }
-    $queryString = $_SERVER['QUERY_STRING'] ?? '';
-    return $queryString !== '';
+    return isset($_GET['q']);
 }
 
 function get_cache_file_path(string $key, string $ext = 'html'): string

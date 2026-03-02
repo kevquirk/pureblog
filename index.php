@@ -12,17 +12,19 @@ $requestUriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/'
 $requestPath = trim(rawurldecode($requestUriPath), '/');
 $requestPathWithSlash = $requestPath === '' ? '/' : ('/' . $requestPath);
 
+$queryString = $_SERVER['QUERY_STRING'] ?? '';
+$cacheKey = $queryString !== '' ? $requestPathWithSlash . '?' . $queryString : $requestPathWithSlash;
 if (!cache_should_bypass($config)) {
-    $cached = cache_read($requestPathWithSlash);
+    $cached = cache_read($cacheKey);
     if ($cached !== null) {
         echo $cached;
         exit;
     }
     ob_start();
-    register_shutdown_function(function () use ($requestPathWithSlash): void {
+    register_shutdown_function(function () use ($cacheKey): void {
         $html = ob_get_clean();
         if ($html !== false && $html !== '' && http_response_code() === 200) {
-            cache_write($requestPathWithSlash, $html);
+            cache_write($cacheKey, $html);
         }
         if ($html !== false) {
             echo $html;
