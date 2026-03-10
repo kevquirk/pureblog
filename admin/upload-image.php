@@ -39,39 +39,50 @@ if ($slug === '') {
 }
 
 if ($error === '') {
-    if ($editorType === 'page') {
-        $folder = $slug;
-    } else {
-        $folder = $slug;
+    $folder = $slug;
+
+    if (!is_safe_image_slug($folder)) {
+        $error = 'Invalid slug for image folder.';
     }
+}
+
+if ($error === '') {
+    $baseDir = realpath(__DIR__ . '/../content/images');
     $uploadDir = __DIR__ . '/../content/images/' . $folder;
 
-    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
+    if ($baseDir === false) {
+        $error = 'Image folder not found.';
+    } elseif (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
         $error = 'Unable to create image folder.';
-    } else {
-        $filename = basename($_FILES['image']['name']);
-        $filename = strtolower($filename);
-        $filename = preg_replace('/[^a-z0-9._-]/', '-', $filename) ?? $filename;
-        $filename = preg_replace('/-+/', '-', $filename) ?? $filename;
-        $filename = trim($filename, '-');
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === '') {
-            $filename .= '.' . $allowedTypes[$mimeType];
-        }
+    } elseif (!validate_image_path($baseDir, $uploadDir)) {
+        @rmdir($uploadDir);
+        $error = 'Invalid image path.';
+    }
+}
 
-        if ($filename === '') {
-            $error = 'Invalid file name.';
-        } elseif (is_file($uploadDir . '/' . $filename)) {
-            $error = 'Duplicate name, please rename the image (sanitized as "' . $filename . '").';
+if ($error === '') {
+    $filename = basename($_FILES['image']['name']);
+    $filename = strtolower($filename);
+    $filename = preg_replace('/[^a-z0-9._-]/', '-', $filename) ?? $filename;
+    $filename = preg_replace('/-+/', '-', $filename) ?? $filename;
+    $filename = trim($filename, '-');
+    $ext = pathinfo($filename, PATHINFO_EXTENSION);
+    if ($ext === '') {
+        $filename .= '.' . $allowedTypes[$mimeType];
+    }
+
+    if ($filename === '') {
+        $error = 'Invalid file name.';
+    } elseif (is_file($uploadDir . '/' . $filename)) {
+        $error = 'Duplicate name, please rename the image (sanitized as "' . $filename . '").';
+    } else {
+        $destination = $uploadDir . '/' . $filename;
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
+            $error = 'Unable to save uploaded file.';
         } else {
-            $destination = $uploadDir . '/' . $filename;
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
-                $error = 'Unable to save uploaded file.';
-            } else {
-                $url = '/content/images/' . $folder . '/' . $filename;
-                $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
-                $message = '![' . $altText . '](' . $url . ')';
-            }
+            $url = '/content/images/' . $folder . '/' . $filename;
+            $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
+            $message = '![' . $altText . '](' . $url . ')';
         }
     }
 }

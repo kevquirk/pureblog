@@ -1,0 +1,14 @@
+{
+    "name": "pureblog/pureblog",
+    "description": "A flat-file blog engine",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "files": ["functions.php"]
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

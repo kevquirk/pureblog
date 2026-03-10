@@ -325,6 +325,27 @@ function font_stack_css(string $fontStack): string
     };
 }
 
+/**
+ * Validate that a resolved path is within the allowed base directory.
+ */
+function validate_image_path(string $baseDir, string $targetPath): bool
+{
+    $resolvedBase = realpath($baseDir);
+    $resolvedTarget = realpath($targetPath);
+    if ($resolvedBase === false || $resolvedTarget === false) {
+        return false;
+    }
+    return str_starts_with($resolvedTarget, $resolvedBase . DIRECTORY_SEPARATOR);
+}
+
+/**
+ * Validate that a slug is safe for use as an image folder name.
+ */
+function is_safe_image_slug(string $slug): bool
+{
+    return $slug !== '' && preg_match('/^[a-zA-Z0-9\-_]+$/', $slug) === 1;
+}
+
 function slugify(string $value): string
 {
     $value = trim($value);
