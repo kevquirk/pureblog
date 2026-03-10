@@ -21,13 +21,20 @@ $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['de
             <h2>Post not found</h2>
             <p>The post you requested could not be found.</p>
         <?php else: ?>
-            <?php $adjacentPosts = get_adjacent_posts_by_slug((string) ($post['slug'] ?? ''), false); ?>
+            <?php
+            $adjacentPosts = get_adjacent_posts_by_slug((string) ($post['slug'] ?? ''), false);
+            $layoutName = trim((string) ($post['layout'] ?? ''));
+            $layoutFile = PUREBLOG_BASE_PATH . '/content/layouts/' . $layoutName . '.php';
+            ?>
+            <?php if ($layoutName !== '' && is_file($layoutFile)): ?>
+                <?php render_layout_file($layoutFile, $post, $config, $adjacentPosts); ?>
+            <?php else: ?>
             <article>
-                <h1 ><?= e($post['title']) ?></h1>
+                <h1><?= e($post['title']) ?></h1>
                 <?php if ($post['date']): ?>
                     <p class="post-date"><svg class="icon" aria-hidden="true"><use href="/assets/icons/sprite.svg#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config)) ?></time></p>
                 <?php endif; ?>
-                
+
                 <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
                 <?= render_layout_partial('post-meta', [
                     'post' => $post,
@@ -38,6 +45,7 @@ $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['de
                     'next_post' => $adjacentPosts['next'] ?? null,
                 ]) ?>
             </article>
+            <?php endif; ?>
         <?php endif; ?>
     </main>
     <?php render_footer_layout($config, ['post' => $post ?? null]); ?>

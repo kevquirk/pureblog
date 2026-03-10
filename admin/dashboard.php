@@ -95,6 +95,8 @@ if ($lastPublishedTimestamp > 0) {
     }
 }
 
+$availableLayouts = get_layouts();
+
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $adminTitle = 'Dashboard - Pureblog';
 require __DIR__ . '/../includes/admin-head.php';
@@ -127,10 +129,40 @@ require __DIR__ . '/../includes/admin-head.php';
         </section>
 
         <nav class="editor-actions">
-            <a href="/admin/edit-post.php?action=new">
-                <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-file-plus-corner"></use></svg>
-                New post
-            </a>
+            <?php if ($availableLayouts): ?>
+                <button type="button" id="new-post-button">
+                    <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-file-plus-corner"></use></svg>
+                    New post
+                </button>
+                <dialog id="layout-picker" aria-labelledby="layout-picker-title">
+                    <h2 id="layout-picker-title">Choose a layout</h2>
+                    <ul class="layout-picker-list">
+                        <li><a href="/admin/edit-post.php?action=new">Default post</a></li>
+                        <?php foreach ($availableLayouts as $layout): ?>
+                            <li><a href="/admin/edit-post.php?action=new&amp;layout=<?= urlencode($layout['name']) ?>"><?= e($layout['label']) ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <button type="button" id="layout-picker-close" class="delete">
+                        <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-x"></use></svg>
+                        Cancel
+                    </button>
+                </dialog>
+                <script>
+                (function () {
+                    const button = document.getElementById('new-post-button');
+                    const dialog = document.getElementById('layout-picker');
+                    const close = document.getElementById('layout-picker-close');
+                    button.addEventListener('click', () => dialog.showModal());
+                    close.addEventListener('click', () => dialog.close());
+                    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+                })();
+                </script>
+            <?php else: ?>
+                <a href="/admin/edit-post.php?action=new">
+                    <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-file-plus-corner"></use></svg>
+                    New post
+                </a>
+            <?php endif; ?>
         </nav>
 
 

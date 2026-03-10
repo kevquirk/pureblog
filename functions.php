@@ -565,7 +565,10 @@ function get_all_posts(bool $includeDrafts = false, bool $bustCache = false): ar
                 $dt = parse_post_datetime_with_timezone($dateString, $config);
                 $timestamp = $dt ? $dt->getTimestamp() : 0;
 
-                $posts[] = [
+                $knownFrontKeys = ['title', 'slug', 'date', 'status', 'tags', 'description', 'categories'];
+                $extraFront = array_diff_key($front, array_flip($knownFrontKeys));
+
+                $posts[] = array_merge($extraFront, [
                     'title' => $front['title'] ?? 'Untitled',
                     'slug' => $front['slug'] ?? '',
                     'date' => $dateString,
@@ -575,7 +578,7 @@ function get_all_posts(bool $includeDrafts = false, bool $bustCache = false): ar
                     'description' => $front['description'] ?? '',
                     'content' => $parsed['content'],
                     'path' => $file,
-                ];
+                ]);
             }
 
             usort($posts, fn($a, $b) => ($b['timestamp'] <=> $a['timestamp']));
@@ -905,6 +908,9 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     $filename = $datePrefix . '-' . $slug . '.md';
     $path = PUREBLOG_POSTS_PATH . '/' . $filename;
 
+    $layout = trim($post['layout'] ?? '');
+    $layoutFields = is_array($post['layout_fields'] ?? null) ? $post['layout_fields'] : [];
+
     $frontMatter = [
         'title' => $title,
         'slug' => $slug,
@@ -913,6 +919,17 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
         'tags' => $tags,
         'description' => $description,
     ];
+
+    if ($layout !== '') {
+        $frontMatter['layout'] = $layout;
+    }
+
+    foreach ($layoutFields as $fieldName => $fieldValue) {
+        $fieldName = trim((string) $fieldName);
+        if ($fieldName !== '') {
+            $frontMatter[$fieldName] = trim((string) $fieldValue);
+        }
+    }
 
     $frontLines = ["---"];
     foreach ($frontMatter as $key => $value) {
@@ -1665,6 +1682,63 @@ function cache_write(string $key, string $content, string $ext = 'html'): void
     file_put_contents(get_cache_file_path($key, $ext), $content, LOCK_EX);
 }
 
+function get_layouts(): array
+{
+    $dir = PUREBLOG_BASE_PATH . '/content/layouts';
+    if (!is_dir($dir)) {
+        return [];
+    }
+    $files = glob($dir . '/*.php') ?: [];
+    $layouts = [];
+    foreach ($files as $file) {
+        $name = basename($file, '.php');
+        $jsonFile = $dir . '/' . $name . '.json';
+        $fields = [];
+        $label = $name;
+        if (is_file($jsonFile)) {
+            $json = @file_get_contents($jsonFile);
+            if ($json !== false) {
+                $decoded = json_decode($json, true);
+                if (is_array($decoded)) {
+                    $label = trim((string) ($decoded['label'] ?? $name));
+                    if ($label === '') {
+                        $label = $name;
+                    }
+                    $fields = is_array($decoded['fields'] ?? null) ? $decoded['fields'] : [];
+                }
+            }
+        }
+        $layouts[] = ['name' => $name, 'label' => $label, 'fields' => $fields];
+    }
+    return $layouts;
+}
+
+function layout_context(?array $post = null, ?array $config = null, ?array $adjacentPosts = null): array
+{
+    static $ctx = ['post' => [], 'config' => [], 'adjacentPosts' => []];
+    if ($post !== null) {
+        $ctx = ['post' => $post, 'config' => $config ?? [], 'adjacentPosts' => $adjacentPosts ?? []];
+    }
+    return $ctx;
+}
+
+function render_post_navigation(): string
+{
+    $ctx = layout_context();
+    return render_layout_partial('post-meta', [
+        'post' => $ctx['post'],
+        'config' => $ctx['config'],
+        'previous_post' => $ctx['adjacentPosts']['previous'] ?? null,
+        'next_post' => $ctx['adjacentPosts']['next'] ?? null,
+    ]);
+}
+
+function render_layout_file(string $file, array $post, array $config, array $adjacentPosts): void
+{
+    layout_context($post, $config, $adjacentPosts);
+    include $file;
+}
+
 function cache_clear(): void
 {
     if (!is_dir(PUREBLOG_CACHE_PATH)) {
@@ -1677,3 +1751,9 @@ function cache_clear(): void
         }
     }
 }
+
+$_userFunctions = PUREBLOG_BASE_PATH . '/content/functions.php';
+if (is_file($_userFunctions)) {
+    require $_userFunctions;
+}
+unset($_userFunctions);

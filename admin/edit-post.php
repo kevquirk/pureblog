@@ -40,17 +40,23 @@ if ($isEditing) {
             'tags' => $existing['tags'] ?? [],
             'description' => $existing['description'] ?? '',
             'content' => $existing['content'] ?? '',
+            'layout' => $existing['layout'] ?? '',
         ];
         $originalSlug = $existing['slug'] ?? '';
+        $originalExisting = $existing;
     } else {
         $errors[] = 'Post not found.';
         $isEditing = false;
+        $originalExisting = null;
     }
+} else {
+    $originalExisting = null;
 }
 
 if ($action === 'new') {
     $isEditing = false;
     $originalSlug = '';
+    $post['layout'] = trim($_GET['layout'] ?? '');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
@@ -60,11 +66,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $post['status'] = trim($_POST['status'] ?? 'draft');
     $post['content'] = trim($_POST['content'] ?? '');
     $post['description'] = trim($_POST['description'] ?? '');
+    $post['layout'] = trim($_POST['post_layout'] ?? '');
     $tagsInput = trim($_POST['tags'] ?? '');
     $post['tags'] = $tagsInput === '' ? [] : array_values(array_filter(array_map('trim', explode(',', $tagsInput))));
     $originalSlug = trim($_POST['original_slug'] ?? '');
     $originalStatus = trim($_POST['original_status'] ?? '');
     $originalDate = trim($_POST['original_date'] ?? '');
+
+    $post['layout_fields'] = [];
+    foreach ($_POST as $key => $value) {
+        if (str_starts_with($key, 'layout_field__')) {
+            $fieldName = substr($key, strlen('layout_field__'));
+            $post['layout_fields'][$fieldName] = trim((string) $value);
+        }
+    }
 
     if ($post['title'] === '') {
         $errors[] = 'Title is required.';
@@ -115,6 +130,17 @@ if ($post['slug'] !== '') {
     }
 }
 
+$allLayouts = get_layouts();
+$currentLayout = trim($post['layout'] ?? '');
+$layoutDef = null;
+foreach ($allLayouts as $l) {
+    if ($l['name'] === $currentLayout) {
+        $layoutDef = $l;
+        break;
+    }
+}
+$layoutFields = $layoutDef ? ($layoutDef['fields'] ?? []) : [];
+
 $adminTitle = ($isEditing ? 'Edit Post' : 'New Post') . ' - Pureblog';
 $codeMirror = 'markdown';
 require __DIR__ . '/../includes/admin-head.php';
@@ -146,6 +172,7 @@ require __DIR__ . '/../includes/admin-head.php';
                     <input type="hidden" name="original_slug" value="<?= e($originalSlug) ?>">
                     <input type="hidden" name="original_status" value="<?= e($post['status']) ?>">
                     <input type="hidden" name="original_date" value="<?= e($post['date']) ?>">
+                    <input type="hidden" name="post_layout" value="<?= e($currentLayout) ?>">
                     <?= csrf_field() ?>
 
                     <nav class="editor-actions">
@@ -170,6 +197,43 @@ require __DIR__ . '/../includes/admin-head.php';
 
                     <label for="content">Content <span class="tip">(<a target="_blank" rel="noopener noreferrer" href="https://pureblog.org/markdown-helper">Markdown</a>)</span></label>
                     <textarea id="content" name="content" rows="18"><?= e($post['content']) ?></textarea>
+
+                    <?php if ($layoutFields): ?>
+                        <?php foreach ($layoutFields as $field):
+                            $fieldName = (string) ($field['name'] ?? '');
+                            $fieldLabel = (string) ($field['label'] ?? $fieldName);
+                            $fieldType = (string) ($field['type'] ?? 'text');
+                            $fieldId = 'layout_field_' . $fieldName;
+                            $inputName = 'layout_field__' . $fieldName;
+                            $fieldValue = (string) ($originalExisting[$fieldName] ?? $post['layout_fields'][$fieldName] ?? '');
+                            if ($fieldName === ''): continue; endif;
+                        ?>
+                            <?php if ($fieldType !== 'checkbox'): ?>
+                            <label for="<?= e($fieldId) ?>"><?= e($fieldLabel) ?></label>
+                            <?php endif; ?>
+                            <?php if ($fieldType === 'markdown'): ?>
+                                <textarea id="<?= e($fieldId) ?>" name="<?= e($inputName) ?>" rows="8" data-layout-markdown><?= e($fieldValue) ?></textarea>
+                            <?php elseif ($fieldType === 'select'): ?>
+                                <?php $fieldOptions = is_array($field['options'] ?? null) ? $field['options'] : []; ?>
+                                <select id="<?= e($fieldId) ?>" name="<?= e($inputName) ?>">
+                                    <option value=""></option>
+                                    <?php foreach ($fieldOptions as $opt):
+                                        $opt = (string) $opt;
+                                    ?>
+                                        <option value="<?= e($opt) ?>" <?= $fieldValue === $opt ? 'selected' : '' ?>><?= e($opt) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php elseif ($fieldType === 'checkbox'): ?>
+                                <input type="hidden" name="<?= e($inputName) ?>" value="">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="<?= e($fieldId) ?>" name="<?= e($inputName) ?>" value="1" <?= $fieldValue === '1' ? 'checked' : '' ?>>
+                                    <?= e($fieldLabel) ?>
+                                </label>
+                            <?php else: ?>
+                                <input type="text" id="<?= e($fieldId) ?>" name="<?= e($inputName) ?>" value="<?= e($fieldValue) ?>">
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </form>
                 <?php if ($isEditing && $post['slug'] !== ''): ?>
                     <form method="post" action="/admin/delete-post.php" id="delete-post-form">

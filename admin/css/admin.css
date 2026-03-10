@@ -864,3 +864,44 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
         color: #888;
     }
 }
+
+#layout-picker {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    min-width: 260px;
+}
+
+#layout-picker h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.layout-picker-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+}
+
+.layout-picker-list li {
+    margin-bottom: 0.5rem;
+}
+
+.layout-picker-list a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid var(--text-color);
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.layout-picker-list a:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}

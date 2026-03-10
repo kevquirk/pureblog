@@ -29,6 +29,21 @@
     spellcheck: true,
   });
 
+  document.querySelectorAll('textarea[data-layout-markdown]').forEach((textarea) => {
+    const layoutCm = CodeMirror.fromTextArea(textarea, {
+      mode: { name: 'markdown', highlightFormatting: true, html: true },
+      lineNumbers: false,
+      lineWrapping: true,
+      viewportMargin: Infinity,
+      inputStyle: 'contenteditable',
+      spellcheck: true,
+    });
+    layoutCm.on('change', () => {
+      try { layoutCm.setSize(null, 'auto'); } catch (e) {}
+    });
+    try { layoutCm.setSize(null, 'auto'); } catch (e) {}
+  });
+
   cm.addKeyMap({
     'Ctrl-B': (editor) => wrapSelection(editor, '**'),
     'Cmd-B': (editor) => wrapSelection(editor, '**'),
@@ -187,6 +202,19 @@
       fields.splice(3, 0, { name: 'date', value: dateField?.value ?? '' });
       fields.splice(4, 0, { name: 'tags', value: tagsField?.value ?? '' });
     }
+
+    const layoutInput = editorForm?.querySelector('input[name="post_layout"]');
+    if (layoutInput) {
+      fields.push({ name: 'layout', value: layoutInput.value });
+    }
+
+    editorForm?.querySelectorAll('[name^="layout_field__"]').forEach((el) => {
+      if (el.type === 'checkbox') {
+        fields.push({ name: el.name, value: el.checked ? '1' : '' });
+      } else if (el.type !== 'hidden') {
+        fields.push({ name: el.name, value: el.value });
+      }
+    });
 
     fields.forEach(({ name, value }) => {
       const input = document.createElement('input');
