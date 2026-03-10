@@ -228,6 +228,151 @@ function require_setup_redirect(): void
     }
 }
 
+/**
+ * Validate a slug to prevent path traversal attacks.
+ * Allows Unicode letters/numbers, underscores, and hyphens.
+ */
+function validate_slug(string $slug): bool
+{
+    return preg_match('/^[\p{L}\p{N}_-]{1,120}$/u', $slug) === 1
+        && !str_contains($slug, '..');
+}
+
+/**
+ * Send security headers to mitigate common web vulnerabilities.
+ */
+function send_security_headers(): void
+{
+    if (headers_sent()) {
+        return;
+    }
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header('X-XSS-Protection: 1; mode=block');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header("Content-Security-Policy: frame-ancestors 'self'");
+}
+
+/**
+ * Get path to the IP lockout data file.
+ */
+function get_lockout_file(): string
+{
+    if (!is_dir(PUREBLOG_DATA_PATH)) {
+        @mkdir(PUREBLOG_DATA_PATH, 0700, true);
+    }
+    return PUREBLOG_DATA_PATH . '/lockout.json';
+}
+
+/**
+ * Check if current IP is locked out from login attempts.
+ */
+function is_ip_locked_out(): bool
+{
+    $file = get_lockout_file();
+    $fp = @fopen($file, 'c+');
+    if (!$fp) {
+        return false;
+    }
+    flock($fp, LOCK_SH);
+    rewind($fp);
+    $content = stream_get_contents($fp);
+    $data = is_string($content) && $content !== '' ? (json_decode($content, true) ?: []) : [];
+    flock($fp, LOCK_UN);
+    fclose($fp);
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $until = (int) ($data[$ip]['until'] ?? 0);
+    return $until > time();
+}
+
+/**
+ * Get remaining lockout time in seconds for current IP.
+ */
+function get_lockout_remaining(): int
+{
+    $file = get_lockout_file();
+    $fp = @fopen($file, 'c+');
+    if (!$fp) {
+        return 0;
+    }
+    flock($fp, LOCK_SH);
+    rewind($fp);
+    $content = stream_get_contents($fp);
+    $data = is_string($content) && $content !== '' ? (json_decode($content, true) ?: []) : [];
+    flock($fp, LOCK_UN);
+    fclose($fp);
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $until = (int) ($data[$ip]['until'] ?? 0);
+    $remaining = $until - time();
+    return $remaining > 0 ? $remaining : 0;
+}
+
+/**
+ * Record a failed login attempt for current IP.
+ */
+function record_login_failure(): void
+{
+    $file = get_lockout_file();
+    $fp = @fopen($file, 'c+');
+    if (!$fp) {
+        return;
+    }
+    flock($fp, LOCK_EX);
+    rewind($fp);
+    $content = stream_get_contents($fp);
+    $data = is_string($content) && $content !== '' ? (json_decode($content, true) ?: []) : [];
+
+    // Clean up expired records
+    $now = time();
+    foreach ($data as $key => $val) {
+        if (isset($val['until']) && $val['until'] < $now - 3600) {
+            unset($data[$key]);
+        }
+    }
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $failures = (int) ($data[$ip]['failures'] ?? 0) + 1;
+    $data[$ip] = [
+        'failures' => $failures,
+        'until' => $failures >= 5 ? $now + 300 : 0,  // 5-minute lockout after 5 failures
+    ];
+
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode($data));
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+}
+
+/**
+ * Clear login failures for current IP after successful login.
+ */
+function clear_login_failures(): void
+{
+    $file = get_lockout_file();
+    $fp = @fopen($file, 'c+');
+    if (!$fp) {
+        return;
+    }
+    flock($fp, LOCK_EX);
+    rewind($fp);
+    $content = stream_get_contents($fp);
+    $data = is_string($content) && $content !== '' ? (json_decode($content, true) ?: []) : [];
+
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    unset($data[$ip]);
+
+    ftruncate($fp, 0);
+    rewind($fp);
+    fwrite($fp, json_encode($data));
+    fflush($fp);
+    flock($fp, LOCK_UN);
+    fclose($fp);
+}
+
 function normalize_admin_path_segment(string $value): string
 {
     $segment = trim(strtolower($value));
@@ -755,6 +900,12 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         $slug = slugify($title);
     }
 
+    // Validate slug to prevent path traversal
+    if ($slug !== '' && !validate_slug($slug)) {
+        $error = 'Invalid slug.';
+        return false;
+    }
+
     if ($slug !== '') {
         $baseSlug = $slug;
         $suffix = 2;
@@ -945,6 +1096,12 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 
     if ($slug === '') {
         $slug = slugify($title);
+    }
+
+    // Validate slug to prevent path traversal
+    if ($slug !== '' && !validate_slug($slug)) {
+        $error = 'Invalid slug.';
+        return false;
     }
 
     if ($slug !== '') {
