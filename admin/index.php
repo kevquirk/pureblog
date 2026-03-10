@@ -12,9 +12,9 @@ $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $error = '';
 $username = '';
-$now = time();
-$lockoutUntil = (int) ($_SESSION['lockout_until'] ?? 0);
-$isLockedOut = $lockoutUntil > $now;
+
+// Use file-based IP lockout instead of session (persists across cookie clears)
+$isLockedOut = is_ip_locked_out();
 
 if (is_admin_logged_in()) {
     header('Location: ' . admin_url('dashboard.php'));
@@ -24,7 +24,7 @@ if (is_admin_logged_in()) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verify_csrf();
     if ($isLockedOut) {
-        $remaining = $lockoutUntil - $now;
+        $remaining = get_lockout_remaining();
         $minutes = (int) ceil($remaining / 60);
         $error = 'Too many failed attempts. Try again in ' . $minutes . ' minute(s).';
     } else {
@@ -36,17 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ) {
             session_regenerate_id(true);
             $_SESSION['is_admin'] = true;
-            $_SESSION['login_failures'] = 0;
-            $_SESSION['lockout_until'] = 0;
+            clear_login_failures();
             header('Location: ' . admin_url('dashboard.php'));
             exit;
         }
 
-        $failures = (int) ($_SESSION['login_failures'] ?? 0);
-        $failures++;
-        $_SESSION['login_failures'] = $failures;
-        if ($failures >= 5) {
-            $_SESSION['lockout_until'] = $now + (5 * 60);
+        record_login_failure();
+        if (is_ip_locked_out()) {
             $error = 'Too many failed attempts. Try again in 5 minutes.';
         } else {
             $error = 'Invalid credentials.';
