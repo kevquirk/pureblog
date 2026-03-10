@@ -33,7 +33,12 @@ if ($baseDir === false) {
     exit;
 }
 
-$targetDir = $baseDir . '/' . $folderName;
+// Validate folder path to prevent path traversal
+$targetDir = realpath($baseDir . '/' . $folderName);
+if ($targetDir === false || !str_starts_with($targetDir, $baseDir . '/')) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode('Invalid folder.'));
+    exit;
+}
 $targetFile = $targetDir . '/' . basename($filename);
 
 if (!is_file($targetFile)) {
