@@ -16,8 +16,11 @@ $editorType = trim($_POST['editor_type'] ?? 'post');
 $message = '';
 $error = '';
 
+// Validate slug to prevent path traversal
 if ($slug === '') {
     $error = 'Save the post first so it has a slug.';
+} elseif (!preg_match('/^[\p{L}\p{N}_-]{1,120}$/u', $slug) || str_contains($slug, '..')) {
+    $error = 'Invalid slug.';
 } elseif (!isset($_FILES['image'])) {
     $error = 'No image uploaded.';
 } elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
@@ -49,15 +52,16 @@ if ($error === '') {
     if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
         $error = 'Unable to create image folder.';
     } else {
-        $filename = basename($_FILES['image']['name']);
-        $filename = strtolower($filename);
-        $filename = preg_replace('/[^a-z0-9._-]/', '-', $filename) ?? $filename;
-        $filename = preg_replace('/-+/', '-', $filename) ?? $filename;
-        $filename = trim($filename, '-');
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext === '') {
-            $filename .= '.' . $allowedTypes[$mimeType];
+        // Force extension based on detected MIME type (prevents polyglot file attacks)
+        $basename = pathinfo(basename($_FILES['image']['name']), PATHINFO_FILENAME);
+        $basename = strtolower($basename);
+        $basename = preg_replace('/[^a-z0-9_-]/', '-', $basename) ?? '';
+        $basename = preg_replace('/-+/', '-', $basename) ?? '';
+        $basename = trim($basename, '-');
+        if ($basename === '') {
+            $basename = 'image-' . bin2hex(random_bytes(4));
         }
+        $filename = $basename . '.' . $allowedTypes[$mimeType];
 
         if ($filename === '') {
             $error = 'Invalid file name.';
