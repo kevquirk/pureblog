@@ -60,6 +60,7 @@ if ($action === 'new') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
+    verify_csrf();
     $post['title'] = trim($_POST['title'] ?? '');
     $post['slug'] = trim($_POST['slug'] ?? '');
     $post['date'] = trim($_POST['date'] ?? '');

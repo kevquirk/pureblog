@@ -52,6 +52,7 @@ if ($action === 'new') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
+    verify_csrf();
     $page['title'] = trim($_POST['title'] ?? '');
     $page['slug'] = trim($_POST['slug'] ?? '');
     $page['status'] = trim($_POST['status'] ?? 'draft');
