@@ -99,13 +99,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
             mkdir($assetDir, 0755, true);
         }
 
+        // MIME whitelist for image uploads
+        $allowedImageTypes = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/gif' => 'gif',
+            'image/webp' => 'webp',
+            'image/x-icon' => 'ico',
+            'image/vnd.microsoft.icon' => 'ico',
+        ];
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+
         if (!empty($_FILES['favicon']['name']) && $_FILES['favicon']['error'] === UPLOAD_ERR_OK) {
-            $name = basename($_FILES['favicon']['name']);
-            $name = strtolower($name);
-            $name = preg_replace('/[^a-z0-9._-]/', '-', $name) ?? $name;
-            $name = preg_replace('/-+/', '-', $name) ?? $name;
-            $name = trim($name, '-');
-            if ($name !== '') {
+            $faviconMime = $finfo->file($_FILES['favicon']['tmp_name']) ?: '';
+            if (!isset($allowedImageTypes[$faviconMime])) {
+                $errors[] = 'Favicon must be an image file (JPG, PNG, GIF, WebP, or ICO).';
+            } else {
+                $basename = pathinfo(basename($_FILES['favicon']['name']), PATHINFO_FILENAME);
+                $basename = strtolower($basename);
+                $basename = preg_replace('/[^a-z0-9_-]/', '-', $basename) ?? '';
+                $basename = trim($basename, '-');
+                if ($basename === '') {
+                    $basename = 'favicon';
+                }
+                $name = $basename . '.' . $allowedImageTypes[$faviconMime];
                 $dest = $assetDir . '/' . $name;
                 if (move_uploaded_file($_FILES['favicon']['tmp_name'], $dest)) {
                     $config['assets']['favicon'] = '/content/images/' . $name;
@@ -114,12 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (!empty($_FILES['og_image']['name']) && $_FILES['og_image']['error'] === UPLOAD_ERR_OK) {
-            $name = basename($_FILES['og_image']['name']);
-            $name = strtolower($name);
-            $name = preg_replace('/[^a-z0-9._-]/', '-', $name) ?? $name;
-            $name = preg_replace('/-+/', '-', $name) ?? $name;
-            $name = trim($name, '-');
-            if ($name !== '') {
+            $ogMime = $finfo->file($_FILES['og_image']['tmp_name']) ?: '';
+            if (!isset($allowedImageTypes[$ogMime])) {
+                $errors[] = 'Open Graph image must be an image file (JPG, PNG, GIF, WebP, or ICO).';
+            } else {
+                $basename = pathinfo(basename($_FILES['og_image']['name']), PATHINFO_FILENAME);
+                $basename = strtolower($basename);
+                $basename = preg_replace('/[^a-z0-9_-]/', '-', $basename) ?? '';
+                $basename = trim($basename, '-');
+                if ($basename === '') {
+                    $basename = 'og-image';
+                }
+                $name = $basename . '.' . $allowedImageTypes[$ogMime];
                 $dest = $assetDir . '/' . $name;
                 if (move_uploaded_file($_FILES['og_image']['tmp_name'], $dest)) {
                     $config['assets']['og_image'] = '/content/images/' . $name;
