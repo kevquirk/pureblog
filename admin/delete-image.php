@@ -24,17 +24,30 @@ if ($slug === '' || ($editorType !== 'page' && $date === '') || $filename === ''
     exit;
 }
 
-$folderName = $editorType === 'page'
-    ? $slug
-    : $slug;
+$folderName = $slug;
 $baseDir = realpath(__DIR__ . '/../content/images');
 if ($baseDir === false) {
     header('Location: ' . $redirect . '&upload_error=' . urlencode('Image folder not found.'));
     exit;
 }
 
+if (!is_safe_image_slug($folderName)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode('Invalid image path.'));
+    exit;
+}
+
 $targetDir = $baseDir . '/' . $folderName;
 $targetFile = $targetDir . '/' . basename($filename);
+
+if (!validate_image_path($baseDir, $targetDir)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode('Invalid image path.'));
+    exit;
+}
+
+if (!validate_image_path($baseDir, $targetFile)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode('Invalid image path.'));
+    exit;
+}
 
 if (!is_file($targetFile)) {
     header('Location: ' . $redirect . '&upload_error=' . urlencode('Image not found.'));
