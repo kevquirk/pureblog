@@ -71,7 +71,7 @@ uasort($tagCounts, static function (int $a, int $b): int {
 
 $topTagEntries = [];
 foreach ($tagCounts as $tag => $count) {
-    $topTagEntries[] = '<strong>' . e($tag) . '</strong> (' . (int) $count . ')';
+    $topTagEntries[] = '<strong>' . e((string) $tag) . '</strong> (' . (int) $count . ')';
     if (count($topTagEntries) >= 5) {
         break;
     }
