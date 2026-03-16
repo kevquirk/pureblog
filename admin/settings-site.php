@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $footerInjectPage = trim($_POST['footer_inject_page'] ?? '');
     $footerInjectPost = trim($_POST['footer_inject_post'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
+    $language = trim($_POST['language'] ?? '');
     $timezone = trim($_POST['timezone'] ?? '');
     $dateFormat = trim($_POST['date_format'] ?? '');
     $baseUrl = trim($_POST['base_url'] ?? '');
@@ -79,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['footer_inject_page'] = $footerInjectPage;
         $config['footer_inject_post'] = $footerInjectPost;
         $config['posts_per_page'] = $postsPerPage;
+        $config['language'] = $language !== '' ? $language : 'en';
         $config['timezone'] = $timezone;
         $config['date_format'] = $dateFormat;
         $config['base_url'] = $baseUrl;
@@ -165,6 +167,9 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="posts_per_page">Posts per page</label>
                 <input type="number" id="posts_per_page" name="posts_per_page" min="1" max="100" value="<?= e((string) ($config['posts_per_page'] ?? 20)) ?>">
+
+                <label for="language">Language <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer">language code</a>, e.g. en, fr, pt-BR)</span></label>
+                <input type="text" id="language" name="language" value="<?= e((string) ($config['language'] ?? 'en')) ?>" placeholder="en">
 
                 <label for="timezone">Timezone <span class="tip">(<a href="https://www.php.net/manual/en/timezones.php" target="_blank" rel="noopener noreferrer">PHP timezone list</a>)</span></label>
                 <input type="text" id="timezone" name="timezone" value="<?= e((string) ($config['timezone'] ?? date_default_timezone_get())) ?>" placeholder="UTC" required>

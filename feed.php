@@ -55,7 +55,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         <title><?= e($siteTitle) ?></title>
         <link><?= e($baseUrl) ?></link>
         <description><?= e($siteTagline !== '' ? $siteTagline : $siteTitle) ?></description>
-        <language>en</language>
+        <language><?= e($config['language'] ?? 'en') ?></language>
         <?php foreach ($posts as $post): ?>
             <?php
             $postUrl = $baseUrl . '/' . $post['slug'];

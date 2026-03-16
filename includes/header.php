@@ -16,7 +16,7 @@ $ogImage = $config['assets']['og_image'] ?? '';
 $isSquareOgImage = $ogImagePreferred === 'square';
 ?>
 <!DOCTYPE html>
-<html lang="en" data-theme="<?= e($mode) ?>">
+<html lang="<?= e($config['language'] ?? 'en') ?>" data-theme="<?= e($mode) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

@@ -14,6 +14,7 @@ $errors = [];
 $values = [
     'site_title' => '',
     'site_tagline' => '',
+    'language' => 'en',
     'base_url' => '',
     'admin_username' => '',
 ];
@@ -21,6 +22,7 @@ $values = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['site_title'] = trim($_POST['site_title'] ?? '');
     $values['site_tagline'] = trim($_POST['site_tagline'] ?? '');
+    $values['language'] = trim($_POST['language'] ?? 'en');
     $values['base_url'] = trim($_POST['base_url'] ?? '');
     $values['admin_username'] = trim($_POST['admin_username'] ?? '');
     $password = $_POST['password'] ?? '';
@@ -44,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config = default_config();
         $config['site_title'] = $values['site_title'];
         $config['site_tagline'] = $values['site_tagline'];
+        $config['language'] = $values['language'] !== '' ? $values['language'] : 'en';
         $config['base_url'] = $values['base_url'] !== '' ? $values['base_url'] : get_base_url();
         $config['admin_username'] = $values['admin_username'];
         $config['admin_password_hash'] = password_hash($password, PASSWORD_DEFAULT);
@@ -86,6 +89,9 @@ require __DIR__ . '/includes/admin-head.php';
 
             <label for="site_tagline">Site tagline (optional)</label>
             <input type="text" id="site_tagline" name="site_tagline" value="<?= e($values['site_tagline']) ?>" placeholder="A blog about my thoughts...">
+
+            <label for="language">Language <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer">language code</a>, e.g. en, fr, pt-BR)</span></label>
+            <input type="text" id="language" name="language" value="<?= e($values['language']) ?>" placeholder="en">
 
             <label for="base_url">Site URL</label>
             <input type="text" id="base_url" name="base_url" value="<?= e($values['base_url']) ?>" placeholder="https://example.com" required>

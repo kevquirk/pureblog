@@ -67,6 +67,7 @@ function default_config(): array
         'hide_homepage_title' => true,
         'hide_blog_page_title' => true,
         'base_url' => '',
+        'language' => 'en',
         'timezone' => date_default_timezone_get(),
         'date_format' => 'F j, Y',
         'admin_username' => '',

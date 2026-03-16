@@ -30,7 +30,7 @@ $adminActionFlash = $_SESSION['admin_action_flash'] ?? null;
 unset($_SESSION['admin_action_flash']);
 ?>
 <!DOCTYPE html>
-<html lang="en" data-admin-theme="<?= e($adminColorMode) ?>">
+<html lang="<?= e($config['language'] ?? 'en') ?>" data-admin-theme="<?= e($adminColorMode) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
