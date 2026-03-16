@@ -111,7 +111,6 @@ if (!$isTag && $requestPath === '' && $homepageSlug !== '') {
     $homepage = get_page_by_slug($homepageSlug, true);
     if ($homepage) {
         $page = $homepage;
-        $hidePageTitle = !empty($config['hide_homepage_title']);
         $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
         $pageTitle = $page['title'] ?? 'Page not found';
         $metaDescription = !empty($page['description']) ? $page['description'] : '';

@@ -218,11 +218,6 @@ input[type="radio"] {
     vertical-align: middle;
 }
 
-select#homepage_slug,
-select#blog_page_slug {
-    margin-bottom: 0.5rem;
-}
-
 .inline-radio {
     display: inline-flex;
     align-items: center;

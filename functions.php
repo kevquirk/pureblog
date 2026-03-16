@@ -64,8 +64,7 @@ function default_config(): array
         'posts_per_page' => 20,
         'homepage_slug' => '',
         'blog_page_slug' => '',
-        'hide_homepage_title' => true,
-        'hide_blog_page_title' => true,
+
         'base_url' => '',
         'language' => 'en',
         'timezone' => date_default_timezone_get(),

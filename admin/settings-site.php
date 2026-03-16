@@ -38,8 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $homepageSlug = trim($_POST['homepage_slug'] ?? '');
     $blogPageSlug = trim($_POST['blog_page_slug'] ?? '');
     $ogImagePreferred = trim($_POST['og_image_preferred'] ?? 'banner');
-    $hideHomepageTitle = !empty($_POST['hide_homepage_title']);
-    $hideBlogPageTitle = !empty($_POST['hide_blog_page_title']);
     $cacheEnabled = !empty($_POST['cache_enabled']);
     $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
 
@@ -86,8 +84,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['base_url'] = $baseUrl;
         $config['homepage_slug'] = $homepageSlug;
         $config['blog_page_slug'] = $blogPageSlug;
-        $config['hide_homepage_title'] = $hideHomepageTitle;
-        $config['hide_blog_page_title'] = $hideBlogPageTitle;
         $config['cache']['enabled'] = $cacheEnabled;
         $config['cache']['rss_ttl'] = $rssttl;
 
@@ -186,11 +182,6 @@ require __DIR__ . '/../includes/admin-head.php';
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <label class="inline-checkbox" for="hide_homepage_title">
-                    <input type="checkbox" id="hide_homepage_title" name="hide_homepage_title" <?= !empty($config['hide_homepage_title']) ? 'checked' : '' ?>>
-                    Hide homepage title
-                </label>
-
                 <label for="blog_page_slug">Blog page</label>
                 <select id="blog_page_slug" name="blog_page_slug">
                     <option value="">Use homepage</option>
@@ -201,10 +192,6 @@ require __DIR__ . '/../includes/admin-head.php';
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <label class="inline-checkbox" for="hide_blog_page_title">
-                    <input type="checkbox" id="hide_blog_page_title" name="hide_blog_page_title" <?= !empty($config['hide_blog_page_title']) ? 'checked' : '' ?>>
-                    Hide blog page title
-                </label>
 
                 <label for="base_url">Base URL</label>
                 <input type="text" id="base_url" name="base_url" value="<?= e($config['base_url']) ?>">

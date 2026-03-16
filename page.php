@@ -24,11 +24,8 @@ $blogFeedHidden = (($config['blog_page_slug'] ?? '') === '__hidden__');
         <?php else: ?>
             <?php
             $isBlogPage = !$blogFeedHidden && !empty($config['blog_page_slug']) && ($page['slug'] ?? '') === $config['blog_page_slug'];
-            $hidePageTitle = $hidePageTitle ?? ($isBlogPage ? !empty($config['hide_blog_page_title']) : false);
             ?>
             <article>
-                <?php if (!$hidePageTitle): ?>
-                <?php endif; ?>
                 <?= render_markdown($page['content'], ['page_title' => (string) ($page['title'] ?? '')]) ?>
             </article>
             <?php if ($isBlogPage): ?>
