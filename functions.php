@@ -1618,7 +1618,7 @@ function parse_custom_routes(string $raw): array
         }
 
         if (
-            !preg_match('#^/[a-zA-Z0-9/_-]+$#', $path)
+            ($path !== '/' && !preg_match('#^/[a-zA-Z0-9/_-]+$#', $path))
             || str_contains($path, '//')
             || str_contains($path, '..')
         ) {
