@@ -388,7 +388,7 @@ function validate_image_path(string $baseDir, string $targetPath): bool
  */
 function is_safe_image_slug(string $slug): bool
 {
-    return $slug !== '' && preg_match('/^[a-zA-Z0-9\-_]+$/', $slug) === 1;
+    return $slug !== '' && preg_match('/^[\p{L}\p{N}\-_]+$/u', $slug) === 1;
 }
 
 function slugify(string $value): string
@@ -399,6 +399,17 @@ function slugify(string $value): string
     } else {
         $value = strtolower($value);
     }
+
+    // Transliterate common diacritics to ASCII equivalents
+    $value = strtr($value, [
+        'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss',
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'å' => 'a',
+        'æ' => 'ae', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e',
+        'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+        'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o',
+        'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ý' => 'y',
+        'ÿ' => 'y',
+    ]);
 
     $value = preg_replace('/[^\p{L}\p{N}\s-]/u', '', $value) ?? '';
     $value = preg_replace('/[\s-]+/u', '-', $value) ?? '';
