@@ -337,7 +337,8 @@ main img,
 main video {
     max-width: 100%;
     border-radius: 5px;
-    margin: 1.5rem 0;
+    margin: 1.5rem auto;
+    display: block;
 }
 
 pre {

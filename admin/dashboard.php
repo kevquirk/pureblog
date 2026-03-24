@@ -77,53 +77,59 @@ foreach ($tagCounts as $tag => $count) {
     }
 }
 
-$topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : 'No tags yet';
+$topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : t('admin.dashboard.stat_no_tags');
 $timeSinceLastPublished = '0';
 if ($lastPublishedTimestamp > 0) {
     $delta = time() - $lastPublishedTimestamp;
     if ($delta < 60) {
-        $timeSinceLastPublished = 'Just now';
+        $timeSinceLastPublished = t('admin.dashboard.time_just_now');
     } elseif ($delta < 3600) {
         $minutes = (int) floor($delta / 60);
-        $timeSinceLastPublished = $minutes . ' minute' . ($minutes === 1 ? '' : 's') . ' ago';
+        $timeSinceLastPublished = $minutes === 1
+            ? t('admin.dashboard.time_minute_ago', ['n' => $minutes])
+            : t('admin.dashboard.time_minutes_ago', ['n' => $minutes]);
     } elseif ($delta < 86400) {
         $hours = (int) floor($delta / 3600);
-        $timeSinceLastPublished = $hours . ' hour' . ($hours === 1 ? '' : 's') . ' ago';
+        $timeSinceLastPublished = $hours === 1
+            ? t('admin.dashboard.time_hour_ago', ['n' => $hours])
+            : t('admin.dashboard.time_hours_ago', ['n' => $hours]);
     } else {
         $days = (int) floor($delta / 86400);
-        $timeSinceLastPublished = $days . ' day' . ($days === 1 ? '' : 's') . ' ago';
+        $timeSinceLastPublished = $days === 1
+            ? t('admin.dashboard.time_day_ago', ['n' => $days])
+            : t('admin.dashboard.time_days_ago', ['n' => $days]);
     }
 }
 
 $availableLayouts = get_layouts();
 
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
-$adminTitle = 'Dashboard - Pureblog';
+$adminTitle = t('admin.dashboard.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
         <?php if (!empty($_GET['saved'])): ?>
-            <p class="notice" data-auto-dismiss>Post saved.</p>
+            <p class="notice" data-auto-dismiss><?= e(t('admin.dashboard.notice_saved')) ?></p>
         <?php endif; ?>
         <?php if (!empty($_GET['deleted'])): ?>
-            <p class="notice" data-auto-dismiss>Post deleted.</p>
+            <p class="notice" data-auto-dismiss><?= e(t('admin.dashboard.notice_deleted')) ?></p>
         <?php endif; ?>
 
         <section class="dashboard-stats" aria-label="Dashboard stats">
             <article class="dashboard-stat-card dashboard-stat-card-metric">
-                <p class="dashboard-stat-label">Published posts</p>
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_published')) ?></p>
                 <p class="dashboard-stat-value"><?= e((string) $publishedCount) ?></p>
             </article>
             <article class="dashboard-stat-card dashboard-stat-card-metric">
-                <p class="dashboard-stat-label">Posts in <?= e((string) $currentYear) ?></p>
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_this_year', ['year' => $currentYear])) ?></p>
                 <p class="dashboard-stat-value"><?= e((string) $publishedThisYear) ?></p>
             </article>
             <article class="dashboard-stat-card dashboard-stat-card-metric">
-                <p class="dashboard-stat-label">Last post published</p>
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_last_published')) ?></p>
                 <p class="dashboard-stat-value"><?= e($timeSinceLastPublished) ?></p>
             </article>
             <article class="dashboard-stat-card dashboard-stat-card-tags">
-                <p class="dashboard-stat-label">Top tags</p>
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_top_tags')) ?></p>
                 <p class="dashboard-stat-value dashboard-stat-tags"><?= $topTagsLabel ?></p>
             </article>
         </section>
@@ -132,19 +138,19 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php if ($availableLayouts): ?>
                 <button type="button" id="new-post-button">
                     <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                    New post
+                    <?= e(t('admin.dashboard.new_post')) ?>
                 </button>
                 <dialog id="layout-picker" aria-labelledby="layout-picker-title">
-                    <h2 id="layout-picker-title">Choose a layout</h2>
+                    <h2 id="layout-picker-title"><?= e(t('admin.dashboard.choose_layout')) ?></h2>
                     <ul class="layout-picker-list">
-                        <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new">Default post</a></li>
+                        <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new"><?= e(t('admin.dashboard.default_post')) ?></a></li>
                         <?php foreach ($availableLayouts as $layout): ?>
                             <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new&amp;layout=<?= urlencode($layout['name']) ?>"><?= e($layout['label']) ?></a></li>
                         <?php endforeach; ?>
                     </ul>
                     <button type="button" id="layout-picker-close" class="delete">
                         <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
-                        Cancel
+                        <?= e(t('admin.dashboard.cancel')) ?>
                     </button>
                 </dialog>
                 <script>
@@ -160,22 +166,22 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php else: ?>
                 <a href="<?= base_path() ?>/admin/edit-post.php?action=new">
                     <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                    New post
+                    <?= e(t('admin.dashboard.new_post')) ?>
                 </a>
             <?php endif; ?>
         </nav>
 
 
         <form method="get" class="admin-search">
-            <label class="hidden" for="search">Search posts</label>
-            <input type="search" id="search" name="q" value="<?= e($search) ?>" placeholder="Search for a post...">
+            <label class="hidden" for="search"><?= e(t('admin.dashboard.search_label')) ?></label>
+            <input type="search" id="search" name="q" value="<?= e($search) ?>" placeholder="<?= e(t('admin.dashboard.search_placeholder')) ?>">
         </form>
 
         <?php if (!$posts): ?>
             <?php if ($search !== ''): ?>
-                <p>No posts found for "<?= e($search) ?>".</p>
+                <p><?= e(t('admin.dashboard.no_posts_found', ['search' => $search])) ?></p>
             <?php else: ?>
-                <p>No posts yet, get writing!</p>
+                <p><?= e(t('admin.dashboard.no_posts')) ?></p>
             <?php endif; ?>
         <?php else: ?>
             <ul class="admin-list">
@@ -195,10 +201,10 @@ require __DIR__ . '/../includes/admin-head.php';
                 <?php $searchQuery = $search !== '' ? '&q=' . urlencode($search) : ''; ?>
                 <nav class="pagination">
                     <?php if ($page > 1): ?>
-                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page - 1)) ?><?= $searchQuery ?>">&larr; Newer posts</a>
+                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page - 1)) ?><?= $searchQuery ?>"><?= e(t('admin.dashboard.pagination_newer')) ?></a>
                     <?php endif; ?>
                     <?php if ($page < $totalPages): ?>
-                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page + 1)) ?><?= $searchQuery ?>">Older posts &rarr;</a>
+                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page + 1)) ?><?= $searchQuery ?>"><?= e(t('admin.dashboard.pagination_older')) ?></a>
                     <?php endif; ?>
                 </nav>
             <?php endif; ?>

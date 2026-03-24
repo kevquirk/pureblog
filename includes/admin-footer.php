@@ -3,6 +3,8 @@
 ?>
 <footer>
     <p><a href="https://pureblog.org">Pure Blog</a> was created with 💙 by <a href="https://kevquirk.com">Kev Quirk</a>.</p>
+
+    <p><a href="https://pureblog.org/docs">Read the docs</a> | <a href="https://fosstodon.org/@purecommons">Find us on Mastodon</a> | <a href="https://github.com/kevquirk/pureblog">Source code</a></p>
 </footer>
 <script>
     document.addEventListener('keydown', (event) => {

@@ -168,10 +168,15 @@ a:hover {
 .notice {
     padding: 1rem;
     border: 1px solid var(--green);
-    
     color: var(--green);
     background: var(--input-bg);
     margin-bottom: 1.5rem;
+}
+
+.notice ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 p.current-image {
@@ -183,9 +188,14 @@ form label {
     display: block;
 }
 
-form label span.tip {
+form label span.tip,
+p.tip {
     font-size: 0.8rem;
     font-style: italic;
+}
+
+p.tip {
+  margin: -1rem 0 1.5rem 0;
 }
 
 input[type="text"],
@@ -604,6 +614,13 @@ th, td {
     }
 }
 
+.autosave-status {
+    font-size: 0.8rem;
+    color: var(--muted-color, var(--border-color));
+    align-self: center;
+    margin-left: auto;
+}
+
 .sidebar-section h2 {
     margin-top: 0;
 }
@@ -897,6 +914,37 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
 }
 
 .layout-picker-list a:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.tag-input-wrap {
+    position: relative;
+}
+
+.tag-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: -1.5rem 0 0 0;
+    padding: 0;
+    list-style: none;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    z-index: 100;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.tag-suggestions li {
+    padding: 0.4em 0.6em;
+    cursor: pointer;
+}
+
+.tag-suggestions li:hover,
+.tag-suggestions li.active {
     background: var(--text-color);
     color: var(--bg-color);
 }

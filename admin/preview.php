@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'slug' => $slug,
         'created_at' => time(),
     ];
-    $redirect = '/admin/preview.php?type=' . urlencode($editorType);
+    $redirect = base_path() . '/admin/preview.php?type=' . urlencode($editorType);
     if ($slug !== '') {
         $redirect .= '&slug=' . urlencode($slug);
     }

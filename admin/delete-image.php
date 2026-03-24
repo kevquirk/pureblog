@@ -16,8 +16,8 @@ $filename = trim($_POST['filename'] ?? '');
 $editorType = trim($_POST['editor_type'] ?? 'post');
 
 $redirect = $editorType === 'page'
-    ? '/admin/edit-page.php?slug=' . urlencode($slug)
-    : '/admin/edit-post.php?slug=' . urlencode($slug);
+    ? base_path() . '/admin/edit-page.php?slug=' . urlencode($slug)
+    : base_path() . '/admin/edit-post.php?slug=' . urlencode($slug);
 
 if ($slug === '' || ($editorType !== 'page' && $date === '') || $filename === '') {
     header('Location: ' . $redirect . '&upload_error=' . urlencode('Missing image data.'));

@@ -6,11 +6,11 @@ if ($bp !== '' && str_starts_with($settingsUriPath, $bp)) {
 }
 $settingsPath = trim($settingsUriPath, '/');
 $settingsItems = [
-    '/admin/settings-site.php' => ['label' => 'Site', 'icon' => 'globe'],
-    '/admin/settings-theme.php' => ['label' => 'Theme', 'icon' => 'paintbrush'],
-    '/admin/settings-css.php' => ['label' => 'CSS', 'icon' => 'braces'],
-    '/admin/settings-user.php' => ['label' => 'User', 'icon' => 'user'],
-    '/admin/settings-updates.php' => ['label' => 'Updates', 'icon' => 'upgrade'],
+    '/admin/settings-site.php'    => ['label' => t('admin.settings.nav.site'),    'icon' => 'globe'],
+    '/admin/settings-theme.php'   => ['label' => t('admin.settings.nav.theme'),   'icon' => 'paintbrush'],
+    '/admin/settings-css.php'     => ['label' => t('admin.settings.nav.css'),     'icon' => 'braces'],
+    '/admin/settings-user.php'    => ['label' => t('admin.settings.nav.user'),    'icon' => 'user'],
+    '/admin/settings-updates.php' => ['label' => t('admin.settings.nav.updates'), 'icon' => 'upgrade'],
 ];
 $settingsSaveFormId = $settingsSaveFormId ?? '';
 ?>
@@ -26,8 +26,8 @@ $settingsSaveFormId = $settingsSaveFormId ?? '';
     <?php endforeach; ?>
 </ul>
 <?php if ($settingsSaveFormId !== ''): ?>
-    <button class="save" type="submit" form="<?= e($settingsSaveFormId) ?>" aria-label="Save settings">
+    <button class="save" type="submit" form="<?= e($settingsSaveFormId) ?>" aria-label="<?= e(t('admin.settings.nav.save')) ?>">
         <svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg>
-        Save settings
+        <?= e(t('admin.settings.nav.save')) ?>
     </button>
 <?php endif; ?>

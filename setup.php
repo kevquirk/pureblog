@@ -19,6 +19,10 @@ $values = [
     'admin_username' => '',
 ];
 
+// Determine language early so t() renders in the chosen language throughout.
+$values['language'] = trim($_POST['language'] ?? $_GET['lang'] ?? 'en');
+lang_init($values['language']);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $values['site_title'] = trim($_POST['site_title'] ?? '');
     $values['site_tagline'] = trim($_POST['site_tagline'] ?? '');
@@ -29,17 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm = $_POST['confirm_password'] ?? '';
 
     if ($values['site_title'] === '') {
-        $errors[] = 'Site title is required.';
+        $errors[] = t('setup.error_title');
     }
 
     if ($values['admin_username'] === '') {
-        $errors[] = 'Admin username is required.';
+        $errors[] = t('setup.error_username');
     }
 
     if ($password === '' || $confirm === '') {
-        $errors[] = 'Password and confirmation are required.';
+        $errors[] = t('setup.error_password');
     } elseif ($password !== $confirm) {
-        $errors[] = 'Passwords do not match.';
+        $errors[] = t('setup.error_mismatch');
     }
 
     if (!$errors) {
@@ -53,25 +57,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $configDir = dirname(PUREBLOG_CONFIG_PATH);
         if (!is_dir($configDir) && !mkdir($configDir, 0755, true)) {
-            $errors[] = 'Failed to create config directory. Check permissions.';
+            $errors[] = t('setup.error_config_dir');
         } elseif (save_config($config)) {
             header('Location: ' . base_path() . '/admin/index.php?setup=1', true, 303);
             exit;
         }
 
         if (!$errors) {
-            $errors[] = 'Failed to write config file. Check permissions.';
+            $errors[] = t('setup.error_config_write');
         }
     }
 }
 
-$adminTitle = 'Setup - Pureblog';
+$adminTitle = t('setup.page_title');
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $hideAdminNav = true;
 require __DIR__ . '/includes/admin-head.php';
 ?>
     <main class="narrow">
-        <h1>Setup your new site</h1>
+        <h1><?= e(t('setup.heading')) ?></h1>
         <br>
         <?php if ($errors): ?>
             <div class="notice">
@@ -84,27 +88,31 @@ require __DIR__ . '/includes/admin-head.php';
         <?php endif; ?>
 
         <form method="post">
-            <label for="site_title">Site title</label>
+            <label for="site_title"><?= e(t('setup.site_title')) ?></label>
             <input type="text" id="site_title" name="site_title" value="<?= e($values['site_title']) ?>" placeholder="Sally's Blog" required>
 
-            <label for="site_tagline">Site tagline (optional)</label>
+            <label for="site_tagline"><?= e(t('setup.tagline')) ?></label>
             <input type="text" id="site_tagline" name="site_tagline" value="<?= e($values['site_tagline']) ?>" placeholder="A blog about my thoughts...">
 
-            <label for="language">Language <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer">language code</a>, e.g. en, fr, pt-BR)</span></label>
-            <input type="text" id="language" name="language" value="<?= e($values['language']) ?>" placeholder="en">
+            <label for="language"><?= e(t('setup.language')) ?></label>
+            <select id="language" name="language" onchange="window.location.href='?lang='+encodeURIComponent(this.value)">
+                <?php foreach (lang_available() as $code => $nativeName): ?>
+                    <option value="<?= e($code) ?>"<?= $code === $values['language'] ? ' selected' : '' ?>><?= e($nativeName) ?></option>
+                <?php endforeach; ?>
+            </select>
 
-            <label for="base_url">Site URL</label>
+            <label for="base_url"><?= e(t('setup.base_url')) ?></label>
             <input type="text" id="base_url" name="base_url" value="<?= e($values['base_url']) ?>" placeholder="https://example.com" required>
 
-            <label for="admin_username">Admin username</label>
+            <label for="admin_username"><?= e(t('setup.username')) ?></label>
             <input type="text" id="admin_username" name="admin_username" value="<?= e($values['admin_username']) ?>" required>
 
-            <label for="password">Admin password</label>
+            <label for="password"><?= e(t('setup.password')) ?></label>
             <input type="password" id="password" name="password" required>
 
-            <label for="confirm_password">Confirm password</label>
+            <label for="confirm_password"><?= e(t('setup.confirm_password')) ?></label>
             <input type="password" id="confirm_password" name="confirm_password" required>
-            <p><button type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg> Create Site</button></p>
+            <p><button type="submit"><svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg> <?= e(t('setup.submit')) ?></button></p>
         </form>
     </main>
 <?php require __DIR__ . '/includes/admin-footer.php'; ?>

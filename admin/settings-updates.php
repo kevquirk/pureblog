@@ -829,11 +829,11 @@ if (isset($_GET['package_plan']) && $packagePlan === null && $packagePlanError =
     $packagePlanError = 'Unable to inspect release package.';
 }
 
-$adminTitle = 'Updates - Pureblog';
+$adminTitle = t('admin.settings.updates.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>Updates</h1>
+        <h1><?= e(t('admin.settings.updates.heading')) ?></h1>
 
         <?php $settingsSaveFormId = ''; ?>
         <nav class="editor-actions settings-actions">
@@ -841,67 +841,67 @@ require __DIR__ . '/../includes/admin-head.php';
         </nav>
 
         <section class="section-divider">
-            <span class="title">Version check</span>
-            <p><strong>Current version:</strong> <?= e($currentVersionDisplay) ?></p>
+            <span class="title"><?= e(t('admin.settings.updates.section_version')) ?></span>
+            <p><strong><?= e(t('admin.settings.updates.current_version')) ?></strong> <?= e($currentVersionDisplay) ?></p>
             <?php if ($latestBackup !== ''): ?>
-                <p><strong>Last backup:</strong>
+                <p><strong><?= e(t('admin.settings.updates.last_backup')) ?></strong>
                     <?php if ($latestBackupTimestamp !== ''): ?>
                         <?= e($latestBackupTimestamp) ?>
                     <?php else: ?>
-                        Unknown time
+                        <?= e(t('admin.settings.updates.unknown_time')) ?>
                     <?php endif; ?>
                     (<code><?= e($latestBackup) ?></code>)
                 </p>
             <?php endif; ?>
-            <p><strong>Repository:</strong> <a href="https://github.com/kevquirk/pureblog" target="_blank" rel="noopener noreferrer">github.com/kevquirk/pureblog</a></p>
+            <p><strong><?= e(t('admin.settings.updates.repository')) ?></strong> <a href="https://github.com/kevquirk/pureblog" target="_blank" rel="noopener noreferrer">github.com/kevquirk/pureblog</a></p>
             <p>
                 <a class="button" href="<?= base_path() ?>/admin/settings-updates.php?check=1">
                     <svg class="icon" aria-hidden="true"><use href="#icon-upgrade"></use></svg>
-                    Check latest release
+                    <?= e(t('admin.settings.updates.check_release')) ?>
                 </a>
                 <a class="button" href="<?= base_path() ?>/admin/settings-updates.php?package_plan=1">
                     <svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg>
-                    Inspect release package
+                    <?= e(t('admin.settings.updates.inspect_package')) ?>
                 </a>
             </p>
 
             <?php if ($latest !== null && !($latest['ok'] ?? false)): ?>
-                <p class="notice"><?= e($latest['error'] ?? 'Unable to check for updates.') ?></p>
+                <p class="notice"><?= e($latest['error'] ?? t('admin.settings.updates.error_check')) ?></p>
             <?php endif; ?>
 
             <?php if ($latest !== null && ($latest['ok'] ?? false)): ?>
-                <p><strong>Latest release:</strong> <?= e($latest['tag'] !== '' ? $latest['tag'] : ($latest['name'] ?? 'Unknown')) ?></p>
+                <p><strong><?= e(t('admin.settings.updates.latest_release')) ?></strong> <?= e($latest['tag'] !== '' ? $latest['tag'] : ($latest['name'] ?? 'Unknown')) ?></p>
                 <?php if (($latest['published_at'] ?? '') !== ''): ?>
-                    <p><strong>Published:</strong> <?= e(format_datetime_for_display((string) $latest['published_at'], $config, 'Y-m-d')) ?></p>
+                    <p><strong><?= e(t('admin.settings.updates.published')) ?></strong> <?= e(format_datetime_for_display((string) $latest['published_at'], $config, 'Y-m-d')) ?></p>
                 <?php endif; ?>
-                <p><a href="<?= e($latest['url'] ?? 'https://github.com/kevquirk/pureblog/releases') ?>" target="_blank" rel="noopener noreferrer">View release notes</a></p>
+                <p><a href="<?= e($latest['url'] ?? 'https://github.com/kevquirk/pureblog/releases') ?>" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.updates.view_release_notes')) ?></a></p>
             <?php endif; ?>
         </section>
 
         <?php if ($packagePlanError !== ''): ?>
         <section class="section-divider">
-            <span class="title">Release package inspection</span>
+            <span class="title"><?= e(t('admin.settings.updates.section_inspect')) ?></span>
             <p class="notice"><?= e($packagePlanError) ?></p>
         </section>
         <?php endif; ?>
 
         <?php if ($packagePlan !== null && ($packagePlan['ok'] ?? false)): ?>
         <section class="section-divider">
-            <span class="title">Release package inspection</span>
+            <span class="title"><?= e(t('admin.settings.updates.section_inspect')) ?></span>
             <?php if (!empty($packagePlan['already_latest'])): ?>
-                <p><?= e((string) ($packagePlan['message'] ?? 'You are already on the latest release.')) ?></p>
+                <p><?= e((string) ($packagePlan['message'] ?? t('admin.settings.updates.already_latest'))) ?></p>
             <?php else: ?>
-            <p><strong>Planned file actions:</strong></p>
+            <p><strong><?= e(t('admin.settings.updates.planned_actions')) ?></strong></p>
             <ul>
-                <li><strong>Add:</strong> <?= e((string) ($packagePlan['counts']['add'] ?? 0)) ?></li>
-                <li><strong>Replace:</strong> <?= e((string) ($packagePlan['counts']['replace'] ?? 0)) ?></li>
-                <li><strong>Unchanged:</strong> <?= e((string) ($packagePlan['counts']['unchanged'] ?? 0)) ?></li>
-                <li><strong>Preserved files (<code>/config</code>, <code>/content</code>, <code>/data</code>, all <code>.htaccess</code> files):</strong> <?= e((string) ($packagePlan['counts']['skip'] ?? 0)) ?></li>
-                <li><strong>Local files not in upstream release (will be deleted):</strong> <?= e((string) ($packagePlan['counts']['local_only'] ?? 0)) ?></li>
+                <li><strong><?= e(t('admin.settings.updates.action_add')) ?></strong> <?= e((string) ($packagePlan['counts']['add'] ?? 0)) ?></li>
+                <li><strong><?= e(t('admin.settings.updates.action_replace')) ?></strong> <?= e((string) ($packagePlan['counts']['replace'] ?? 0)) ?></li>
+                <li><strong><?= e(t('admin.settings.updates.action_unchanged')) ?></strong> <?= e((string) ($packagePlan['counts']['unchanged'] ?? 0)) ?></li>
+                <li><strong><?= e(t('admin.settings.updates.action_preserved')) ?></strong> <?= e((string) ($packagePlan['counts']['skip'] ?? 0)) ?></li>
+                <li><strong><?= e(t('admin.settings.updates.action_local_only')) ?></strong> <?= e((string) ($packagePlan['counts']['local_only'] ?? 0)) ?></li>
             </ul>
 
             <?php if (!empty($packagePlan['will_add'])): ?>
-                <p><strong>Will add:</strong></p>
+                <p><strong><?= e(t('admin.settings.updates.will_add')) ?></strong></p>
                 <ul>
                     <?php foreach ($packagePlan['will_add'] as $path): ?>
                         <li><code><?= e($path) ?></code></li>
@@ -910,7 +910,7 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php endif; ?>
 
             <?php if (!empty($packagePlan['will_replace'])): ?>
-                <p><strong>Will replace:</strong></p>
+                <p><strong><?= e(t('admin.settings.updates.will_replace')) ?></strong></p>
                 <ul>
                     <?php foreach ($packagePlan['will_replace'] as $path): ?>
                         <li><code><?= e($path) ?></code></li>
@@ -919,7 +919,7 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php endif; ?>
 
             <?php if (!empty($packagePlan['local_only'])): ?>
-                <p><strong>Local files not in upstream release (will be deleted):</strong></p>
+                <p><strong><?= e(t('admin.settings.updates.will_delete')) ?></strong></p>
                 <ul>
                     <?php foreach ($packagePlan['local_only'] as $path): ?>
                         <li><code><?= e($path) ?></code></li>
@@ -927,11 +927,11 @@ require __DIR__ . '/../includes/admin-head.php';
                 </ul>
             <?php endif; ?>
 
-            <form method="post" action="<?= base_path() ?>/admin/settings-updates.php" onsubmit="return confirm('Apply latest update now? This will replace core files and keep /config, /content, /data, and all .htaccess files.');">
+            <form method="post" action="<?= base_path() ?>/admin/settings-updates.php" onsubmit="return confirm('<?= e(t('admin.settings.updates.apply_confirm')) ?>');">
                 <?= csrf_field() ?>
                 <button class="button save" type="submit" name="apply_update" value="1">
                     <svg class="icon" aria-hidden="true"><use href="#icon-upgrade"></use></svg>
-                    Apply latest update
+                    <?= e(t('admin.settings.updates.apply_update')) ?>
                 </button>
             </form>
             <?php endif; ?>
@@ -940,23 +940,23 @@ require __DIR__ . '/../includes/admin-head.php';
 
         <?php if (!empty($availableBackups)): ?>
         <section class="section-divider">
-            <span class="title">Backup restore</span>
-            <p>Backups in <code>/backup</code> are excluded from updates and can be used for rollback.</p>
+            <span class="title"><?= e(t('admin.settings.updates.section_backup')) ?></span>
+            <p><?= e(t('admin.settings.updates.backup_info')) ?></p>
             <form method="post" action="<?= base_path() ?>/admin/settings-updates.php">
                 <?= csrf_field() ?>
-                <label for="backup-name">Available backups</label>
+                <label for="backup-name"><?= e(t('admin.settings.updates.available_backups')) ?></label>
                 <select id="backup-name" name="backup_name" required>
                     <?php foreach ($availableBackups as $backupName): ?>
                         <option value="<?= e($backupName) ?>"><?= e($backupName) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <button class="button" type="submit" name="restore_backup" value="1" onclick="return confirm('Restore this backup now? Current core files will be replaced.');">
+                <button class="button" type="submit" name="restore_backup" value="1" onclick="return confirm('<?= e(t('admin.settings.updates.restore_confirm')) ?>');">
                     <svg class="icon" aria-hidden="true"><use href="#icon-upgrade"></use></svg>
-                    Restore selected backup
+                    <?= e(t('admin.settings.updates.restore_backup')) ?>
                 </button>
-                <button class="button delete" type="submit" name="delete_backup" value="1" onclick="return confirm('Delete this backup permanently? This cannot be undone.');">
+                <button class="button delete" type="submit" name="delete_backup" value="1" onclick="return confirm('<?= e(t('admin.settings.updates.delete_backup_confirm')) ?>');">
                     <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
-                    Delete selected backup
+                    <?= e(t('admin.settings.updates.delete_backup')) ?>
                 </button>
             </form>
         </section>
@@ -964,13 +964,13 @@ require __DIR__ . '/../includes/admin-head.php';
 
         <?php if ($applyResult !== null): ?>
         <section class="section-divider">
-            <span class="title">Apply result</span>
+            <span class="title"><?= e(t('admin.settings.updates.section_result')) ?></span>
             <?php if (!($applyResult['ok'] ?? false)): ?>
-                <p class="notice"><?= e((string) ($applyResult['error'] ?? 'Update failed.')) ?></p>
+                <p class="notice"><?= e((string) ($applyResult['error'] ?? t('admin.settings.updates.update_failed'))) ?></p>
             <?php else: ?>
-                <p><?= e((string) ($applyResult['message'] ?? 'Update completed.')) ?></p>
+                <p><?= e((string) ($applyResult['message'] ?? t('admin.settings.updates.update_completed'))) ?></p>
                 <?php if (!empty($applyResult['backup_path'])): ?>
-                    <p><strong>Backup path:</strong> <code><?= e((string) $applyResult['backup_path']) ?></code></p>
+                    <p><strong><?= e(t('admin.settings.updates.backup_path')) ?></strong> <code><?= e((string) $applyResult['backup_path']) ?></code></p>
                 <?php endif; ?>
             <?php endif; ?>
         </section>

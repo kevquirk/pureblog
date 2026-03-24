@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (save_config($config)) {
-            $notice = 'Theme colors reset to defaults.';
+            $notice = t('admin.settings.theme.notice_reset');
         } else {
-            $errors[] = 'Failed to save settings.';
+            $errors[] = t('admin.settings.theme.error_save');
         }
     } else {
     $fontChoice = $_POST['font_stack'] ?? 'sans';
@@ -67,23 +67,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $postListLayout = $_POST['post_list_layout'] ?? 'excerpt';
 
     if (!in_array($fontChoice, ['sans', 'serif', 'mono'], true)) {
-        $errors[] = 'Font stack must be sans, serif, or mono.';
+        $errors[] = t('admin.settings.theme.error_font');
     }
 
     if (!in_array($adminFontChoice, ['sans', 'serif', 'mono'], true)) {
-        $errors[] = 'Admin font stack must be sans, serif, or mono.';
+        $errors[] = t('admin.settings.theme.error_admin_font');
     }
 
     if (!in_array($adminColorMode, ['light', 'dark', 'auto'], true)) {
-        $errors[] = 'Admin color mode must be light, dark, or auto.';
+        $errors[] = t('admin.settings.theme.error_admin_color');
     }
 
     if (!in_array($colorMode, ['light', 'dark', 'auto'], true)) {
-        $errors[] = 'Color mode must be light, dark, or auto.';
+        $errors[] = t('admin.settings.theme.error_color_mode');
     }
 
     if (!in_array($postListLayout, ['excerpt', 'full', 'archive'], true)) {
-        $errors[] = 'Post list layout must be excerpt, full, or archive.';
+        $errors[] = t('admin.settings.theme.error_post_layout');
     }
 
     if (!$errors) {
@@ -104,19 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['theme']['post_list_layout'] = $postListLayout;
 
             if (save_config($config)) {
-                $notice = 'Settings updated.';
+                $notice = t('admin.settings.theme.notice_updated');
             } else {
-                $errors[] = 'Failed to save settings.';
+                $errors[] = t('admin.settings.theme.error_save');
             }
         }
     }
 }
 
-$adminTitle = 'Theme Settings - Pureblog';
+$adminTitle = t('admin.settings.theme.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>Theme & layout settings</h1>
+        <h1><?= e(t('admin.settings.theme.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>

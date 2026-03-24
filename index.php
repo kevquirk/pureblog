@@ -36,6 +36,12 @@ if (!cache_should_bypass($config)) {
     });
 }
 
+// Block direct access to raw markdown files.
+if (str_ends_with($requestPath, '.md')) {
+    require __DIR__ . '/404.php';
+    exit;
+}
+
 $customRoutes = parse_custom_routes((string) ($config['custom_routes'] ?? ''));
 foreach ($customRoutes as $customRoute) {
     if (($customRoute['path'] ?? '') !== $requestPathWithSlash) {

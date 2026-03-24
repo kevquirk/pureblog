@@ -80,7 +80,7 @@ if ($error === '') {
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
             $error = 'Unable to save uploaded file.';
         } else {
-            $url = '/content/images/' . $folder . '/' . $filename;
+            $url = base_path() . '/content/images/' . $folder . '/' . $filename;
             $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
             $message = '![' . $altText . '](' . $url . ')';
         }
@@ -88,8 +88,8 @@ if ($error === '') {
 }
 
 $redirect = $editorType === 'page'
-    ? '/admin/edit-page.php?slug=' . urlencode($slug)
-    : '/admin/edit-post.php?slug=' . urlencode($slug);
+    ? base_path() . '/admin/edit-page.php?slug=' . urlencode($slug)
+    : base_path() . '/admin/edit-post.php?slug=' . urlencode($slug);
 if ($message !== '') {
     $redirect .= '&uploaded=' . urlencode($message);
 } elseif ($error !== '') {

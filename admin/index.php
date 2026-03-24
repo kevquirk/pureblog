@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($isLockedOut) {
         $remaining = $lockoutUntil - $now;
         $minutes = (int) ceil($remaining / 60);
-        $error = 'Too many failed attempts. Try again in ' . $minutes . ' minute(s).';
+        $error = t('admin.login.error_lockout', ['minutes' => $minutes]);
     } else {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -47,34 +47,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['login_failures'] = $failures;
         if ($failures >= 5) {
             $_SESSION['lockout_until'] = $now + (5 * 60);
-            $error = 'Too many failed attempts. Try again in 5 minutes.';
+            $error = t('admin.login.error_lockout_5');
         } else {
-            $error = 'Invalid credentials.';
+            $error = t('admin.login.error_invalid');
         }
     }
 }
 
-$adminTitle = 'Admin Login - Pureblog';
+$adminTitle = t('admin.login.page_title');
 $hideAdminNav = true;
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="narrow">
         <br>
-        <h1>Admin Login</h1>
+        <h1><?= e(t('admin.login.heading')) ?></h1>
         <?php if (!empty($_GET['setup'])): ?>
-            <p>Setup complete. Log in to continue.</p>
+            <p><?= e(t('admin.login.setup_complete')) ?></p>
         <?php endif; ?>
         <?php if ($error !== ''): ?>
             <p class="notice"><?= e($error) ?></p>
         <?php endif; ?>
         <form method="post">
             <?= csrf_field() ?>
-            <label for="username">Username</label>
+            <label for="username"><?= e(t('admin.login.username')) ?></label>
             <input type="text" id="username" name="username" autofocus value="<?= e($username) ?>" required<?= $isLockedOut ? ' disabled' : '' ?>>
 
-            <label for="password">Password</label>
+            <label for="password"><?= e(t('admin.login.password')) ?></label>
             <input type="password" id="password" name="password" required<?= $isLockedOut ? ' disabled' : '' ?>>
-            <button type="submit"<?= $isLockedOut ? ' disabled' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg> Log in</button>
+            <button type="submit"<?= $isLockedOut ? ' disabled' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg> <?= e(t('admin.login.submit')) ?></button>
         </form>
     </main>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

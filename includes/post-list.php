@@ -4,14 +4,14 @@
 $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQueryParams)) ? $paginationQueryParams : [];
 ?>
 <?php if (!$posts): ?>
-    <p>No posts yet, get writing! 🙃</p>
+    <p><?= e(t('frontend.no_posts')) ?></p>
 <?php else: ?>
     <?php foreach ($posts as $post): ?>
         <article class="post-item">
             <!-- Archive view -->
             <?php if ($postListLayout === 'archive'): ?>
                 <p class="post-archive-view">
-                    <time><?= e(format_post_date_for_display((string) ($post['date'] ?? ''), $config ?? [])) ?></time>
+                    <time datetime="<?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) ($post['date'] ?? ''), $config ?? [])) ?></time>
                     <span class="post-archive-title"><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></span>
                 </p>
             
@@ -20,7 +20,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
                 <div class="excerpt-view">
                     <h2><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h2>
                     <?php if ($post['date']): ?>
-                        <p><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
+                        <p><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time datetime="<?= e(format_datetime_for_display((string) $post['date'], $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?php
                     $excerptSource = trim((string) ($post['description'] ?? ''));
@@ -39,7 +39,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
                 <div class="full-post-view">
                     <h1><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h1>
                     <?php if ($post['date']): ?>
-                        <p class="post-date"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
+                        <p class="post-date"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time datetime="<?= e(format_datetime_for_display((string) $post['date'], $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
                     <?php if (!empty($post['tags'])): ?>
@@ -57,14 +57,14 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
                 $prevParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage - 1)]);
                 $prevHref = e($paginationBase) . '?' . e(http_build_query($prevParams));
                 ?>
-                <a href="<?= $prevHref ?>">&larr; Newer posts</a>
+                <a href="<?= $prevHref ?>"><?= e(t('frontend.pagination_newer')) ?></a>
             <?php endif; ?>
             <?php if ($currentPage < $totalPages): ?>
                 <?php
                 $nextParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage + 1)]);
                 $nextHref = e($paginationBase) . '?' . e(http_build_query($nextParams));
                 ?>
-                <a href="<?= $nextHref ?>">Older posts &rarr;</a>
+                <a href="<?= $nextHref ?>"><?= e(t('frontend.pagination_older')) ?></a>
             <?php endif; ?>
         </nav>
     <?php endif; ?>

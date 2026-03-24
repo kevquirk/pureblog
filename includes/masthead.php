@@ -6,7 +6,7 @@
     <?php if ($navPages || $customNavItems): ?>
         <nav class="site-nav">
             <ul>
-                <li><a href="<?= base_path() ?>/"<?= $currentPath === '' ? ' class="current"' : '' ?>>Home</a></li>
+                <li><a href="<?= base_path() ?>/"<?= $currentPath === '' ? ' class="current"' : '' ?>><?= e(t('frontend.nav_home')) ?></a></li>
                 <?php foreach ($navPages as $navPage): ?>
                     <?php $isCurrent = $currentPath === $navPage['slug']; ?>
                     <li><a href="<?= base_path() ?>/<?= e($navPage['slug']) ?>"<?= $isCurrent ? ' class="current"' : '' ?>><?= e($navPage['title']) ?></a></li>

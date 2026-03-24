@@ -62,6 +62,7 @@ function default_config(): array
         'footer_inject_page' => '',
         'footer_inject_post' => '',
         'posts_per_page' => 20,
+        'search_excerpt_length' => 2500,
         'homepage_slug' => '',
         'blog_page_slug' => '',
 
@@ -121,12 +122,174 @@ function load_hooks(): void
     }
 }
 
+// ---------------------------------------------------------------------------
+// Internationalisation helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Load a lang file for the given language code, with fallbacks:
+ * exact match → base language (e.g. 'en' from 'en-GB') → 'en'.
+ */
+function _lang_load_file(string $language): array
+{
+    $safe = preg_replace('/[^a-zA-Z0-9_-]/', '', $language) ?? 'en';
+    $base = preg_replace('/[^a-zA-Z0-9]/', '', explode('-', $safe)[0]) ?? 'en';
+
+    foreach (array_unique([$safe, strtolower($safe), $base, strtolower($base), 'en']) as $candidate) {
+        if ($candidate === '') {
+            continue;
+        }
+        $path = PUREBLOG_BASE_PATH . '/lang/' . $candidate . '.php';
+        if (is_file($path)) {
+            $data = require $path;
+            if (is_array($data)) {
+                return $data;
+            }
+        }
+    }
+
+    return [];
+}
+
+/**
+ * Override the language used by t() — must be called before the first t() call.
+ * Used by the setup wizard so the page can render in the selected language
+ * before a config file exists.
+ */
+function lang_init(string $language): void
+{
+    global $_pureblog_lang_code;
+    $_pureblog_lang_code = $language;
+}
+
+/**
+ * Return all available languages as [code => nativeName], sorted by name.
+ * Scans lang/*.php and reads the top-level 'name' key from each file.
+ */
+function lang_available(): array
+{
+    $langs = [];
+    $files = glob(PUREBLOG_BASE_PATH . '/lang/*.php') ?: [];
+
+    foreach ($files as $file) {
+        $code = basename($file, '.php');
+        $data = require $file;
+        if (is_array($data) && isset($data['name']) && is_string($data['name'])) {
+            $langs[$code] = $data['name'];
+        }
+    }
+
+    asort($langs);
+    return $langs;
+}
+
+/**
+ * Return the loaded lang strings, lazily initialising from config on first call.
+ * Respects lang_init() override if set (used during setup).
+ * @internal
+ */
+function _lang_strings(): array
+{
+    static $strings = null;
+
+    if ($strings === null) {
+        global $_pureblog_lang_code;
+        if (isset($_pureblog_lang_code) && $_pureblog_lang_code !== '') {
+            $strings = _lang_load_file($_pureblog_lang_code);
+        } else {
+            $config  = load_config();
+            $strings = _lang_load_file((string) ($config['language'] ?? 'en'));
+        }
+    }
+
+    return $strings;
+}
+
+/**
+ * Translate a dot-notation key, with optional {placeholder} replacements.
+ * Returns the key itself if no translation is found, so missing strings
+ * degrade gracefully.
+ *
+ * Example: t('admin.login.heading')
+ * Example: t('admin.dashboard.stat_this_year', ['year' => 2026])
+ */
+function t(string $key, array $replacements = []): string
+{
+    $strings = _lang_strings();
+    $parts   = explode('.', $key);
+    $value   = $strings;
+
+    foreach ($parts as $part) {
+        if (!is_array($value) || !array_key_exists($part, $value)) {
+            return $key;
+        }
+        $value = $value[$part];
+    }
+
+    if (!is_string($value)) {
+        return $key;
+    }
+
+    foreach ($replacements as $placeholder => $replacement) {
+        $value = str_replace('{' . $placeholder . '}', (string) $replacement, $value);
+    }
+
+    return $value;
+}
+
+/**
+ * Substitute translated month/day names into a pre-formatted date string.
+ * Replacement order (full before short) prevents partial matches.
+ * @internal
+ */
+function _lang_translate_date(string $formatted): string
+{
+    $strings     = _lang_strings();
+    $months      = $strings['date']['months']       ?? [];
+    $monthsShort = $strings['date']['months_short'] ?? [];
+    $days        = $strings['date']['days']         ?? [];
+    $daysShort   = $strings['date']['days_short']   ?? [];
+
+    if (!$months && !$days) {
+        return $formatted;
+    }
+
+    $enMonths      = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    $enMonthsShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    $enDays        = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    $enDaysShort   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    if (count($months) === 12) {
+        $formatted = str_replace($enMonths, $months, $formatted);
+    }
+    if (count($monthsShort) === 12) {
+        $formatted = str_replace($enMonthsShort, $monthsShort, $formatted);
+    }
+    if (count($days) === 7) {
+        $formatted = str_replace($enDays, $days, $formatted);
+    }
+    if (count($daysShort) === 7) {
+        $formatted = str_replace($enDaysShort, $daysShort, $formatted);
+    }
+
+    return $formatted;
+}
+
 function call_hook(string $name, array $args = []): void
 {
     load_hooks();
     if (function_exists($name)) {
         $name(...$args);
     }
+}
+
+function apply_filter(string $name, mixed $value): mixed
+{
+    load_hooks();
+    if (function_exists($name)) {
+        return $name($value);
+    }
+    return $value;
 }
 
 /**
@@ -606,7 +769,7 @@ function format_datetime_for_display(?string $value, array $config, ?string $for
     }
 
     $effectiveFormat = $format !== null && trim($format) !== '' ? $format : site_date_format($config);
-    return $dt->format($effectiveFormat);
+    return _lang_translate_date($dt->format($effectiveFormat));
 }
 
 function format_post_date_for_rss(?string $value, array $config): string
@@ -764,7 +927,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
     $status = trim($page['status'] ?? 'draft');
     $description = trim($page['description'] ?? '');
     $includeInNav = (bool) ($page['include_in_nav'] ?? true);
-    $content = $page['content'] ?? '';
+    $content = str_replace("\r", '', $page['content'] ?? '');
 
     if ($slug === '') {
         $slug = slugify($title);
@@ -840,6 +1003,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         call_hook('on_page_deleted', [$slug]);
     }
 
+    get_all_pages(true, true);
     cache_clear();
     return true;
 }
@@ -955,7 +1119,7 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     $date = trim($post['date'] ?? '');
     $status = trim($post['status'] ?? 'draft');
     $tags = $post['tags'] ?? [];
-    $content = $post['content'] ?? '';
+    $content = str_replace("\r", '', $post['content'] ?? '');
     $description = trim($post['description'] ?? '');
 
     if ($slug === '') {
@@ -1426,6 +1590,7 @@ function filter_content(string $markdown, array $context = []): string
 
     $markdown = render_global_shortcodes($markdown, $context);
     $markdown = render_any_data_loops($markdown);
+    $markdown = apply_filter('on_filter_content', $markdown);
 
     $markdown = restore_inline_code_spans($markdown, $inlineCodeSpans);
 
@@ -1440,7 +1605,10 @@ function get_excerpt(string $markdown, int $length = 200): string
     $excerpt = preg_replace('/`[^`]*`/', ' ', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/!\[[^\]]*\]\([^)]+\)/', ' ', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/\[([^\]]*)\]\([^)]+\)/', '$1', $excerpt) ?? $excerpt;
-    $excerpt = preg_replace('/[*_~>#-]+/', ' ', $excerpt) ?? $excerpt;
+    $excerpt = preg_replace('/^[ \t]*[-*>]+[ \t]*/m', ' ', $excerpt) ?? $excerpt; // list markers / blockquotes
+    $excerpt = preg_replace('/^[ \t]*#{1,6}[ \t]+/m', ' ', $excerpt) ?? $excerpt;  // ATX headings
+    $excerpt = preg_replace('/^[-*_]{2,}[ \t]*$/m', ' ', $excerpt) ?? $excerpt;    // setext headers / HR
+    $excerpt = preg_replace('/[*_~]+/', '', $excerpt) ?? $excerpt;                  // inline emphasis
     $excerpt = strip_tags($excerpt);
     $excerpt = preg_replace('/\s+/', ' ', $excerpt) ?? $excerpt;
     $excerpt = trim($excerpt);
@@ -1719,9 +1887,12 @@ function filter_posts_by_query(array $posts, string $query): array
 
 function build_search_index(): bool
 {
+    $config = load_config();
+    $excerptLength = (int) ($config['search_excerpt_length'] ?? 2500);
     $posts = get_all_posts(false, true);
-    $index = array_map(function (array $post): array {
-        $excerpt = get_excerpt((string) ($post['content'] ?? ''), 500);
+    $index = array_map(function (array $post) use ($excerptLength): array {
+        $content = (string) ($post['content'] ?? '');
+        $excerpt = $excerptLength === 0 ? $content : get_excerpt($content, $excerptLength);
         return [
             'title' => (string) ($post['title'] ?? ''),
             'slug' => (string) ($post['slug'] ?? ''),

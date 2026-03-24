@@ -107,8 +107,51 @@
   }
 
   safeResize();
-  cm.on('change', safeResize);
+  cm.on('change', () => { safeResize(); scheduleAutosave(); });
   cm.on('refresh', safeResize);
+
+  const autosaveStatus = document.getElementById('autosave-status');
+  let autosaveTimer = null;
+
+  function setAutosaveStatus(text) {
+    if (autosaveStatus) autosaveStatus.textContent = text;
+  }
+
+  async function doAutosave() {
+    const slugValue = (slugField?.value ?? '').trim();
+    if (slugValue === '') return;
+
+    setAutosaveStatus('Autosaving\u2026');
+    try {
+      cm.save();
+      const formData = new FormData(editorForm);
+      formData.set('editor_type', config.editorType || 'post');
+      const response = await fetch((config.basePath || '') + '/admin/autosave.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+      });
+      const data = await response.json();
+      if (data.success) {
+        const now = new Date();
+        setAutosaveStatus('Autosaved ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      } else {
+        setAutosaveStatus('Autosave failed');
+      }
+    } catch (e) {
+      setAutosaveStatus('Autosave failed');
+    }
+  }
+
+  function scheduleAutosave() {
+    if ((slugField?.value ?? '').trim() === '') return;
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(doAutosave, 10000);
+  }
+
+  [titleField, slugField, descriptionField, dateField, tagsField].forEach((field) => {
+    field?.addEventListener('input', scheduleAutosave);
+  });
 
   const getScrollKey = () => {
     const slugValue = (slugField?.value ?? '').trim();
