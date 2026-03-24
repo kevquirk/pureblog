@@ -723,6 +723,20 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
             }
         }
 
+        // Copy any new top-level directories introduced by this release that
+        // don't yet exist in the install (e.g. lang/ added in 2.0).
+        $sourceItems = scandir($sourceRoot) ?: [];
+        foreach ($sourceItems as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+            $source = $sourceRoot . '/' . $item;
+            $target = PUREBLOG_BASE_PATH . '/' . $item;
+            if (is_dir($source) && !file_exists($target) && !in_array($item, $preserveTop, true)) {
+                copy_path_recursive($source, $target);
+            }
+        }
+
         // Set /VERSION from the release tag (zipballs may omit /VERSION).
         $versionFile = PUREBLOG_BASE_PATH . '/VERSION';
         $versionFromTag = normalize_version_label($releaseTag);
@@ -753,6 +767,88 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
             'ok' => false,
             'error' => 'Update failed and was rolled back: ' . $e->getMessage(),
         ];
+    } finally {
+        @unlink($tmpZip);
+        remove_directory_recursive($tmpExtract);
+    }
+}
+
+// ── Lang repair ──────────────────────────────────────────────────────────────
+// Handles the one-time migration for installs updated from 1.9.7 via the old
+// updater, which didn't know about the lang/ directory.
+if (isset($_GET['repair_lang'])) {
+    $repairResult = repair_missing_lang();
+    if ($repairResult['ok']) {
+        $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => 'Language files restored successfully.'];
+    } else {
+        $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => 'Language repair failed: ' . ($repairResult['error'] ?? 'Unknown error.')];
+    }
+    header('Location: ' . base_path() . '/admin/settings-updates.php');
+    exit;
+}
+
+function repair_missing_lang(): array
+{
+    $release = fetch_latest_pureblog_release();
+    if (!($release['ok'] ?? false) || empty($release['zipball_url'])) {
+        return ['ok' => false, 'error' => 'Unable to fetch release info from GitHub.'];
+    }
+
+    $tmpBase = sys_get_temp_dir() . '/pureblog-lang-repair-' . bin2hex(random_bytes(6));
+    $tmpZip  = $tmpBase . '.zip';
+    $tmpExtract = $tmpBase . '-extract';
+
+    try {
+        $headers = ['User-Agent: Pureblog-Updates-Check'];
+
+        if (function_exists('curl_init')) {
+            $ch = curl_init($release['zipball_url']);
+            if ($ch === false) {
+                return ['ok' => false, 'error' => 'Unable to initialize curl.'];
+            }
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $raw = curl_exec($ch);
+            curl_close($ch);
+            if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
+                return ['ok' => false, 'error' => 'Failed to download release zip.'];
+            }
+        } else {
+            $context = stream_context_create(['http' => ['method' => 'GET', 'timeout' => 60, 'header' => implode("\r\n", $headers), 'follow_location' => true]]);
+            $raw = @file_get_contents($release['zipball_url'], false, $context);
+            if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
+                return ['ok' => false, 'error' => 'Failed to download release zip.'];
+            }
+        }
+
+        $zip = new ZipArchive();
+        if ($zip->open($tmpZip) !== true) {
+            return ['ok' => false, 'error' => 'Failed to open release zip.'];
+        }
+        if (!$zip->extractTo($tmpExtract)) {
+            $zip->close();
+            return ['ok' => false, 'error' => 'Failed to extract release zip.'];
+        }
+        $zip->close();
+
+        $sourceRoot = $tmpExtract;
+        $entries = array_values(array_filter(scandir($tmpExtract) ?: [], fn($e) => $e !== '.' && $e !== '..'));
+        if (count($entries) === 1 && is_dir($tmpExtract . '/' . $entries[0])) {
+            $sourceRoot = $tmpExtract . '/' . $entries[0];
+        }
+
+        $langSource = $sourceRoot . '/lang';
+        $langTarget = PUREBLOG_BASE_PATH . '/lang';
+
+        if (!is_dir($langSource)) {
+            return ['ok' => false, 'error' => 'lang/ directory not found in the release package.'];
+        }
+
+        copy_path_recursive($langSource, $langTarget);
+        return ['ok' => true];
+
     } finally {
         @unlink($tmpZip);
         remove_directory_recursive($tmpExtract);
