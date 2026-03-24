@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+ob_start();
+
 require __DIR__ . '/../functions.php';
 require_setup_redirect();
 
@@ -746,6 +748,12 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
         restore_htaccess_files($preservedHtaccessFiles);
         remove_non_preserved_htaccess($preservedHtaccessFiles);
+
+        // Flush the opcode cache so the next request immediately picks up
+        // the newly written files rather than the pre-update cached bytecode.
+        if (function_exists('opcache_reset')) {
+            @opcache_reset();
+        }
 
         return [
             'ok' => true,

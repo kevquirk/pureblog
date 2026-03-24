@@ -1,5 +1,11 @@
 <?php
 // Shared admin <head>. Expects $adminTitle (optional) and $fontStack (optional).
+// Compat shim: if this file is included mid-request by the old 1.9.7 updater,
+// functions.php in memory won't have t() yet. Define a no-op fallback so the
+// page renders (with raw keys) rather than crashing with "undefined function".
+if (!function_exists('t')) {
+    function t(string $key, array $replacements = []): string { return $key; }
+}
 $adminTitle = $adminTitle ?? 'Admin - Pureblog';
 $fontStack = $fontStack ?? font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $adminColorMode = $adminColorMode ?? ($config['theme']['admin_color_mode'] ?? 'auto');
