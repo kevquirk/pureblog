@@ -157,6 +157,7 @@ function core_top_level_paths(): array
         'functions.php',
         'includes',
         'index.php',
+        'lang',
         'lib',
         'page.php',
         'post.php',
