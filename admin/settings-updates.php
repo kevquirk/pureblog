@@ -789,10 +789,37 @@ if (isset($_GET['repair_lang'])) {
 
 function repair_missing_lang(): array
 {
-    $release = fetch_latest_pureblog_release();
-    if (!($release['ok'] ?? false) || empty($release['zipball_url'])) {
+    // Fetch the release matching the currently installed version, so the
+    // correct zip is downloaded even if it's a pre-release.
+    $currentVersion = detect_current_pureblog_version();
+    $tag = 'v' . ltrim($currentVersion, 'v');
+    $endpoint = 'https://api.github.com/repos/kevquirk/pureblog/releases/tags/' . urlencode($tag);
+    $headers = ['User-Agent: Pureblog-Updates-Check', 'Accept: application/vnd.github+json'];
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($endpoint);
+        if ($ch !== false) {
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $raw = curl_exec($ch);
+            curl_close($ch);
+        }
+    } else {
+        $ctx = stream_context_create(['http' => ['method' => 'GET', 'timeout' => 5, 'header' => implode("\r\n", $headers)]]);
+        $raw = @file_get_contents($endpoint, false, $ctx);
+    }
+
+    if (!isset($raw) || !is_string($raw)) {
         return ['ok' => false, 'error' => 'Unable to fetch release info from GitHub.'];
     }
+    $json = json_decode($raw, true);
+    $zipballUrl = is_array($json) ? (string) ($json['zipball_url'] ?? '') : '';
+    if ($zipballUrl === '') {
+        return ['ok' => false, 'error' => 'Unable to fetch release info from GitHub.'];
+    }
+
+    $release = ['zipball_url' => $zipballUrl];
 
     $tmpBase = sys_get_temp_dir() . '/pureblog-lang-repair-' . bin2hex(random_bytes(6));
     $tmpZip  = $tmpBase . '.zip';
