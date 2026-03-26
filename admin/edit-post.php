@@ -300,7 +300,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             <input type="hidden" name="date" value="<?= e($post['date']) ?>">
                             <?= csrf_field() ?>
                             <label class="hidden" for="image"><?= e(t('admin.editor.upload_label')) ?></label>
-                            <input type="file" id="image" name="image" accept="image/*">
+                            <input type="file" id="image" name="image" accept="image/*,.avif">
                             <button type="submit" disabled>
                                 <svg class="icon" aria-hidden="true"><use href="#icon-upload"></use></svg>
                                 <?= e(t('admin.editor.upload')) ?>
