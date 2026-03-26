@@ -18,29 +18,6 @@ $pages = get_all_pages(true);
 $pageOptions = array_values(array_filter($pages, fn($page) => ($page['slug'] ?? '') !== ''));
 $pageSlugLookup = array_fill_keys(array_map(fn($page) => $page['slug'], $pageOptions), true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search_page_action'])) {
-    verify_csrf();
-    $searchAction = $_POST['search_page_action'];
-    if ($searchAction === 'create') {
-        $newPage = [
-            'title'          => 'Search',
-            'slug'           => 'search',
-            'status'         => 'published',
-            'description'    => 'Search posts on this site.',
-            'include_in_nav' => true,
-            'content'        => '',
-        ];
-        $saveError = null;
-        save_page($newPage, null, null, $saveError);
-        $pages = get_all_pages(true);
-        $pageOptions = array_values(array_filter($pages, fn($page) => ($page['slug'] ?? '') !== ''));
-        $pageSlugLookup = array_fill_keys(array_map(fn($page) => $page['slug'], $pageOptions), true);
-        $notice = t('admin.settings.site.notice_search_created');
-    }
-    $config['search_page_notified'] = true;
-    save_config($config);
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $siteTitle = trim($_POST['site_title'] ?? '');
@@ -169,27 +146,6 @@ require __DIR__ . '/../includes/admin-head.php';
     <main class="mid">
         <h1><?= e(t('admin.settings.site.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
-
-        <?php
-        $searchPageSlugCfg = trim((string) ($config['search_page_slug'] ?? 'search'));
-        $searchNotified = !empty($config['search_page_notified']);
-        $searchPageMissing = $searchPageSlugCfg !== '' && !isset($pageSlugLookup[$searchPageSlugCfg]);
-        if (!$searchNotified && $searchPageMissing):
-        ?>
-        <div class="notice">
-            <?= e(t('admin.settings.site.notice_search_missing', ['slug' => $searchPageSlugCfg])) ?>
-            <form method="post" style="display:inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="search_page_action" value="create">
-                <button type="submit" class="autosave-btn"><?= e(t('admin.settings.site.create_search_page')) ?></button>
-            </form>
-            <form method="post" style="display:inline">
-                <?= csrf_field() ?>
-                <input type="hidden" name="search_page_action" value="dismiss">
-                <button type="submit" class="autosave-btn delete"><?= e(t('admin.settings.site.dismiss_search_notice')) ?></button>
-            </form>
-        </div>
-        <?php endif; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>
         <nav class="editor-actions settings-actions">
