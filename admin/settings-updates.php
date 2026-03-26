@@ -331,12 +331,18 @@ function restore_htaccess_files(array $files): void
 function remove_non_preserved_htaccess(array $preservedFiles): void
 {
     $preservedSet = array_fill_keys(array_keys($preservedFiles), true);
+    $preserveTop = array_fill_keys(preserved_top_level_paths(), true);
     $all = collect_relative_files(PUREBLOG_BASE_PATH);
     foreach ($all as $relative) {
         if (!is_htaccess_path($relative)) {
             continue;
         }
         if (isset($preservedSet[$relative])) {
+            continue;
+        }
+        $top = (string) strtok($relative, '/');
+        // Never delete .htaccess inside preserved paths or the backup directory.
+        if (isset($preserveTop[$top]) || $top === 'backup') {
             continue;
         }
         @unlink(PUREBLOG_BASE_PATH . '/' . $relative);
