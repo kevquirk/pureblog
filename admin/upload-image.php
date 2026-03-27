@@ -17,13 +17,13 @@ $message = '';
 $error = '';
 
 if ($slug === '') {
-    $error = 'Save the post first so it has a slug.';
+    $error = t('admin.editor.error_upload_no_slug');
 } elseif (!isset($_FILES['image'])) {
-    $error = 'No image uploaded.';
+    $error = t('admin.editor.error_upload_no_file');
 } elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-    $error = 'Upload failed.';
+    $error = t('admin.editor.error_upload_failed');
 } elseif ($_FILES['image']['size'] > (3 * 1024 * 1024)) {
-    $error = 'Image is too large. Max size is 3MB.';
+    $error = t('admin.editor.error_upload_too_large');
 } else {
     $allowedTypes = [
         'image/jpeg' => 'jpg',
@@ -35,7 +35,7 @@ if ($slug === '') {
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mimeType = $finfo->file($_FILES['image']['tmp_name']) ?: '';
     if (!isset($allowedTypes[$mimeType])) {
-        $error = 'Unsupported image type. Use JPG, PNG, GIF, WebP, or AVIF.';
+        $error = t('admin.editor.error_upload_type');
     }
 }
 
@@ -43,7 +43,7 @@ if ($error === '') {
     $folder = $slug;
 
     if (!is_safe_image_slug($folder)) {
-        $error = 'Invalid slug for image folder.';
+        $error = t('admin.editor.error_upload_invalid_slug');
     }
 }
 
@@ -52,12 +52,12 @@ if ($error === '') {
     $uploadDir = __DIR__ . '/../content/images/' . $folder;
 
     if ($baseDir === false) {
-        $error = 'Image folder not found.';
+        $error = t('admin.editor.error_image_folder_missing');
     } elseif (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-        $error = 'Unable to create image folder.';
+        $error = t('admin.editor.error_upload_folder_create');
     } elseif (!validate_image_path($baseDir, $uploadDir)) {
         @rmdir($uploadDir);
-        $error = 'Invalid image path.';
+        $error = t('admin.editor.error_image_invalid_path');
     }
 }
 
@@ -73,13 +73,13 @@ if ($error === '') {
     }
 
     if ($filename === '') {
-        $error = 'Invalid file name.';
+        $error = t('admin.editor.error_upload_invalid_name');
     } elseif (is_file($uploadDir . '/' . $filename)) {
-        $error = 'Duplicate name, please rename the image (sanitized as "' . $filename . '").';
+        $error = t('admin.editor.error_upload_duplicate', ['filename' => $filename]);
     } else {
         $destination = $uploadDir . '/' . $filename;
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
-            $error = 'Unable to save uploaded file.';
+            $error = t('admin.editor.error_upload_save');
         } else {
             $url = base_path() . '/content/images/' . $folder . '/' . $filename;
             $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';

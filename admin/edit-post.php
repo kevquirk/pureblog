@@ -338,6 +338,25 @@ require __DIR__ . '/../includes/admin-head.php';
             csrfToken: '<?= e(csrf_token()) ?>',
             basePath: '<?= e(base_path()) ?>',
             autosave: <?= $autosaveData !== null ? json_encode($autosaveData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) : 'null' ?>,
+            strings: <?= json_encode([
+                'autosaving'        => t('admin.editor.js_autosaving'),
+                'autosaved'         => t('admin.editor.js_autosaved'),
+                'autosave_failed'   => t('admin.editor.js_autosave_failed'),
+                'autosave_banner'   => t('admin.editor.js_autosave_banner'),
+                'view'              => t('admin.editor.js_view'),
+                'hide'              => t('admin.editor.js_hide'),
+                'restore'           => t('admin.editor.js_restore'),
+                'discard'           => t('admin.editor.js_discard'),
+                'title_label'       => t('admin.editor.js_title_label'),
+                'save_failed'       => t('admin.editor.js_save_failed'),
+                'save_before_upload'=> t('admin.editor.js_save_before_upload'),
+                'copied'            => t('admin.editor.js_copied'),
+                'copy'              => t('admin.editor.copy'),
+                'copy_failed'       => t('admin.editor.js_copy_failed'),
+                'save_post_first'   => t('admin.editor.js_save_post_first'),
+                'save_page_first'   => t('admin.editor.js_save_page_first'),
+                'upload_failed'     => t('admin.editor.js_upload_failed'),
+            ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>
     <script src="<?= base_path() ?>/admin/js/editor.js?v=<?= e((string) @filemtime(__DIR__ . '/js/editor.js')) ?>"></script>

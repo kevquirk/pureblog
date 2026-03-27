@@ -136,7 +136,7 @@
     const slugValue = (slugField?.value ?? '').trim();
     if (slugValue === '') return;
 
-    setAutosaveStatus('Autosaving\u2026');
+    setAutosaveStatus(config.strings.autosaving);
     try {
       cm.save();
       const formData = new FormData(editorForm);
@@ -150,12 +150,12 @@
       const data = await response.json();
       if (data.success) {
         const now = new Date();
-        setAutosaveStatus('Autosaved ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        setAutosaveStatus(config.strings.autosaved + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
       } else {
-        setAutosaveStatus('Autosave failed');
+        setAutosaveStatus(config.strings.autosave_failed);
       }
     } catch (e) {
-      setAutosaveStatus('Autosave failed');
+      setAutosaveStatus(config.strings.autosave_failed);
     }
   }
 
@@ -181,16 +181,16 @@
     preview.className = 'autosave-preview';
     preview.hidden = true;
     preview.innerHTML =
-      (saved.title   ? '<p><strong>Title:</strong> ' + saved.title.replace(/</g, '&lt;') + '</p>' : '') +
+      (saved.title   ? '<p><strong>' + config.strings.title_label + '</strong> ' + saved.title.replace(/</g, '&lt;') + '</p>' : '') +
       (saved.content ? '<pre class="autosave-preview-content">' + saved.content.replace(/</g, '&lt;') + '</pre>' : '');
 
     const banner = document.createElement('div');
     banner.className = 'notice autosave-restore-notice';
     banner.innerHTML =
-      'Autosaved changes from ' + time + ' exist. ' +
-      '<button type="button" class="autosave-btn" id="autosave-view-btn">View</button> ' +
-      '<button type="button" class="autosave-btn" id="autosave-restore-btn">Restore</button> ' +
-      '<button type="button" class="autosave-btn delete" id="autosave-discard-btn">Discard</button>';
+      config.strings.autosave_banner.replace('{time}', time) + ' ' +
+      '<button type="button" class="autosave-btn" id="autosave-view-btn">' + config.strings.view + '</button> ' +
+      '<button type="button" class="autosave-btn" id="autosave-restore-btn">' + config.strings.restore + '</button> ' +
+      '<button type="button" class="autosave-btn delete" id="autosave-discard-btn">' + config.strings.discard + '</button>';
 
     const main = document.querySelector('main');
     if (main) {
@@ -201,7 +201,7 @@
     document.getElementById('autosave-view-btn')?.addEventListener('click', () => {
       const isHidden = preview.hidden;
       preview.hidden = !isHidden;
-      document.getElementById('autosave-view-btn').textContent = isHidden ? 'Hide' : 'View';
+      document.getElementById('autosave-view-btn').textContent = isHidden ? config.strings.hide : config.strings.view;
     });
 
     document.getElementById('autosave-restore-btn')?.addEventListener('click', () => {
@@ -270,7 +270,7 @@
           credentials: 'same-origin',
         });
         if (!response.ok) {
-          throw new Error('Save failed');
+          throw new Error(config.strings.save_failed);
         }
         const responseUrl = new URL(response.url, window.location.origin);
         const savedSlug = responseUrl.searchParams.get('slug') || (slugField?.value ?? '').trim();
@@ -290,7 +290,7 @@
         allowUploadSubmit = true;
         uploadForm.submit();
       } catch (error) {
-        alert('Unable to save before uploading image.');
+        alert(config.strings.save_before_upload);
       }
     });
   }
@@ -373,12 +373,12 @@
       }
       try {
         await navigator.clipboard.writeText(markdown);
-        button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-check"></use></svg> Copied';
+        button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-check"></use></svg> ' + config.strings.copied;
         setTimeout(() => {
-          button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-copy"></use></svg> Copy';
+          button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-copy"></use></svg> ' + config.strings.copy;
         }, 1500);
       } catch (error) {
-        alert('Unable to copy to clipboard. Please copy manually.');
+        alert(config.strings.copy_failed);
       }
     });
   });
@@ -397,8 +397,8 @@
     const dateValue = (dateField?.value ?? '').trim();
     if (slugValue === '' || (config.editorType === 'post' && dateValue === '')) {
       alert(config.editorType === 'post'
-        ? 'Save the post first so it has a slug and date.'
-        : 'Save the page first so it has a slug.');
+        ? config.strings.save_post_first
+        : config.strings.save_page_first);
       return;
     }
 
@@ -435,7 +435,7 @@
         const cursor = doc.getCursor();
         doc.replaceRange(markdown, cursor);
       } catch (error) {
-        alert('Image upload failed.');
+        alert(config.strings.upload_failed);
       }
     }
   });

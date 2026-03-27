@@ -155,7 +155,7 @@ unset($_SESSION['admin_action_flash']);
             <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
         <?php endif; ?>
         <?php if (!is_dir(PUREBLOG_BASE_PATH . '/lang')): ?>
-            <p class="notice delete">Language files are missing — this can happen after updating from 1.9.7. <a href="<?= base_path() ?>/admin/settings-updates.php?repair_lang=1">Click here to repair automatically</a>.</p>
+            <p class="notice delete"><?= e(t('admin.notices.lang_missing')) ?> <a href="<?= base_path() ?>/admin/settings-updates.php?repair_lang=1"><?= e(t('admin.notices.lang_missing_repair')) ?></a>.</p>
         <?php endif; ?>
         <?php
         $searchSlug = trim((string) ($config['search_page_slug'] ?? 'search'));

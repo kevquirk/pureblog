@@ -29,7 +29,7 @@ function fetch_latest_pureblog_release(): array
     if (function_exists('curl_init')) {
         $ch = curl_init($endpoint);
         if ($ch === false) {
-            return ['ok' => false, 'error' => 'Unable to initialize curl.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_curl_init')];
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
@@ -40,7 +40,7 @@ function fetch_latest_pureblog_release(): array
         curl_close($ch);
 
         if (!is_string($raw) || $status < 200 || $status >= 300) {
-            $message = $curlErr !== '' ? $curlErr : ('GitHub request failed (HTTP ' . $status . ').');
+            $message = $curlErr !== '' ? $curlErr : t('admin.settings.updates.error_github_request', ['status' => $status]);
             return ['ok' => false, 'error' => $message];
         }
     } else {
@@ -53,13 +53,13 @@ function fetch_latest_pureblog_release(): array
         ]);
         $raw = @file_get_contents($endpoint, false, $context);
         if (!is_string($raw)) {
-            return ['ok' => false, 'error' => 'GitHub check failed (network unavailable or allow_url_fopen disabled).'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_github_network')];
         }
     }
 
     $json = json_decode($raw, true);
     if (!is_array($json)) {
-        return ['ok' => false, 'error' => 'GitHub returned invalid JSON.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_github_json')];
     }
 
     return [
@@ -206,12 +206,12 @@ function download_url_to_file(string $url, string $destination): ?string
     if (function_exists('curl_init')) {
         $ch = curl_init($url);
         if ($ch === false) {
-            return 'Unable to initialize curl.';
+            return t('admin.settings.updates.error_curl_init');
         }
         $fp = @fopen($destination, 'wb');
         if ($fp === false) {
             curl_close($ch);
-            return 'Unable to create temporary download file.';
+            return t('admin.settings.updates.error_download_tmp');
         }
         curl_setopt($ch, CURLOPT_FILE, $fp);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -224,7 +224,7 @@ function download_url_to_file(string $url, string $destination): ?string
         curl_close($ch);
 
         if ($ok !== true || $status < 200 || $status >= 300) {
-            return $curlErr !== '' ? $curlErr : ('Download failed (HTTP ' . $status . ').');
+            return $curlErr !== '' ? $curlErr : t('admin.settings.updates.error_download_failed', ['status' => $status]);
         }
         return null;
     }
@@ -238,10 +238,10 @@ function download_url_to_file(string $url, string $destination): ?string
     ]);
     $raw = @file_get_contents($url, false, $context);
     if (!is_string($raw)) {
-        return 'Download failed (network unavailable or allow_url_fopen disabled).';
+        return t('admin.settings.updates.error_download_network');
     }
     if (@file_put_contents($destination, $raw) === false) {
-        return 'Unable to write temporary download file.';
+        return t('admin.settings.updates.error_download_write');
     }
 
     return null;
@@ -315,10 +315,10 @@ function restore_htaccess_files(array $files): void
         $target = PUREBLOG_BASE_PATH . '/' . $relative;
         $dir = dirname($target);
         if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
-            throw new RuntimeException('Unable to create directory for preserved .htaccess: ' . $relative);
+            throw new RuntimeException(t('admin.settings.updates.error_htaccess_dir', ['path' => $relative]));
         }
         if (@file_put_contents($target, $content) === false) {
-            throw new RuntimeException('Unable to restore preserved .htaccess: ' . $relative);
+            throw new RuntimeException(t('admin.settings.updates.error_htaccess_restore', ['path' => $relative]));
         }
     }
 }
@@ -357,10 +357,10 @@ function remove_non_preserved_htaccess(array $preservedFiles): void
 function build_package_upgrade_plan(string $zipballUrl): array
 {
     if ($zipballUrl === '') {
-        return ['ok' => false, 'error' => 'No zipball URL found for this release.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_url')];
     }
     if (!class_exists('ZipArchive')) {
-        return ['ok' => false, 'error' => 'ZipArchive extension is not available on this host.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_ziparchive')];
     }
 
     $tmpBase = rtrim(sys_get_temp_dir(), '/') . '/pureblog-upgrader-' . bin2hex(random_bytes(6));
@@ -376,11 +376,11 @@ function build_package_upgrade_plan(string $zipballUrl): array
 
         $zip = new ZipArchive();
         if ($zip->open($tmpZip) !== true) {
-            return ['ok' => false, 'error' => 'Unable to open downloaded release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_open')];
         }
         if (!$zip->extractTo($tmpExtract)) {
             $zip->close();
-            return ['ok' => false, 'error' => 'Unable to extract release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_extract')];
         }
         $zip->close();
 
@@ -392,7 +392,7 @@ function build_package_upgrade_plan(string $zipballUrl): array
 
         $sourceFiles = collect_relative_files($sourceRoot);
         if (!$sourceFiles) {
-            return ['ok' => false, 'error' => 'Release archive did not contain readable files.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_empty')];
         }
 
         $preserveTop = preserved_top_level_paths();
@@ -480,25 +480,25 @@ function copy_path_recursive(string $source, string $destination): void
     if (is_file($source)) {
         $parent = dirname($destination);
         if (!is_dir($parent) && !@mkdir($parent, 0755, true) && !is_dir($parent)) {
-            throw new RuntimeException('Unable to create directory: ' . $parent);
+            throw new RuntimeException(t('admin.settings.updates.error_dir_create', ['path' => $parent]));
         }
         if (!@copy($source, $destination)) {
-            throw new RuntimeException('Unable to copy file: ' . $source);
+            throw new RuntimeException(t('admin.settings.updates.error_file_copy', ['path' => $source]));
         }
         return;
     }
 
     if (!is_dir($source)) {
-        throw new RuntimeException('Source path not found: ' . $source);
+        throw new RuntimeException(t('admin.settings.updates.error_source_missing', ['path' => $source]));
     }
 
     if (!is_dir($destination) && !@mkdir($destination, 0755, true) && !is_dir($destination)) {
-        throw new RuntimeException('Unable to create directory: ' . $destination);
+        throw new RuntimeException(t('admin.settings.updates.error_dir_create', ['path' => $destination]));
     }
 
     $items = scandir($source);
     if (!is_array($items)) {
-        throw new RuntimeException('Unable to read directory: ' . $source);
+        throw new RuntimeException(t('admin.settings.updates.error_dir_read', ['path' => $source]));
     }
     foreach ($items as $item) {
         if ($item === '.' || $item === '..') {
@@ -510,7 +510,7 @@ function copy_path_recursive(string $source, string $destination): void
             copy_path_recursive($src, $dst);
         } else {
             if (!@copy($src, $dst)) {
-                throw new RuntimeException('Unable to copy file: ' . $src);
+                throw new RuntimeException(t('admin.settings.updates.error_file_copy', ['path' => $src]));
             }
         }
     }
@@ -594,33 +594,33 @@ function format_backup_timestamp(string $backupName): string
 function restore_named_backup(string $backupName): array
 {
     if ($backupName === '' || $backupName !== basename($backupName)) {
-        return ['ok' => false, 'error' => 'Invalid backup name.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_invalid_name')];
     }
 
     $backupBase = PUREBLOG_BASE_PATH . '/backup';
     $backupBaseReal = realpath($backupBase);
     if ($backupBaseReal === false) {
-        return ['ok' => false, 'error' => 'Backup directory does not exist.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_dir_missing')];
     }
 
     $backupPath = $backupBaseReal . '/' . $backupName;
     $backupPathReal = realpath($backupPath);
     if ($backupPathReal === false || !is_dir($backupPathReal)) {
-        return ['ok' => false, 'error' => 'Selected backup was not found.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_not_found')];
     }
     if (!str_starts_with($backupPathReal, $backupBaseReal . '/')) {
-        return ['ok' => false, 'error' => 'Invalid backup path.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_invalid_path')];
     }
 
     try {
         restore_core_paths_from_backup($backupPathReal);
     } catch (Throwable $e) {
-        return ['ok' => false, 'error' => 'Restore failed: ' . $e->getMessage()];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_restore_failed', ['error' => $e->getMessage()])];
     }
 
     return [
         'ok' => true,
-        'message' => 'Backup restored successfully.',
+        'message' => t('admin.settings.updates.notice_backup_restored'),
         'backup_path' => $backupPathReal,
     ];
 }
@@ -628,43 +628,43 @@ function restore_named_backup(string $backupName): array
 function delete_named_backup(string $backupName): array
 {
     if ($backupName === '' || $backupName !== basename($backupName)) {
-        return ['ok' => false, 'error' => 'Invalid backup name.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_invalid_name')];
     }
 
     $backupBase = PUREBLOG_BASE_PATH . '/backup';
     $backupBaseReal = realpath($backupBase);
     if ($backupBaseReal === false) {
-        return ['ok' => false, 'error' => 'Backup directory does not exist.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_dir_missing')];
     }
 
     $backupPath = $backupBaseReal . '/' . $backupName;
     $backupPathReal = realpath($backupPath);
     if ($backupPathReal === false || !is_dir($backupPathReal)) {
-        return ['ok' => false, 'error' => 'Selected backup was not found.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_not_found')];
     }
     if (!str_starts_with($backupPathReal, $backupBaseReal . '/')) {
-        return ['ok' => false, 'error' => 'Invalid backup path.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_invalid_path')];
     }
 
     try {
         remove_directory_recursive($backupPathReal);
     } catch (Throwable $e) {
-        return ['ok' => false, 'error' => 'Delete failed: ' . $e->getMessage()];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_delete_backup_failed', ['error' => $e->getMessage()])];
     }
 
     return [
         'ok' => true,
-        'message' => 'Backup deleted successfully.',
+        'message' => t('admin.settings.updates.notice_backup_deleted'),
     ];
 }
 
 function apply_release_update(string $zipballUrl, string $releaseTag = ''): array
 {
     if ($zipballUrl === '') {
-        return ['ok' => false, 'error' => 'No zipball URL found for this release.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_url')];
     }
     if (!class_exists('ZipArchive')) {
-        return ['ok' => false, 'error' => 'ZipArchive extension is not available on this host.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_ziparchive')];
     }
 
     $tmpBase = rtrim(sys_get_temp_dir(), '/') . '/pureblog-upgrader-' . bin2hex(random_bytes(6));
@@ -672,7 +672,7 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
     $tmpExtract = $tmpBase . '-extract';
     $backupBase = PUREBLOG_BASE_PATH . '/backup';
     if (!is_dir($backupBase) && !@mkdir($backupBase, 0755, true) && !is_dir($backupBase)) {
-        return ['ok' => false, 'error' => 'Unable to create local backup directory at /backup.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_backup_dir')];
     }
     $versionRaw = detect_current_pureblog_version();
     $versionSlug = preg_replace('/[^a-zA-Z0-9._-]+/', '-', $versionRaw);
@@ -691,11 +691,11 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
         $zip = new ZipArchive();
         if ($zip->open($tmpZip) !== true) {
-            return ['ok' => false, 'error' => 'Unable to open downloaded release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_open')];
         }
         if (!$zip->extractTo($tmpExtract)) {
             $zip->close();
-            return ['ok' => false, 'error' => 'Unable to extract release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_zip_extract')];
         }
         $zip->close();
 
@@ -707,7 +707,7 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
         // Sanity check for expected project markers.
         if (!is_file($sourceRoot . '/functions.php') || !is_dir($sourceRoot . '/admin')) {
-            return ['ok' => false, 'error' => 'Release archive does not look like a valid Pure Blog package.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_package_invalid')];
         }
 
         $preservedHtaccessFiles = collect_existing_htaccess_files();
@@ -763,7 +763,7 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
         return [
             'ok' => true,
-            'message' => 'Update applied successfully.',
+            'message' => t('admin.settings.updates.notice_update_applied'),
             'backup_path' => $tmpBackup,
         ];
     } catch (Throwable $e) {
@@ -774,12 +774,12 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
         } catch (Throwable $restoreError) {
             return [
                 'ok' => false,
-                'error' => 'Update failed and rollback also failed: ' . $restoreError->getMessage(),
+                'error' => t('admin.settings.updates.error_update_rollback_fail', ['error' => $restoreError->getMessage()]),
             ];
         }
         return [
             'ok' => false,
-            'error' => 'Update failed and was rolled back: ' . $e->getMessage(),
+            'error' => t('admin.settings.updates.error_update_rolled_back', ['error' => $e->getMessage()]),
         ];
     } finally {
         @unlink($tmpZip);
@@ -793,9 +793,9 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 if (isset($_GET['repair_lang'])) {
     $repairResult = repair_missing_lang();
     if ($repairResult['ok']) {
-        $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => 'Language files restored successfully.'];
+        $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.updates.notice_lang_restored')];
     } else {
-        $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => 'Language repair failed: ' . ($repairResult['error'] ?? 'Unknown error.')];
+        $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => t('admin.settings.updates.error_lang_repair', ['error' => ($repairResult['error'] ?? '')])];
     }
     header('Location: ' . base_path() . '/admin/settings-updates.php');
     exit;
@@ -825,12 +825,12 @@ function repair_missing_lang(): array
     }
 
     if (!isset($raw) || !is_string($raw)) {
-        return ['ok' => false, 'error' => 'Unable to fetch release info from GitHub.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_release_metadata')];
     }
     $json = json_decode($raw, true);
     $zipballUrl = is_array($json) ? (string) ($json['zipball_url'] ?? '') : '';
     if ($zipballUrl === '') {
-        return ['ok' => false, 'error' => 'Unable to fetch release info from GitHub.'];
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_release_metadata')];
     }
 
     $release = ['zipball_url' => $zipballUrl];
@@ -845,7 +845,7 @@ function repair_missing_lang(): array
         if (function_exists('curl_init')) {
             $ch = curl_init($release['zipball_url']);
             if ($ch === false) {
-                return ['ok' => false, 'error' => 'Unable to initialize curl.'];
+                return ['ok' => false, 'error' => t('admin.settings.updates.error_curl_init')];
             }
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -854,23 +854,23 @@ function repair_missing_lang(): array
             $raw = curl_exec($ch);
             curl_close($ch);
             if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
-                return ['ok' => false, 'error' => 'Failed to download release zip.'];
+                return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_download')];
             }
         } else {
             $context = stream_context_create(['http' => ['method' => 'GET', 'timeout' => 60, 'header' => implode("\r\n", $headers), 'follow_location' => true]]);
             $raw = @file_get_contents($release['zipball_url'], false, $context);
             if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
-                return ['ok' => false, 'error' => 'Failed to download release zip.'];
+                return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_download')];
             }
         }
 
         $zip = new ZipArchive();
         if ($zip->open($tmpZip) !== true) {
-            return ['ok' => false, 'error' => 'Failed to open release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_zip_open')];
         }
         if (!$zip->extractTo($tmpExtract)) {
             $zip->close();
-            return ['ok' => false, 'error' => 'Failed to extract release zip.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_zip_extract')];
         }
         $zip->close();
 
@@ -884,7 +884,7 @@ function repair_missing_lang(): array
         $langTarget = PUREBLOG_BASE_PATH . '/lang';
 
         if (!is_dir($langSource)) {
-            return ['ok' => false, 'error' => 'lang/ directory not found in the release package.'];
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_dir_missing')];
         }
 
         copy_path_recursive($langSource, $langTarget);
@@ -906,7 +906,7 @@ $packagePlanError = '';
 if (isset($_GET['package_plan'])) {
     $latestForPackage = fetch_latest_pureblog_release();
     if (!($latestForPackage['ok'] ?? false)) {
-        $packagePlanError = (string) ($latestForPackage['error'] ?? 'Unable to fetch latest release metadata.');
+        $packagePlanError = (string) ($latestForPackage['error'] ?? t('admin.settings.updates.error_release_metadata'));
     } else {
         $latestTag = (string) ($latestForPackage['tag'] ?? '');
         $currentVersion = detect_current_pureblog_version();
@@ -915,12 +915,12 @@ if (isset($_GET['package_plan'])) {
             $packagePlan = [
                 'ok' => true,
                 'already_latest' => true,
-                'message' => 'You are already on the latest release (' . $latestTag . ').',
+                'message' => t('admin.settings.updates.already_latest_version', ['tag' => $latestTag]),
             ];
         } else {
             $packagePlan = build_package_upgrade_plan((string) ($latestForPackage['zipball_url'] ?? ''));
             if (!($packagePlan['ok'] ?? false)) {
-                $packagePlanError = (string) ($packagePlan['error'] ?? 'Unable to build package plan.');
+                $packagePlanError = (string) ($packagePlan['error'] ?? t('admin.settings.updates.error_build_plan'));
             }
         }
     }
@@ -933,7 +933,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
         if (!($latestForApply['ok'] ?? false)) {
             $applyResult = [
                 'ok' => false,
-                'error' => (string) ($latestForApply['error'] ?? 'Unable to fetch latest release metadata.'),
+                'error' => (string) ($latestForApply['error'] ?? t('admin.settings.updates.error_release_metadata')),
             ];
         } else {
             $applyResult = apply_release_update(
@@ -945,7 +945,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
                 // Redirect after a successful update so the result page loads
                 // with the newly written files rather than the in-memory copies
                 // from before the update ran.
-                $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => 'Update applied successfully.'];
+                $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.updates.notice_update_applied')];
                 header('Location: ' . base_path() . '/admin/settings-updates.php?updated=1');
                 exit;
             }
@@ -954,13 +954,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
         $backupName = trim((string) ($_POST['backup_name'] ?? ''));
         $applyResult = restore_named_backup($backupName);
         if (!($applyResult['ok'] ?? false) && $backupName === '') {
-            $applyResult = ['ok' => false, 'error' => 'Please choose a backup to restore.'];
+            $applyResult = ['ok' => false, 'error' => t('admin.settings.updates.error_choose_restore')];
         }
     } elseif (isset($_POST['delete_backup'])) {
         $backupName = trim((string) ($_POST['backup_name'] ?? ''));
         $applyResult = delete_named_backup($backupName);
         if (!($applyResult['ok'] ?? false) && $backupName === '') {
-            $applyResult = ['ok' => false, 'error' => 'Please choose a backup to delete.'];
+            $applyResult = ['ok' => false, 'error' => t('admin.settings.updates.error_choose_delete')];
         }
     }
 }
@@ -970,7 +970,7 @@ $latestBackup = $availableBackups[0] ?? '';
 $latestBackupTimestamp = $latestBackup !== '' ? format_backup_timestamp($latestBackup) : '';
 
 if (isset($_GET['package_plan']) && $packagePlan === null && $packagePlanError === '') {
-    $packagePlanError = 'Unable to inspect release package.';
+    $packagePlanError = t('admin.settings.updates.error_inspect');
 }
 
 $adminTitle = t('admin.settings.updates.page_title');

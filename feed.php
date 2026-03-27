@@ -10,15 +10,6 @@ $config = load_config();
 
 $feedCacheEnabled = !empty($config['cache']['enabled']);
 $feedTtl = (int) ($config['cache']['rss_ttl'] ?? 3600);
-if ($feedCacheEnabled) {
-    $cachedXml = cache_read('__feed__', $feedTtl, 'xml');
-    if ($cachedXml !== null) {
-        header('Content-Type: application/rss+xml; charset=UTF-8');
-        echo $cachedXml;
-        exit;
-    }
-    ob_start();
-}
 
 $posts = array_slice(get_all_posts(false), 0, 10);
 
@@ -31,6 +22,47 @@ if (PHP_SAPI === 'cli-server') {
 $siteTitle = $config['site_title'] ?? 'My Blog';
 $siteTagline = $config['site_tagline'] ?? '';
 $baseUrl = rtrim($baseUrl, '/');
+
+// Determine last-modified from the newest post date.
+$newestTimestamp = 0;
+foreach ($posts as $post) {
+    $ts = strtotime((string) ($post['date'] ?? '')) ?: 0;
+    if ($ts > $newestTimestamp) {
+        $newestTimestamp = $ts;
+    }
+}
+if ($newestTimestamp === 0) {
+    $newestTimestamp = time();
+}
+
+$etag         = '"' . md5((string) $newestTimestamp) . '"';
+$lastModified = gmdate('D, d M Y H:i:s', $newestTimestamp) . ' GMT';
+
+// Return 304 if the client's cached copy is still fresh.
+$ifNoneMatch = trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '');
+$ifModSince  = trim($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '');
+$clientFresh = ($ifNoneMatch !== '' && $ifNoneMatch === $etag) ||
+               ($ifModSince  !== '' && (strtotime($ifModSince) ?: 0) >= $newestTimestamp);
+if ($clientFresh) {
+    http_response_code(304);
+    exit;
+}
+
+header('Content-Type: application/rss+xml; charset=UTF-8');
+header('Cache-Control: public, max-age=' . $feedTtl);
+header('Last-Modified: ' . $lastModified);
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $feedTtl) . ' GMT');
+header('ETag: ' . $etag);
+
+// Serve from server-side cache if available.
+if ($feedCacheEnabled) {
+    $cachedXml = cache_read('__feed__', $feedTtl, 'xml');
+    if ($cachedXml !== null) {
+        echo $cachedXml;
+        exit;
+    }
+    ob_start();
+}
 
 function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = ''): string
 {
@@ -51,8 +83,6 @@ function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = '
 
     return $html;
 }
-
-header('Content-Type: application/rss+xml; charset=UTF-8');
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>

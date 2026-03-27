@@ -11,7 +11,7 @@ require_admin_login();
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    echo json_encode(['success' => false, 'error' => t('admin.editor.error_autosave_method')]);
     exit;
 }
 
@@ -19,7 +19,7 @@ $token = isset($_POST['csrf_token']) ? (string) $_POST['csrf_token'] : '';
 $sessionToken = $_SESSION['csrf_token'] ?? '';
 if ($token === '' || !is_string($sessionToken) || !hash_equals($sessionToken, $token)) {
     http_response_code(403);
-    echo json_encode(['success' => false, 'error' => 'Invalid CSRF token']);
+    echo json_encode(['success' => false, 'error' => t('admin.editor.error_autosave_csrf')]);
     exit;
 }
 
@@ -28,7 +28,7 @@ $slug       = trim($_POST['slug'] ?? '');
 $action     = trim($_POST['action'] ?? 'save');
 
 if ($slug === '') {
-    echo json_encode(['success' => false, 'error' => 'Slug required']);
+    echo json_encode(['success' => false, 'error' => t('admin.editor.error_autosave_slug')]);
     exit;
 }
 
@@ -72,4 +72,4 @@ if ($editorType === 'page') {
 }
 
 $written = file_put_contents($autosaveFile, json_encode($data, JSON_UNESCAPED_UNICODE));
-echo json_encode($written !== false ? ['success' => true] : ['success' => false, 'error' => 'Failed to write autosave']);
+echo json_encode($written !== false ? ['success' => true] : ['success' => false, 'error' => t('admin.editor.error_autosave_write')]);

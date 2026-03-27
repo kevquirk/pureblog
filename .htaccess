@@ -1,5 +1,8 @@
 RewriteEngine On
 
+# Redirect sitemap.xml to sitemap.php
+RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
+
 # Allow direct access to existing files and folders
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d

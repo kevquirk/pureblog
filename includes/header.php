@@ -45,6 +45,18 @@ $isSquareOgImage = $ogImagePreferred === 'square';
         <?php if ($faviconHref[0] === '/') { $faviconHref = base_path() . $faviconHref; } ?>
         <link rel="icon" href="<?= e($faviconHref) ?>">
     <?php endif; ?>
+    <meta property="og:type" content="<?= isset($post) ? 'article' : 'website' ?>">
+    <meta property="og:url" content="<?= e($canonicalUrl) ?>">
+    <meta property="og:site_name" content="<?= e($siteTitle) ?>">
+    <meta property="og:title" content="<?= e($fullTitle) ?>">
+    <?php if ($metaDescription !== ''): ?>
+        <meta property="og:description" content="<?= e($metaDescription) ?>">
+    <?php endif; ?>
+    <?php
+    $ogLocaleMap = ['de' => 'de_DE', 'fr' => 'fr_FR', 'es' => 'es_ES', 'it' => 'it_IT', 'nl' => 'nl_NL', 'pt' => 'pt_PT', 'ro' => 'ro_RO'];
+    $ogLocale = $ogLocaleMap[$config['language'] ?? 'en'] ?? 'en_US';
+    ?>
+    <meta property="og:locale" content="<?= e($ogLocale) ?>">
     <?php if ($ogImage !== ''): ?>
         <meta property="og:image" content="<?= e($ogImage) ?>">
         <?php if ($isSquareOgImage): ?>
