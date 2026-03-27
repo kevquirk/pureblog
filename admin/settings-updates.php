@@ -68,7 +68,6 @@ function fetch_latest_pureblog_release(): array
         'name' => (string) ($json['name'] ?? ''),
         'url' => (string) ($json['html_url'] ?? 'https://github.com/kevquirk/pureblog/releases'),
         'zipball_url' => (string) ($json['zipball_url'] ?? ''),
-        'tarball_url' => (string) ($json['tarball_url'] ?? ''),
         'published_at' => (string) ($json['published_at'] ?? ''),
     ];
 }
@@ -87,17 +86,6 @@ function detect_current_pureblog_version(): string
     }
 
     if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '' && strtolower(PUREBLOG_VERSION) !== 'unknown') {
-        return PUREBLOG_VERSION;
-    }
-
-    if (function_exists('detect_pureblog_version')) {
-        $detected = (string) detect_pureblog_version();
-        if ($detected !== '' && strtolower($detected) !== 'unknown') {
-            return $detected;
-        }
-    }
-
-    if (defined('PUREBLOG_VERSION') && is_string(PUREBLOG_VERSION) && PUREBLOG_VERSION !== '') {
         return PUREBLOG_VERSION;
     }
 
@@ -144,30 +132,6 @@ function preserved_top_level_paths(): array
     ];
 }
 
-/**
- * @return list<string>
- */
-function core_top_level_paths(): array
-{
-    return [
-        '404.php',
-        '.htaccess',
-        'VERSION',
-        'admin',
-        'assets',
-        'feed.php',
-        'functions.php',
-        'includes',
-        'index.php',
-        'lang',
-        'lib',
-        'page.php',
-        'post.php',
-        'search',
-        'search.php',
-        'setup.php',
-    ];
-}
 
 function remove_directory_recursive(string $path): void
 {
@@ -430,13 +394,9 @@ function build_package_upgrade_plan(string $zipballUrl): array
         }
 
         $localOnly = [];
-        $localCoreTop = array_fill_keys(core_top_level_paths(), true);
         $localFiles = collect_relative_files(PUREBLOG_BASE_PATH);
         foreach ($localFiles as $relative) {
             $top = strtok($relative, '/');
-            if (!isset($localCoreTop[$top])) {
-                continue;
-            }
             if (is_htaccess_path($relative)) {
                 continue;
             }
@@ -518,26 +478,35 @@ function copy_path_recursive(string $source, string $destination): void
 
 function backup_core_paths(string $backupRoot): void
 {
-    $corePaths = core_top_level_paths();
-    foreach ($corePaths as $relative) {
-        $src = PUREBLOG_BASE_PATH . '/' . $relative;
+    $preserveTop = preserved_top_level_paths();
+    $items = scandir(PUREBLOG_BASE_PATH) ?: [];
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+        if (in_array($item, $preserveTop, true)) {
+            continue;
+        }
+        $src = PUREBLOG_BASE_PATH . '/' . $item;
         if (!file_exists($src)) {
             continue;
         }
-        $dst = $backupRoot . '/' . $relative;
-        copy_path_recursive($src, $dst);
+        copy_path_recursive($src, $backupRoot . '/' . $item);
     }
 }
 
 function restore_core_paths_from_backup(string $backupRoot): void
 {
-    $corePaths = core_top_level_paths();
-    foreach ($corePaths as $relative) {
-        $target = PUREBLOG_BASE_PATH . '/' . $relative;
+    $items = scandir($backupRoot) ?: [];
+    foreach ($items as $item) {
+        if ($item === '.' || $item === '..') {
+            continue;
+        }
+        $target = PUREBLOG_BASE_PATH . '/' . $item;
         if (file_exists($target)) {
             remove_directory_recursive($target);
         }
-        $backup = $backupRoot . '/' . $relative;
+        $backup = $backupRoot . '/' . $item;
         if (file_exists($backup)) {
             copy_path_recursive($backup, $target);
         }
@@ -713,36 +682,22 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
         $preservedHtaccessFiles = collect_existing_htaccess_files();
         backup_core_paths($tmpBackup);
 
-        $corePaths = core_top_level_paths();
         $preserveTop = preserved_top_level_paths();
-        foreach ($corePaths as $relative) {
-            if (in_array($relative, $preserveTop, true)) {
-                continue;
-            }
-            $source = $sourceRoot . '/' . $relative;
-            $target = PUREBLOG_BASE_PATH . '/' . $relative;
-
-            if (file_exists($target)) {
-                remove_directory_recursive($target);
-            }
-
-            if (file_exists($source)) {
-                copy_path_recursive($source, $target);
-            }
-        }
-
-        // Copy any new top-level directories introduced by this release that
-        // don't yet exist in the install (e.g. lang/ added in 2.0).
         $sourceItems = scandir($sourceRoot) ?: [];
         foreach ($sourceItems as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
+            if (is_htaccess_path($item) || in_array($item, $preserveTop, true)) {
+                continue;
+            }
             $source = $sourceRoot . '/' . $item;
             $target = PUREBLOG_BASE_PATH . '/' . $item;
-            if (is_dir($source) && !file_exists($target) && !in_array($item, $preserveTop, true)) {
-                copy_path_recursive($source, $target);
+
+            if (file_exists($target)) {
+                remove_directory_recursive($target);
             }
+            copy_path_recursive($source, $target);
         }
 
         // Set /VERSION from the release tag (zipballs may omit /VERSION).
@@ -787,9 +742,10 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
     }
 }
 
+
 // ── Lang repair ──────────────────────────────────────────────────────────────
-// Handles the one-time migration for installs updated from 1.9.7 via the old
-// updater, which didn't know about the lang/ directory.
+// Handles installs where lang/ was missed during an update from a pre-denylist
+// version of the updater.
 if (isset($_GET['repair_lang'])) {
     $repairResult = repair_missing_lang();
     if ($repairResult['ok']) {
@@ -803,8 +759,6 @@ if (isset($_GET['repair_lang'])) {
 
 function repair_missing_lang(): array
 {
-    // Fetch the release matching the currently installed version, so the
-    // correct zip is downloaded even if it's a pre-release.
     $currentVersion = detect_current_pureblog_version();
     $tag = 'v' . ltrim($currentVersion, 'v');
     $endpoint = 'https://api.github.com/repos/kevquirk/pureblog/releases/tags/' . urlencode($tag);
@@ -833,35 +787,14 @@ function repair_missing_lang(): array
         return ['ok' => false, 'error' => t('admin.settings.updates.error_release_metadata')];
     }
 
-    $release = ['zipball_url' => $zipballUrl];
-
-    $tmpBase = sys_get_temp_dir() . '/pureblog-lang-repair-' . bin2hex(random_bytes(6));
-    $tmpZip  = $tmpBase . '.zip';
+    $tmpBase    = sys_get_temp_dir() . '/pureblog-lang-repair-' . bin2hex(random_bytes(6));
+    $tmpZip     = $tmpBase . '.zip';
     $tmpExtract = $tmpBase . '-extract';
 
     try {
-        $headers = ['User-Agent: Pureblog-Updates-Check'];
-
-        if (function_exists('curl_init')) {
-            $ch = curl_init($release['zipball_url']);
-            if ($ch === false) {
-                return ['ok' => false, 'error' => t('admin.settings.updates.error_curl_init')];
-            }
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $raw = curl_exec($ch);
-            curl_close($ch);
-            if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
-                return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_download')];
-            }
-        } else {
-            $context = stream_context_create(['http' => ['method' => 'GET', 'timeout' => 60, 'header' => implode("\r\n", $headers), 'follow_location' => true]]);
-            $raw = @file_get_contents($release['zipball_url'], false, $context);
-            if (!is_string($raw) || !file_put_contents($tmpZip, $raw)) {
-                return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_download')];
-            }
+        $err = download_url_to_file($zipballUrl, $tmpZip);
+        if ($err !== null) {
+            return ['ok' => false, 'error' => $err];
         }
 
         $zip = new ZipArchive();
@@ -881,15 +814,12 @@ function repair_missing_lang(): array
         }
 
         $langSource = $sourceRoot . '/lang';
-        $langTarget = PUREBLOG_BASE_PATH . '/lang';
-
         if (!is_dir($langSource)) {
             return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_dir_missing')];
         }
 
-        copy_path_recursive($langSource, $langTarget);
+        copy_path_recursive($langSource, PUREBLOG_BASE_PATH . '/lang');
         return ['ok' => true];
-
     } finally {
         @unlink($tmpZip);
         remove_directory_recursive($tmpExtract);
