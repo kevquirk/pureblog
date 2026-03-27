@@ -124,6 +124,8 @@ function versions_match(string $current, string $latest): bool
 function preserved_top_level_paths(): array
 {
     return [
+        'backup',
+        'cache',
         'config',
         'content',
         'data',
