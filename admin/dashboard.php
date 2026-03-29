@@ -9,41 +9,58 @@ start_admin_session();
 require_admin_login();
 
 $config = load_config();
-$perPage = 20;
-$page = max(1, (int) ($_GET['page'] ?? 1));
-$search = trim($_GET['q'] ?? '');
-$allPosts = get_all_posts(true);
-usort($allPosts, function (array $a, array $b): int {
-    if ($a['status'] !== $b['status']) {
-        return $a['status'] === 'draft' ? -1 : 1;
-    }
-    return ($b['timestamp'] <=> $a['timestamp']);
-});
-$filteredPosts = filter_posts_by_query($allPosts, $search);
-$totalPosts = count($filteredPosts);
-$totalPages = $totalPosts > 0 ? (int) ceil($totalPosts / $perPage) : 1;
-$offset = ($page - 1) * $perPage;
-$posts = array_slice($filteredPosts, $offset, $perPage);
 
-$publishedPosts = array_values(array_filter($allPosts, static fn(array $post): bool => ($post['status'] ?? 'draft') === 'published'));
+$publishedPosts = array_values(array_filter(get_all_posts(true), static fn(array $post): bool => ($post['status'] ?? 'draft') === 'published'));
 $publishedCount = count($publishedPosts);
-$currentYear = (int) (new DateTimeImmutable('now', site_timezone_object($config)))->format('Y');
-$publishedThisYear = 0;
-$lastPublishedTimestamp = 0;
-$tagCounts = [];
+$tz             = site_timezone_object($config);
+$now            = new DateTimeImmutable('now', $tz);
+$currentYear    = (int) $now->format('Y');
+
+$publishedThisYear  = 0;
+$tagCounts          = [];
+$totalWords         = 0;
+$allTimeMonthCounts = array_fill(1, 12, 0);
+$allTimeDayCounts   = array_fill(1, 7, 0); // 1=Mon … 7=Sun (ISO 8601)
+
+// Build rolling 12-month chart slots (oldest first)
+$chartMonths = [];
+for ($i = 11; $i >= 0; $i--) {
+    $dt    = $now->modify("-{$i} months");
+    $month = (int) $dt->format('n');
+    $chartMonths[] = [
+        'year'  => (int) $dt->format('Y'),
+        'month' => $month,
+        'label' => t('date.months_short.' . ($month - 1)),
+        'count' => 0,
+    ];
+}
+$chartIndex = [];
+foreach ($chartMonths as $idx => $cm) {
+    $chartIndex[$cm['year'] . '-' . $cm['month']] = $idx;
+}
 
 foreach ($publishedPosts as $post) {
+    $content    = (string) ($post['content'] ?? '');
+    $totalWords += str_word_count($content);
+
     $timestamp = (int) ($post['timestamp'] ?? 0);
     if ($timestamp > 0) {
-        $postYear = (int) (new DateTimeImmutable('@' . $timestamp))
-            ->setTimezone(site_timezone_object($config))
-            ->format('Y');
+        $dt       = (new DateTimeImmutable('@' . $timestamp))->setTimezone($tz);
+        $postYear = (int) $dt->format('Y');
+        $postMon  = (int) $dt->format('n');
+        $postDay  = (int) $dt->format('N'); // 1=Mon … 7=Sun
+
+        $chartKey = $postYear . '-' . $postMon;
+        if (isset($chartIndex[$chartKey])) {
+            $chartMonths[$chartIndex[$chartKey]]['count']++;
+        }
+
         if ($postYear === $currentYear) {
             $publishedThisYear++;
         }
-        if ($timestamp > $lastPublishedTimestamp) {
-            $lastPublishedTimestamp = $timestamp;
-        }
+
+        $allTimeMonthCounts[$postMon]++;
+        $allTimeDayCounts[$postDay]++;
     }
 
     $tags = $post['tags'] ?? [];
@@ -52,162 +69,132 @@ foreach ($publishedPosts as $post) {
     }
     foreach ($tags as $tag) {
         $name = trim((string) $tag);
-        if ($name === '') {
-            continue;
+        if ($name !== '') {
+            $tagCounts[$name] = ($tagCounts[$name] ?? 0) + 1;
         }
-        if (!isset($tagCounts[$name])) {
-            $tagCounts[$name] = 0;
-        }
-        $tagCounts[$name]++;
     }
 }
 
-uasort($tagCounts, static function (int $a, int $b): int {
-    if ($a === $b) {
-        return 0;
-    }
-    return $a > $b ? -1 : 1;
-});
+$avgWordsAllTime = $publishedCount > 0 ? (int) round($totalWords / $publishedCount) : 0;
+$booksEquivalent = $totalWords > 0 ? round($totalWords / 80000, 1) : 0;
 
+$maxChartCount = max(1, ...array_column($chartMonths, 'count'));
+$maxMonthCount = max(1, max($allTimeMonthCounts));
+$maxDayCount   = max(1, max($allTimeDayCounts));
+
+uasort($tagCounts, static fn(int $a, int $b): int => $b <=> $a);
 $topTagEntries = [];
+$n = 0;
 foreach ($tagCounts as $tag => $count) {
     $topTagEntries[] = '<strong>' . e((string) $tag) . '</strong> (' . (int) $count . ')';
-    if (count($topTagEntries) >= 5) {
+    if (++$n >= 5) {
         break;
     }
 }
-
 $topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : t('admin.dashboard.stat_no_tags');
-$timeSinceLastPublished = '0';
-if ($lastPublishedTimestamp > 0) {
-    $delta = time() - $lastPublishedTimestamp;
-    if ($delta < 60) {
-        $timeSinceLastPublished = t('admin.dashboard.time_just_now');
-    } elseif ($delta < 3600) {
-        $minutes = (int) floor($delta / 60);
-        $timeSinceLastPublished = $minutes === 1
-            ? t('admin.dashboard.time_minute_ago', ['n' => $minutes])
-            : t('admin.dashboard.time_minutes_ago', ['n' => $minutes]);
-    } elseif ($delta < 86400) {
-        $hours = (int) floor($delta / 3600);
-        $timeSinceLastPublished = $hours === 1
-            ? t('admin.dashboard.time_hour_ago', ['n' => $hours])
-            : t('admin.dashboard.time_hours_ago', ['n' => $hours]);
-    } else {
-        $days = (int) floor($delta / 86400);
-        $timeSinceLastPublished = $days === 1
-            ? t('admin.dashboard.time_day_ago', ['n' => $days])
-            : t('admin.dashboard.time_days_ago', ['n' => $days]);
-    }
+
+// Month labels for all-time chart
+$monthLabels = [];
+for ($m = 1; $m <= 12; $m++) {
+    $monthLabels[$m] = t('date.months_short.' . ($m - 1));
 }
 
-$availableLayouts = get_layouts();
+// Day labels for all-time chart (1=Mon … 7=Sun → days_short index $d % 7)
+$dayLabels = [];
+for ($d = 1; $d <= 7; $d++) {
+    $dayLabels[$d] = t('date.days_short.' . ($d % 7));
+}
 
-$fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
+$fontStack  = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $adminTitle = t('admin.dashboard.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <?php if (!empty($_GET['saved'])): ?>
-            <p class="notice" data-auto-dismiss><?= e(t('admin.dashboard.notice_saved')) ?></p>
-        <?php endif; ?>
-        <?php if (!empty($_GET['deleted'])): ?>
-            <p class="notice" data-auto-dismiss><?= e(t('admin.dashboard.notice_deleted')) ?></p>
+
+        <?php $chartTotal = array_sum(array_column($chartMonths, 'count')); ?>
+        <?php if ($chartTotal > 0): ?>
+        <p class="dashboard-chart-title"><?= e(t('admin.dashboard.chart_title')) ?></p>
+        <div class="dashboard-chart dashboard-chart-full" aria-label="<?= e(t('admin.dashboard.chart_title')) ?>">
+            <?php foreach ($chartMonths as $cm): ?>
+                <?php $barPx = $cm['count'] > 0 ? max(3, (int) round(($cm['count'] / $maxChartCount) * 120)) : 0; ?>
+                <div class="dashboard-chart-col">
+                    <span class="dashboard-chart-count"><?= $cm['count'] > 0 ? $cm['count'] : '' ?></span>
+                    <div class="dashboard-chart-bar" style="height: <?= $barPx ?>px"></div>
+                    <span class="dashboard-chart-label"><?= e($cm['label']) ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
         <?php endif; ?>
 
-        <section class="dashboard-stats" aria-label="Dashboard stats">
+        <div class="dashboard-stats-3">
             <article class="dashboard-stat-card dashboard-stat-card-metric">
                 <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_published')) ?></p>
-                <p class="dashboard-stat-value"><?= e((string) $publishedCount) ?></p>
+                <p class="dashboard-stat-value"><?= e(number_format($publishedCount)) ?></p>
             </article>
+            <article class="dashboard-stat-card dashboard-stat-card-metric">
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_total_words')) ?></p>
+                <p class="dashboard-stat-value"><?= e(number_format($totalWords)) ?></p>
+            </article>
+            <article class="dashboard-stat-card dashboard-stat-card-metric">
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_books')) ?></p>
+                <p class="dashboard-stat-value"><?= e(number_format($booksEquivalent, 1)) ?></p>
+            </article>
+        </div>
+
+        <div class="dashboard-stats-3">
             <article class="dashboard-stat-card dashboard-stat-card-metric">
                 <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_this_year', ['year' => $currentYear])) ?></p>
                 <p class="dashboard-stat-value"><?= e((string) $publishedThisYear) ?></p>
             </article>
             <article class="dashboard-stat-card dashboard-stat-card-metric">
-                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_last_published')) ?></p>
-                <p class="dashboard-stat-value"><?= e($timeSinceLastPublished) ?></p>
+                <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_avg_words')) ?></p>
+                <p class="dashboard-stat-value"><?= e(number_format($avgWordsAllTime)) ?></p>
             </article>
             <article class="dashboard-stat-card dashboard-stat-card-tags">
                 <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_top_tags')) ?></p>
                 <p class="dashboard-stat-value dashboard-stat-tags"><?= $topTagsLabel ?></p>
             </article>
-        </section>
+        </div>
 
-        <nav class="editor-actions">
-            <?php if ($availableLayouts): ?>
-                <button type="button" id="new-post-button">
-                    <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                    <?= e(t('admin.dashboard.new_post')) ?>
-                </button>
-                <dialog id="layout-picker" aria-labelledby="layout-picker-title">
-                    <h2 id="layout-picker-title"><?= e(t('admin.dashboard.choose_layout')) ?></h2>
-                    <ul class="layout-picker-list">
-                        <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new"><?= e(t('admin.dashboard.default_post')) ?></a></li>
-                        <?php foreach ($availableLayouts as $layout): ?>
-                            <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new&amp;layout=<?= urlencode($layout['name']) ?>"><?= e($layout['label']) ?></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <button type="button" id="layout-picker-close" class="delete">
-                        <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
-                        <?= e(t('admin.dashboard.cancel')) ?>
-                    </button>
-                </dialog>
-                <script>
-                (function () {
-                    const button = document.getElementById('new-post-button');
-                    const dialog = document.getElementById('layout-picker');
-                    const close = document.getElementById('layout-picker-close');
-                    button.addEventListener('click', () => dialog.showModal());
-                    close.addEventListener('click', () => dialog.close());
-                    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
-                })();
-                </script>
-            <?php else: ?>
-                <a href="<?= base_path() ?>/admin/edit-post.php?action=new">
-                    <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                    <?= e(t('admin.dashboard.new_post')) ?>
-                </a>
-            <?php endif; ?>
-        </nav>
-
-
-        <form method="get" class="admin-search">
-            <label class="hidden" for="search"><?= e(t('admin.dashboard.search_label')) ?></label>
-            <input type="search" id="search" name="q" value="<?= e($search) ?>" placeholder="<?= e(t('admin.dashboard.search_placeholder')) ?>">
-        </form>
-
-        <?php if (!$posts): ?>
-            <?php if ($search !== ''): ?>
-                <p><?= e(t('admin.dashboard.no_posts_found', ['search' => $search])) ?></p>
-            <?php else: ?>
-                <p><?= e(t('admin.dashboard.no_posts')) ?></p>
-            <?php endif; ?>
-        <?php else: ?>
-            <ul class="admin-list">
-                <?php foreach ($posts as $post): ?>
-                    <li class="admin-list-item">
-                        <a class="admin-list-title" href="<?= base_path() ?>/admin/edit-post.php?slug=<?= e($post['slug']) ?>">
-                            <?= e($post['title']) ?>
-                        </a>
-                        <div class="admin-list-meta">
-                            <span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config, 'Y-m-d @ H:i')) ?></span>
-                            <span class="status <?= e($post['status']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-toggle-right"></use></svg> <?= e(t('admin.editor.status_' . $post['status'])) ?></span>
+        <div class="dashboard-chart-pair">
+            <div class="dashboard-chart-section">
+                <p class="dashboard-chart-title"><?= e(t('admin.dashboard.chart_all_months')) ?></p>
+                <div class="dashboard-chart" aria-label="<?= e(t('admin.dashboard.chart_all_months')) ?>">
+                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                        <?php $barPx = $allTimeMonthCounts[$m] > 0 ? max(3, (int) round(($allTimeMonthCounts[$m] / $maxMonthCount) * 100)) : 0; ?>
+                        <div class="dashboard-chart-col">
+                            <span class="dashboard-chart-count"><?= $allTimeMonthCounts[$m] > 0 ? $allTimeMonthCounts[$m] : '' ?></span>
+                            <div class="dashboard-chart-bar" style="height: <?= $barPx ?>px"></div>
+                            <span class="dashboard-chart-label"><?= e($monthLabels[$m]) ?></span>
                         </div>
-                    </li>
+                    <?php endfor; ?>
+                </div>
+            </div>
+            <div class="dashboard-chart-section">
+                <p class="dashboard-chart-title"><?= e(t('admin.dashboard.chart_all_days')) ?></p>
+                <div class="dashboard-chart" aria-label="<?= e(t('admin.dashboard.chart_all_days')) ?>">
+                    <?php for ($d = 1; $d <= 7; $d++): ?>
+                        <?php $barPx = $allTimeDayCounts[$d] > 0 ? max(3, (int) round(($allTimeDayCounts[$d] / $maxDayCount) * 100)) : 0; ?>
+                        <div class="dashboard-chart-col">
+                            <span class="dashboard-chart-count"><?= $allTimeDayCounts[$d] > 0 ? $allTimeDayCounts[$d] : '' ?></span>
+                            <div class="dashboard-chart-bar" style="height: <?= $barPx ?>px"></div>
+                            <span class="dashboard-chart-label"><?= e($dayLabels[$d]) ?></span>
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($tagCounts): ?>
+        <div class="dashboard-all-tags">
+            <p class="dashboard-chart-title"><?= e(t('admin.dashboard.all_tags')) ?></p>
+            <ul class="dashboard-all-tags-list">
+                <?php foreach ($tagCounts as $tag => $count): ?>
+                    <li><a href="<?= base_path() ?>/<?= urlencode((string) $tag) ?>"><?= e((string) $tag) ?></a> <span class="dashboard-tag-count">(<?= (int) $count ?>)</span></li>
                 <?php endforeach; ?>
             </ul>
-            <?php if ($totalPages > 1): ?>
-                <?php $searchQuery = $search !== '' ? '&q=' . urlencode($search) : ''; ?>
-                <nav class="pagination">
-                    <?php if ($page > 1): ?>
-                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page - 1)) ?><?= $searchQuery ?>"><?= e(t('admin.dashboard.pagination_newer')) ?></a>
-                    <?php endif; ?>
-                    <?php if ($page < $totalPages): ?>
-                        <a href="<?= base_path() ?>/admin/dashboard.php?page=<?= e((string) ($page + 1)) ?><?= $searchQuery ?>"><?= e(t('admin.dashboard.pagination_older')) ?></a>
-                    <?php endif; ?>
-                </nav>
-            <?php endif; ?>
+        </div>
         <?php endif; ?>
+
     </main>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

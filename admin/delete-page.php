@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     } elseif (!delete_page_by_slug($slug)) {
         $errors[] = t('admin.delete_page.error_delete');
     } else {
-        header('Location: ' . base_path() . '/admin/pages.php?deleted=1');
+        header('Location: ' . base_path() . '/admin/content.php?tab=pages&deleted=1');
         exit;
     }
 } else {

@@ -106,7 +106,7 @@ unset($_SESSION['admin_action_flash']);
         <nav class="admin-nav" aria-label="Admin">
             <ul class="admin-nav-list">
                 <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
-                <li><a href="<?= base_path() ?>/admin/pages.php"<?= $adminPath === 'admin/pages.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.pages')) ?></a></li>
+                <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
                 <li><a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg> <?= e(t('admin.nav.settings')) ?></a></li>
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.nav.view_site')) ?></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
