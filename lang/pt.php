@@ -44,10 +44,10 @@ return [
         'no_posts_found'        => 'Nenhuma publicação encontrada para "{search}".',
         'search_result'         => '{n} resultado encontrado.',
         'search_results'        => '{n} resultados encontrados.',
-    ],
-
         'page_not_found'        => 'Página não encontrada',
         'page_not_found_detail' => 'A página que você solicitou não pôde ser encontrada.',
+    ],
+
     // -------------------------------------------------------------------------
     // Admin
     // -------------------------------------------------------------------------
@@ -82,13 +82,16 @@ return [
             'stat_total_words'     => 'Total de palavras',
             'stat_books'           => 'Livros equivalentes',
             'stat_avg_words'       => 'Média de palavras por post',
-            'stat_this_year'       => 'Posts em {year}',
+            'section_this_year'    => 'Atividade recente (últimos 12 meses)',
+            'section_all_time'     => 'Estatísticas de posts (sempre)',
+            'stat_words_this_year' => 'Palavras escritas',
+            'stat_this_year'       => 'Posts',
             'stat_top_tags'        => 'Tags principais',
             'stat_no_tags'         => 'Sem tags ainda',
             'chart_title'          => 'Posts por mês (últimos 12 meses)',
             'chart_all_years'      => 'Posts por ano',
-            'chart_all_months'     => 'Posts por mês (sempre)',
-            'chart_all_days'       => 'Posts por dia da semana (sempre)',
+            'chart_all_months'     => 'Posts por mês',
+            'chart_all_days'       => 'Posts por dia da semana',
             'all_tags'             => 'Todas as tags',
             'write_post'           => 'Escrever um post',
             'last_published'       => 'Última publicação',

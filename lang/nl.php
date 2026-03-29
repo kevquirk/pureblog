@@ -45,10 +45,10 @@ return [
         'no_posts_found'        => 'Geen artikel gevonden voor zoekopdracht "{search}".',
         'search_result'         => '{n} resultaat gevonden.',
         'search_results'        => '{n} resultaten gevonden.',
-    ],
-
         'page_not_found'        => 'Pagina niet gevonden',
         'page_not_found_detail' => 'De pagina die je hebt opgevraagd kon niet worden gevonden.',
+    ],
+
     // -------------------------------------------------------------------------
     // Admin
     // -------------------------------------------------------------------------
@@ -83,13 +83,16 @@ return [
             'stat_total_words'     => 'Totaal woorden',
             'stat_books'           => 'Boekequivalenten',
             'stat_avg_words'       => 'Gem. woorden per bericht',
-            'stat_this_year'       => 'Berichten in {year}',
+            'section_this_year'    => 'Recente activiteit (afgelopen 12 maanden)',
+            'section_all_time'     => 'Berichtstatistieken (altijd)',
+            'stat_words_this_year' => 'Woorden geschreven',
+            'stat_this_year'       => 'Berichten',
             'stat_top_tags'        => 'Populaire tags',
             'stat_no_tags'         => 'Nog geen tags',
             'chart_title'          => 'Berichten per maand (afgelopen 12 maanden)',
             'chart_all_years'      => 'Berichten per jaar',
-            'chart_all_months'     => 'Berichten per maand (altijd)',
-            'chart_all_days'       => 'Berichten per weekdag (altijd)',
+            'chart_all_months'     => 'Berichten per maand',
+            'chart_all_days'       => 'Berichten per weekdag',
             'all_tags'             => 'Alle tags',
             'write_post'           => 'Bericht schrijven',
             'last_published'       => 'Laatste bericht gepubliceerd',

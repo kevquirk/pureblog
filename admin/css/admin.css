@@ -356,7 +356,8 @@ a.button,
 .editor-actions button,
 .editor-actions a,
 .content-toolbar a,
-.dashboard-write-post-card a {
+.dashboard-write-post-card a,
+.dashboard-write-post a {
     cursor: pointer;
     background: var(--bg-color);
     color: var(--text-color);
@@ -380,7 +381,8 @@ a.button:hover,
 .editor-actions a:hover,
 .content-toolbar a:hover,
 .content-tabs a.current,
-.dashboard-write-post-card a:hover {
+.dashboard-write-post-card a:hover,
+.dashboard-write-post a:hover {
     background-color: var(--text-color);
     color: var(--bg-color);
 }
@@ -389,7 +391,8 @@ a.button:hover,
 .editor-actions button,
 .editor-actions a,
 .content-toolbar a,
-.dashboard-write-post-card a {
+.dashboard-write-post-card a,
+.dashboard-write-post a {
     display: inline-flex;
     align-items: center;
     line-height: 1.2;
@@ -556,8 +559,13 @@ th, td {
 }
 
 .dashboard-h2 {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     margin-top: 4rem;
+}
+
+.dashboard-h3 {
+    font-size: 1.2rem;
+    margin-top: 3rem;
 }
 
 .dashboard-stats-3 {
@@ -604,6 +612,7 @@ th, td {
     font-size: 1.8rem;
     line-height: 1.15;
     text-align: center;
+    margin-top: 1rem;
 }
 
 .dashboard-stat-card-metric .dashboard-stat-label {
@@ -618,7 +627,13 @@ th, td {
 .dashboard-stat-tags {
     font-size: 1rem;
     font-weight: normal;
-    margin-top: 1.6rem;
+    margin-top: 2rem;
+}
+
+.dashboard-stat-books {
+    font-size: 0.75rem;
+    font-weight: normal;
+    opacity: 0.7;
 }
 
 .dashboard-stat-card-tags .dashboard-stat-label {
@@ -1070,10 +1085,9 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
 }
 
 .dashboard-chart-count {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     line-height: 1;
     min-height: 0.85rem;
-    opacity: 0.8;
 }
 
 .dashboard-chart-bar {
@@ -1092,6 +1106,11 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
   text-align: center;
   width: 100%;
   text-transform: uppercase;
+}
+
+.dashboard-write-post {
+    margin: 0 0 2rem 0;
+    text-align: center;
 }
 
 .dashboard-write-post-card {
@@ -1120,6 +1139,7 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
 
 .dashboard-version-card .dashboard-stat-value {
     font-size: 1.4rem;
+    margin-top: 1rem;
 }
 
 .dashboard-version-update {
@@ -1136,7 +1156,7 @@ html[data-admin-theme="dark"] .cm-s-default .cm-meta {
 }
 
 .dashboard-chart-full {
-    margin-top: 0.5rem;
+    margin: 1.5rem 0 2.5rem 0;
 }
 
 /* Side-by-side charts */

@@ -45,10 +45,10 @@ return [
         'no_posts_found'        => 'Niciun articol găsit pentru "{search}".',
         'search_result'         => '{n} rezultat găsit.',
         'search_results'        => '{n} rezultate găsite.',
-    ],
-
         'page_not_found'        => 'Pagina nu a fost găsită',
         'page_not_found_detail' => 'Pagina pe care ai solicitat-o nu a putut fi găsită.',
+    ],
+
     // -------------------------------------------------------------------------
     // Admin
     // -------------------------------------------------------------------------
@@ -83,13 +83,16 @@ return [
             'stat_total_words'     => 'Total cuvinte',
             'stat_books'           => 'Cărți echivalente',
             'stat_avg_words'       => 'Cuvinte medii per articol',
-            'stat_this_year'       => 'Articole în {year}',
+            'section_this_year'    => 'Activitate recentă (ultimele 12 luni)',
+            'section_all_time'     => 'Statistici articole (tot timpul)',
+            'stat_words_this_year' => 'Cuvinte scrise',
+            'stat_this_year'       => 'Articole',
             'stat_top_tags'        => 'Etichete principale',
             'stat_no_tags'         => 'Nicio etichetă încă',
             'chart_title'          => 'Articole pe lună (ultimele 12 luni)',
             'chart_all_years'      => 'Articole pe an',
-            'chart_all_months'     => 'Articole pe lună (tot timpul)',
-            'chart_all_days'       => 'Articole pe zi a săptămânii (tot timpul)',
+            'chart_all_months'     => 'Articole pe lună',
+            'chart_all_days'       => 'Articole pe zi a săptămânii',
             'all_tags'             => 'Toate etichetele',
             'write_post'           => 'Scrie un articol',
             'last_published'       => 'Ultimul articol publicat',
