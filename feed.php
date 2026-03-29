@@ -66,22 +66,47 @@ if ($feedCacheEnabled) {
 
 function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = ''): string
 {
-    $patterns = [
-        '/href=\"\\//i',
-        '/src=\"\\//i',
-    ];
-    $replacements = [
-        'href="' . $baseUrl . '/',
-        'src="' . $baseUrl . '/',
-    ];
-
-    $html = preg_replace($patterns, $replacements, $html) ?? $html;
-
-    if ($postUrl !== '') {
-        $html = preg_replace('/href="#/i', 'href="' . $postUrl . '#', $html) ?? $html;
+    if (trim($html) === '') {
+        return $html;
     }
 
-    return $html;
+    $doc = new DOMDocument();
+    libxml_use_internal_errors(true);
+    $doc->loadHTML('<meta charset="utf-8">' . $html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    libxml_clear_errors();
+
+    $xpath = new DOMXPath($doc);
+
+    // Absolutize href attributes, skipping <code> and <pre> descendants
+    foreach ($xpath->query('//*[@href and not(ancestor::code) and not(ancestor::pre)]') as $node) {
+        $href = $node->getAttribute('href');
+        if (str_starts_with($href, '/')) {
+            $node->setAttribute('href', $baseUrl . $href);
+        } elseif ($postUrl !== '' && str_starts_with($href, '#')) {
+            $node->setAttribute('href', $postUrl . $href);
+        }
+    }
+
+    // Absolutize src attributes, skipping <code> and <pre> descendants
+    foreach ($xpath->query('//*[@src and not(ancestor::code) and not(ancestor::pre)]') as $node) {
+        $src = $node->getAttribute('src');
+        if (str_starts_with($src, '/')) {
+            $node->setAttribute('src', $baseUrl . $src);
+        }
+    }
+
+    // Extract just the body content (strip the wrapping html/body tags loadHTML adds)
+    $body = $doc->getElementsByTagName('body')->item(0);
+    if ($body === null) {
+        return $html;
+    }
+
+    $result = '';
+    foreach ($body->childNodes as $child) {
+        $result .= $doc->saveHTML($child);
+    }
+
+    return $result;
 }
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
