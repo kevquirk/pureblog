@@ -395,17 +395,27 @@ function build_package_upgrade_plan(string $zipballUrl): array
             }
         }
 
+        // Build the set of top-level paths the update will actually replace.
+        // The apply step only removes/replaces top-level items that exist in the release,
+        // so files in directories not present in the release are never touched.
+        $sourceTopItems = [];
+        foreach (array_keys($sourceCoreSet) as $coreRelative) {
+            $sourceTopItems[(string) strtok($coreRelative, '/')] = true;
+        }
+
         $localOnly = [];
         $localFiles = collect_relative_files(PUREBLOG_BASE_PATH);
         foreach ($localFiles as $relative) {
-            $top = strtok($relative, '/');
+            $top = (string) strtok($relative, '/');
             if (is_htaccess_path($relative)) {
                 continue;
             }
             if (in_array($top, $preserveTop, true)) {
                 continue;
             }
-            if (!isset($sourceCoreSet[$relative])) {
+            // Only flag files that live inside a top-level directory the update will
+            // delete and replace. Files in entirely separate directories are untouched.
+            if (!isset($sourceCoreSet[$relative]) && isset($sourceTopItems[$top])) {
                 $localOnly[] = '/' . $relative;
             }
         }
