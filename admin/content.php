@@ -63,17 +63,20 @@ $availableTags  = array_keys($availableTags);
 
 // Apply filters
 $filteredPosts = filter_posts_by_query($allPosts, $search);
-if ($filterYear > 0) {
+if ($filterYear > 0 || $filterMonth > 0) {
     $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterYear, $filterMonth): bool {
         $ts = (int) ($post['timestamp'] ?? 0);
         if ($ts === 0) {
             return false;
         }
         $dt = new DateTimeImmutable('@' . $ts);
-        if ((int) $dt->format('Y') !== $filterYear) {
+        if ($filterYear > 0 && (int) $dt->format('Y') !== $filterYear) {
             return false;
         }
-        return $filterMonth === 0 || (int) $dt->format('n') === $filterMonth;
+        if ($filterMonth > 0 && (int) $dt->format('n') !== $filterMonth) {
+            return false;
+        }
+        return true;
     }));
 }
 if ($filterTag !== '') {
@@ -91,13 +94,15 @@ if ($filterSince > 0) {
 // Build a human-readable label and clear-URL for any active filter
 $filterLabel    = '';
 $filterClearUrl = '';
-$anyFilter = $filterYear > 0 || $filterTag !== '' || $filterSince > 0;
+$anyFilter = $filterYear > 0 || $filterMonth > 0 || $filterTag !== '' || $filterSince > 0;
 if ($anyFilter) {
     $parts = [];
-    if ($filterYear > 0) {
-        $parts[] = $filterMonth > 0
-            ? t('date.months.' . ($filterMonth - 1)) . ' ' . $filterYear
-            : (string) $filterYear;
+    if ($filterYear > 0 && $filterMonth > 0) {
+        $parts[] = t('date.months.' . ($filterMonth - 1)) . ' ' . $filterYear;
+    } elseif ($filterYear > 0) {
+        $parts[] = (string) $filterYear;
+    } elseif ($filterMonth > 0) {
+        $parts[] = t('date.months.' . ($filterMonth - 1));
     }
     if ($filterTag !== '') {
         $parts[] = $filterTag;
