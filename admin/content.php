@@ -21,12 +21,18 @@ $page        = max(1, (int) ($_GET['page'] ?? 1));
 $search      = trim((string) ($_GET['q'] ?? ''));
 $filterYear  = isset($_GET['year'])  ? (int) $_GET['year']  : 0;
 $filterMonth = isset($_GET['month']) ? (int) $_GET['month'] : 0;
+$filterTag   = trim((string) ($_GET['tag'] ?? ''));
+$filterSince = isset($_GET['since']) ? (int) $_GET['since'] : 0;
 if ($filterYear < 2000 || $filterYear > 2100) {
     $filterYear = 0;
 }
 if ($filterMonth < 1 || $filterMonth > 12) {
     $filterMonth = 0;
 }
+if ($filterSince < 0 || $filterSince > time()) {
+    $filterSince = 0;
+}
+
 $allPosts = get_all_posts(true);
 usort($allPosts, function (array $a, array $b): int {
     if ($a['status'] !== $b['status']) {
@@ -34,6 +40,28 @@ usort($allPosts, function (array $a, array $b): int {
     }
     return ($b['timestamp'] <=> $a['timestamp']);
 });
+
+// Build filter option lists from the unfiltered set
+$availableYears = [];
+$availableTags  = [];
+foreach ($allPosts as $p) {
+    $ts = (int) ($p['timestamp'] ?? 0);
+    if ($ts > 0) {
+        $availableYears[(int) (new DateTimeImmutable('@' . $ts))->format('Y')] = true;
+    }
+    foreach (($p['tags'] ?? []) as $t) {
+        $t = trim((string) $t);
+        if ($t !== '') {
+            $availableTags[$t] = true;
+        }
+    }
+}
+krsort($availableYears);
+ksort($availableTags);
+$availableYears = array_keys($availableYears);
+$availableTags  = array_keys($availableTags);
+
+// Apply filters
 $filteredPosts = filter_posts_by_query($allPosts, $search);
 if ($filterYear > 0) {
     $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterYear, $filterMonth): bool {
@@ -48,17 +76,40 @@ if ($filterYear > 0) {
         return $filterMonth === 0 || (int) $dt->format('n') === $filterMonth;
     }));
 }
+if ($filterTag !== '') {
+    $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterTag): bool {
+        $tags = $post['tags'] ?? [];
+        return is_array($tags) && in_array($filterTag, array_map('strval', $tags), true);
+    }));
+}
+if ($filterSince > 0) {
+    $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterSince): bool {
+        return (int) ($post['timestamp'] ?? 0) >= $filterSince;
+    }));
+}
 
-// Build a human-readable label and clear-URL for any active date filter
-$filterLabel   = '';
+// Build a human-readable label and clear-URL for any active filter
+$filterLabel    = '';
 $filterClearUrl = '';
-if ($filterYear > 0) {
-    $filterLabel = $filterMonth > 0
-        ? t('date.months.' . ($filterMonth - 1)) . ' ' . $filterYear
-        : (string) $filterYear;
-    $clearParams = array_filter(['tab' => $tab, 'q' => $search !== '' ? $search : null]);
+$anyFilter = $filterYear > 0 || $filterTag !== '' || $filterSince > 0;
+if ($anyFilter) {
+    $parts = [];
+    if ($filterYear > 0) {
+        $parts[] = $filterMonth > 0
+            ? t('date.months.' . ($filterMonth - 1)) . ' ' . $filterYear
+            : (string) $filterYear;
+    }
+    if ($filterTag !== '') {
+        $parts[] = $filterTag;
+    }
+    if ($filterSince > 0 && $filterYear === 0) {
+        $parts[] = t('admin.content.filter_recent');
+    }
+    $filterLabel    = implode(', ', $parts);
+    $clearParams    = array_filter(['tab' => $tab, 'q' => $search !== '' ? $search : null]);
     $filterClearUrl = base_path() . '/admin/content.php?' . http_build_query($clearParams);
 }
+$detailsOpen = $anyFilter || $search !== '';
 
 $totalPosts = count($filteredPosts);
 $totalPages = $totalPosts > 0 ? (int) ceil($totalPosts / $perPage) : 1;
@@ -141,30 +192,71 @@ require __DIR__ . '/../includes/admin-head.php';
                 <p class="notice" data-auto-dismiss><?= e(t('admin.content.notice_post_deleted')) ?></p>
             <?php endif; ?>
 
-            <?php if ($filterLabel !== ''): ?>
-                <p class="notice notice-filter">
-                    <?= e(t('admin.content.filter_active', ['label' => $filterLabel])) ?>
-                    <a href="<?= e($filterClearUrl) ?>"><?= e(t('admin.content.filter_clear')) ?></a>
-                </p>
-            <?php endif; ?>
-
-            <form method="get" class="admin-search">
-                <input type="hidden" name="tab" value="posts">
-                <?php if ($filterYear > 0): ?>
-                    <input type="hidden" name="year" value="<?= e((string) $filterYear) ?>">
-                    <?php if ($filterMonth > 0): ?>
-                        <input type="hidden" name="month" value="<?= e((string) $filterMonth) ?>">
+            <details class="content-filter"<?= $detailsOpen ? ' open' : '' ?>>
+                <summary class="content-filter-summary">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg>
+                    <?= e(t('admin.content.filter_title')) ?>
+                    <?php if ($filterLabel !== ''): ?>
+                        <span class="content-filter-active-label"><?= e($filterLabel) ?></span>
                     <?php endif; ?>
-                <?php endif; ?>
-                <label class="hidden" for="search"><?= e(t('admin.content.search_label')) ?></label>
-                <input type="search" id="search" name="q" value="<?= e($search) ?>" placeholder="<?= e(t('admin.content.search_placeholder')) ?>" autocomplete="off">
-            </form>
+                </summary>
+                <form method="get" class="content-filter-form">
+                    <input type="hidden" name="tab" value="posts">
+
+                    <div class="content-filter-row">
+                        <div class="content-filter-search">
+                            <label for="filter-search"><?= e(t('admin.content.search_label')) ?></label>
+                            <input type="search" id="filter-search" name="q" value="<?= e($search) ?>" placeholder="<?= e(t('admin.content.search_placeholder')) ?>" autocomplete="off">
+                        </div>
+
+                        <div class="content-filter-selects">
+                            <?php if ($availableYears): ?>
+                            <div class="content-filter-field">
+                                <label for="filter-year"><?= e(t('admin.content.filter_year')) ?></label>
+                                <select id="filter-year" name="year">
+                                    <option value=""><?= e(t('admin.content.filter_all_years')) ?></option>
+                                    <?php foreach ($availableYears as $y): ?>
+                                        <option value="<?= e((string) $y) ?>"<?= $filterYear === $y ? ' selected' : '' ?>><?= e((string) $y) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="content-filter-field">
+                                <label for="filter-month"><?= e(t('admin.content.filter_month')) ?></label>
+                                <select id="filter-month" name="month">
+                                    <option value=""><?= e(t('admin.content.filter_all_months')) ?></option>
+                                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                                        <option value="<?= $m ?>"<?= $filterMonth === $m ? ' selected' : '' ?>><?= e(t('date.months.' . ($m - 1))) ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php if ($availableTags): ?>
+                            <div class="content-filter-field">
+                                <label for="filter-tag"><?= e(t('admin.content.filter_tag')) ?></label>
+                                <select id="filter-tag" name="tag">
+                                    <option value=""><?= e(t('admin.content.filter_all_tags')) ?></option>
+                                    <?php foreach ($availableTags as $tagOption): ?>
+                                        <option value="<?= e($tagOption) ?>"<?= $filterTag === $tagOption ? ' selected' : '' ?>><?= e($tagOption) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <?php endif; ?>
+
+                            <div class="content-filter-actions">
+                                <button type="submit"><?= e(t('admin.content.filter_apply')) ?></button>
+                                <?php if ($detailsOpen): ?>
+                                    <a class="delete" href="<?= e(base_path() . '/admin/content.php?tab=' . urlencode($tab)) ?>"><?= e(t('admin.content.filter_clear')) ?></a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </details>
 
             <?php if (!$posts): ?>
-                <?php if ($filterLabel !== ''): ?>
-                    <p><?= e(t('admin.content.no_posts_filtered', ['label' => $filterLabel])) ?></p>
-                <?php elseif ($search !== ''): ?>
-                    <p><?= e(t('admin.content.no_posts_found', ['search' => $search])) ?></p>
+                <?php if ($filterLabel !== '' || $search !== ''): ?>
+                    <p><?= e(t('admin.content.no_posts_filtered', ['label' => $filterLabel !== '' ? $filterLabel : $search])) ?></p>
                 <?php else: ?>
                     <p><?= e(t('admin.content.no_posts')) ?></p>
                 <?php endif; ?>
@@ -185,9 +277,11 @@ require __DIR__ . '/../includes/admin-head.php';
                 <?php if ($totalPages > 1): ?>
                     <?php
                         $pageParams = ['tab' => 'posts'];
-                        if ($filterYear > 0)  { $pageParams['year']  = $filterYear; }
-                        if ($filterMonth > 0) { $pageParams['month'] = $filterMonth; }
-                        if ($search !== '')   { $pageParams['q']     = $search; }
+                        if ($filterYear > 0)   { $pageParams['year']  = $filterYear; }
+                        if ($filterMonth > 0)  { $pageParams['month'] = $filterMonth; }
+                        if ($filterTag !== '')  { $pageParams['tag']   = $filterTag; }
+                        if ($filterSince > 0)  { $pageParams['since'] = $filterSince; }
+                        if ($search !== '')    { $pageParams['q']     = $search; }
                     ?>
                     <nav class="pagination">
                         <?php if ($page > 1): ?>

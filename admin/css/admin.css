@@ -244,10 +244,6 @@ select {
     background: var(--input-bg);
 }
 
-input[type="search"] {
-    margin-bottom: 2.5rem;
-}
-
 input, textarea, select {
     margin-bottom: 1.5rem;
 }
@@ -355,6 +351,8 @@ input[type="radio"] {
 
 button,
 a.button,
+a.delete,
+a.save,
 .editor-actions button,
 .link-button,
 .admin-nav-list a,
@@ -375,10 +373,13 @@ a.button,
     padding: 0.5rem 0.75rem;
     font-family: inherit;
     font-size: inherit;
+    line-height: 1.15;
 }
 
 button:hover,
 a.button:hover,
+a.delete:hover,
+a.save:hover,
 .editor-actions button:hover,
 .link-button:hover,
 .admin-nav-list a.current,
@@ -412,11 +413,13 @@ a.button:hover,
 }
 
 .delete,
+a.delete,
 button.delete {
     color: var(--red);
     border-color: var(--red);
 }
 
+a.delete:hover,
 button.delete:hover {
     background: var(--red);
     color: var(--bg-color);
@@ -655,6 +658,89 @@ th, td {
     flex-direction: column;
     gap: 0.4rem;
     margin: 2.5rem 0 0 0;
+}
+
+/* Search & filter panel */
+.content-filter {
+    margin: 2.5rem 0;
+    border: 2px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    background: var(--accent-bg-color);
+}
+
+.content-filter-summary {
+    align-items: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    gap: 0.4rem;
+    font-weight: 600;
+    list-style: none;
+    padding: 0.5rem 0;
+    user-select: none;
+}
+
+.content-filter-summary::-webkit-details-marker {
+    display: none;
+}
+
+.content-filter-active-label {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    font-size: 0.75rem;
+    font-weight: normal;
+    margin-left: 0.25rem;
+    padding: 0.1rem 0.45rem;
+}
+
+.content-filter-form {
+    padding: 0.75rem 0 0.25rem;
+}
+
+.content-filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.content-filter-search {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.content-filter-search label {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.content-filter-selects {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.content-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.content-filter-field label {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.content-filter-field select {
+    margin-bottom: 0;
+}
+
+.content-filter-actions {
+    align-items: center;
+    align-self: flex-end;
+    display: flex;
+    gap: 0.75rem;
 }
 
 .editor-actions {
