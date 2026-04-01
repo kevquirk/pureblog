@@ -99,7 +99,7 @@ return [
             'no_posts_yet'         => 'No posts yet',
             'version_label'        => 'Pure Blog version',
             'version_uptodate'     => 'Up to date, good job 👍🏻',
-            'version_update_link'  => '{latest} available — update now →',
+            'version_update_link'  => '{latest} available - update now!',
             'time_just_now'        => 'Just now',
             'time_minute_ago'      => '{n} minute ago',
             'time_minutes_ago'     => '{n} minutes ago',

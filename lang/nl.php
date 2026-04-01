@@ -99,7 +99,7 @@ return [
             'no_posts_yet'         => 'Nog geen berichten',
             'version_label'        => 'Pure Blog versie',
             'version_uptodate'     => 'Up-to-date, goed gedaan 👍🏻',
-            'version_update_link'  => '{latest} beschikbaar — nu bijwerken →',
+            'version_update_link'  => '{latest} beschikbaar - nu bijwerken!',
             'time_just_now'             => 'Nu',
             'time_minute_ago'           => '{n} minuten geleden',
             'time_minutes_ago'          => '{n} minuten geleden',

@@ -99,7 +99,7 @@ return [
             'no_posts_yet'         => 'Aucun article pour l\'instant',
             'version_label'        => 'Version de Pure Blog',
             'version_uptodate'     => 'À jour, bravo 👍🏻',
-            'version_update_link'  => '{latest} disponible — mettre à jour maintenant →',
+            'version_update_link'  => '{latest} disponible - mettre à jour maintenant !',
             'time_just_now'             => 'À l’instant',
             'time_minute_ago'           => 'Il y a {n} minute',
             'time_minutes_ago'          => 'Il y a {n} minutes',

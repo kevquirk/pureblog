@@ -107,7 +107,7 @@ return [
             'no_posts_yet'         => 'Noch keine Beiträge',
             'version_label'        => 'Pure Blog Version',
             'version_uptodate'     => 'Aktuell, gut gemacht 👍🏻',
-            'version_update_link'  => '{latest} verfügbar – jetzt aktualisieren →',
+            'version_update_link'  => '{latest} verfügbar - jetzt aktualisieren!',
             'time_just_now'        => 'Gerade eben',
             'time_minute_ago'      => 'Vor {n} Minute',
             'time_minutes_ago'     => 'Vor {n} Minuten',

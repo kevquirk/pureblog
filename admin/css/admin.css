@@ -640,9 +640,9 @@ th, td {
 }
 
 .dashboard-stat-books {
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: normal;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .dashboard-stat-card-tags .dashboard-stat-label {
@@ -712,7 +712,7 @@ th, td {
 
 .content-filter-search label {
     font-size: 0.8rem;
-    opacity: 0.75;
+    opacity: 0.8;
 }
 
 .content-filter-selects {
@@ -730,7 +730,7 @@ th, td {
 
 .content-filter-field label {
     font-size: 0.8rem;
-    opacity: 0.75;
+    opacity: 0.8;
 }
 
 .content-filter-field select {
@@ -1245,7 +1245,7 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 
 .dashboard-version-update {
     display: inline-block;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: bold;
     margin-top: 0.5rem;
 }
@@ -1253,7 +1253,7 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 .dashboard-version-uptodate {
     font-size: 0.85rem;
     margin: 0.5rem 0 0;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 .dashboard-chart-full {
@@ -1288,10 +1288,10 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 
 .dashboard-all-tags-list li {
     break-inside: avoid;
-    font-size: 0.9rem;
+    font-size: 1rem;
     padding: 0.15rem 0;
 }
 
 .dashboard-tag-count {
-    opacity: 0.6;
+    opacity: 0.8;
 }

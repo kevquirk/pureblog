@@ -98,7 +98,7 @@ return [
             'no_posts_yet'         => 'Ainda sem publicações',
             'version_label'        => 'Versão do Pure Blog',
             'version_uptodate'     => 'Atualizado, bom trabalho 👍🏻',
-            'version_update_link'  => '{latest} disponível — atualizar agora →',
+            'version_update_link'  => '{latest} disponível - atualizar agora!',
             'time_just_now'             => 'Agora mesmo',
             'time_minute_ago'           => 'Há {n} minuto',
             'time_minutes_ago'          => 'Há {n} minutos',

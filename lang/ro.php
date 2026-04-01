@@ -99,7 +99,7 @@ return [
             'no_posts_yet'         => 'Niciun articol încă',
             'version_label'        => 'Versiunea Pure Blog',
             'version_uptodate'     => 'Actualizat, bravo 👍🏻',
-            'version_update_link'  => '{latest} disponibil — actualizează acum →',
+            'version_update_link'  => '{latest} disponibil - actualizează acum!',
             'time_just_now'             => 'Chiar acum',
             'time_minute_ago'           => 'Acum {n} minut',
             'time_minutes_ago'          => 'Acum {n} minute',
