@@ -130,6 +130,8 @@ return [
             'filter_all_years'      => 'Alle jaren',
             'filter_all_months'     => 'Alle maanden',
             'filter_all_tags'       => 'Alle tags',
+            'filter_status'         => 'Status',
+            'filter_all_statuses'   => 'Alle',
             'filter_apply'          => 'Toepassen',
             'filter_active'         => 'Gefilterd op: {label}.',
             'filter_clear'          => 'Wissen',

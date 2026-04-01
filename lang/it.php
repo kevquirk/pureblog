@@ -129,6 +129,8 @@ return [
             'filter_all_years'      => 'Tutti gli anni',
             'filter_all_months'     => 'Tutti i mesi',
             'filter_all_tags'       => 'Tutti i tag',
+            'filter_status'         => 'Stato',
+            'filter_all_statuses'   => 'Tutti',
             'filter_apply'          => 'Applica',
             'filter_active'         => 'Filtrato per: {label}.',
             'filter_clear'          => 'Cancella',

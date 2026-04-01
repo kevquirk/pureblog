@@ -21,8 +21,12 @@ $page        = max(1, (int) ($_GET['page'] ?? 1));
 $search      = trim((string) ($_GET['q'] ?? ''));
 $filterYear  = isset($_GET['year'])  ? (int) $_GET['year']  : 0;
 $filterMonth = isset($_GET['month']) ? (int) $_GET['month'] : 0;
-$filterTag   = trim((string) ($_GET['tag'] ?? ''));
-$filterSince = isset($_GET['since']) ? (int) $_GET['since'] : 0;
+$filterTag    = trim((string) ($_GET['tag'] ?? ''));
+$filterStatus = trim((string) ($_GET['status'] ?? ''));
+$filterSince  = isset($_GET['since']) ? (int) $_GET['since'] : 0;
+if (!in_array($filterStatus, ['draft', 'published'], true)) {
+    $filterStatus = '';
+}
 if ($filterYear < 2000 || $filterYear > 2100) {
     $filterYear = 0;
 }
@@ -85,6 +89,11 @@ if ($filterTag !== '') {
         return is_array($tags) && in_array(normalize_tag($filterTag), array_map(fn($t) => normalize_tag((string) $t), $tags), true);
     }));
 }
+if ($filterStatus !== '') {
+    $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterStatus): bool {
+        return ($post['status'] ?? '') === $filterStatus;
+    }));
+}
 if ($filterSince > 0) {
     $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterSince): bool {
         return (int) ($post['timestamp'] ?? 0) >= $filterSince;
@@ -94,7 +103,7 @@ if ($filterSince > 0) {
 // Build a human-readable label and clear-URL for any active filter
 $filterLabel    = '';
 $filterClearUrl = '';
-$anyFilter = $filterYear > 0 || $filterMonth > 0 || $filterTag !== '' || $filterSince > 0;
+$anyFilter = $filterYear > 0 || $filterMonth > 0 || $filterTag !== '' || $filterStatus !== '' || $filterSince > 0;
 if ($anyFilter) {
     $parts = [];
     if ($filterYear > 0 && $filterMonth > 0) {
@@ -106,6 +115,9 @@ if ($anyFilter) {
     }
     if ($filterTag !== '') {
         $parts[] = $filterTag;
+    }
+    if ($filterStatus !== '') {
+        $parts[] = t('admin.editor.status_' . $filterStatus);
     }
     if ($filterSince > 0 && $filterYear === 0) {
         $parts[] = t('admin.content.filter_recent');
@@ -248,6 +260,15 @@ require __DIR__ . '/../includes/admin-head.php';
                             </div>
                             <?php endif; ?>
 
+                            <div class="content-filter-field">
+                                <label for="filter-status"><?= e(t('admin.content.filter_status')) ?></label>
+                                <select id="filter-status" name="status">
+                                    <option value=""><?= e(t('admin.content.filter_all_statuses')) ?></option>
+                                    <option value="published"<?= $filterStatus === 'published' ? ' selected' : '' ?>><?= e(t('admin.editor.status_published')) ?></option>
+                                    <option value="draft"<?= $filterStatus === 'draft' ? ' selected' : '' ?>><?= e(t('admin.editor.status_draft')) ?></option>
+                                </select>
+                            </div>
+
                             <div class="content-filter-actions">
                                 <button type="submit"><?= e(t('admin.content.filter_apply')) ?></button>
                                 <?php if ($detailsOpen): ?>
@@ -284,8 +305,9 @@ require __DIR__ . '/../includes/admin-head.php';
                         $pageParams = ['tab' => 'posts'];
                         if ($filterYear > 0)   { $pageParams['year']  = $filterYear; }
                         if ($filterMonth > 0)  { $pageParams['month'] = $filterMonth; }
-                        if ($filterTag !== '')  { $pageParams['tag']   = $filterTag; }
-                        if ($filterSince > 0)  { $pageParams['since'] = $filterSince; }
+                        if ($filterTag !== '')    { $pageParams['tag']    = $filterTag; }
+                        if ($filterStatus !== '') { $pageParams['status'] = $filterStatus; }
+                        if ($filterSince > 0)    { $pageParams['since']  = $filterSince; }
                         if ($search !== '')    { $pageParams['q']     = $search; }
                     ?>
                     <nav class="pagination">

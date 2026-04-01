@@ -421,7 +421,7 @@ require __DIR__ . '/../includes/admin-head.php';
 
             matches.forEach(tag => {
                 const li = document.createElement('li');
-                li.textContent = tag;
+                li.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
                 li.addEventListener('mousedown', e => { e.preventDefault(); applySelection(tag); });
                 list.appendChild(li);
             });

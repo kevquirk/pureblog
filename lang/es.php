@@ -130,6 +130,8 @@ return [
             'filter_all_years'      => 'Todos los años',
             'filter_all_months'     => 'Todos los meses',
             'filter_all_tags'       => 'Todas las etiquetas',
+            'filter_status'         => 'Estado',
+            'filter_all_statuses'   => 'Todos',
             'filter_apply'          => 'Aplicar',
             'filter_active'         => 'Filtrado por: {label}.',
             'filter_clear'          => 'Borrar',

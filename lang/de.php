@@ -139,6 +139,8 @@ return [
             'filter_all_years'      => 'Alle Jahre',
             'filter_all_months'     => 'Alle Monate',
             'filter_all_tags'       => 'Alle Tags',
+            'filter_status'         => 'Status',
+            'filter_all_statuses'   => 'Alle',
             'filter_apply'          => 'Anwenden',
             'filter_active'         => 'Gefiltert nach: {label}.',
             'filter_clear'          => 'Zurücksetzen',

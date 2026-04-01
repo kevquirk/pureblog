@@ -130,6 +130,8 @@ return [
             'filter_all_years'      => 'Toți anii',
             'filter_all_months'     => 'Toate lunile',
             'filter_all_tags'       => 'Toate etichetele',
+            'filter_status'         => 'Stare',
+            'filter_all_statuses'   => 'Toate',
             'filter_apply'          => 'Aplică',
             'filter_active'         => 'Filtrat după: {label}.',
             'filter_clear'          => 'Șterge',
