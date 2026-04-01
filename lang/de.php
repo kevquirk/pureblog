@@ -62,7 +62,7 @@ return [
 
         'nav' => [
             'dashboard'     => 'Dashboard',
-            'content'       => 'Seiten',
+            'content'       => 'Inhalte',
             'settings'      => 'Einstellungen',
             'view_site'     => 'Blog ansehen',
             'clear_cache'   => 'Cache leeren',
