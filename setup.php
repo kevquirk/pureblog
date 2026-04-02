@@ -88,18 +88,18 @@ require __DIR__ . '/includes/admin-head.php';
         <?php endif; ?>
 
         <form method="post">
-            <label for="site_title"><?= e(t('setup.site_title')) ?></label>
-            <input type="text" id="site_title" name="site_title" value="<?= e($values['site_title']) ?>" placeholder="Sally's Blog" required>
-
-            <label for="site_tagline"><?= e(t('setup.tagline')) ?></label>
-            <input type="text" id="site_tagline" name="site_tagline" value="<?= e($values['site_tagline']) ?>" placeholder="A blog about my thoughts...">
-
             <label for="language"><?= e(t('setup.language')) ?></label>
             <select id="language" name="language" onchange="window.location.href='?lang='+encodeURIComponent(this.value)">
                 <?php foreach (lang_available() as $code => $nativeName): ?>
                     <option value="<?= e($code) ?>"<?= $code === $values['language'] ? ' selected' : '' ?>><?= e($nativeName) ?></option>
                 <?php endforeach; ?>
             </select>
+            
+            <label for="site_title"><?= e(t('setup.site_title')) ?></label>
+            <input type="text" id="site_title" name="site_title" value="<?= e($values['site_title']) ?>" placeholder="Sally's Blog" required>
+
+            <label for="site_tagline"><?= e(t('setup.tagline')) ?></label>
+            <input type="text" id="site_tagline" name="site_tagline" value="<?= e($values['site_tagline']) ?>" placeholder="A blog about my thoughts...">
 
             <label for="base_url"><?= e(t('setup.base_url')) ?></label>
             <input type="text" id="base_url" name="base_url" value="<?= e($values['base_url']) ?>" placeholder="https://example.com" required>
