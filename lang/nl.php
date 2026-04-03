@@ -31,6 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Home',
+        'site_title_fallback'   => 'Page',
         'pagination_newer'      => '⬅ Nieuwere artikelen',
         'pagination_older'      => 'Oudere artikelen ➡',
         'no_posts'              => 'Nog geen artikelen, tijd om te schrijven! 🙃',
@@ -47,6 +48,8 @@ return [
         'search_results'        => '{n} resultaten gevonden.',
         'page_not_found'        => 'Pagina niet gevonden',
         'page_not_found_detail' => 'De pagina die je hebt opgevraagd kon niet worden gevonden.',
+        'no_tag_selected'       => 'No tag selected.',
+        'no_posts_for_tag'      => 'No posts found for this tag.',
     ],
 
     // -------------------------------------------------------------------------

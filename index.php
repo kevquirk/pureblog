@@ -54,7 +54,7 @@ foreach ($customRoutes as $customRoute) {
     }
 
     $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
-    $pageTitle = $config['site_title'] ?? 'Page';
+    $pageTitle = $config['site_title'] ?? t('frontend.site_title_fallback');
     $metaDescription = $config['site_description'] ?? '';
     $post = null;
     $page = null;
@@ -117,7 +117,7 @@ if (!$isTag && $requestPath === '' && $homepageSlug !== '') {
     if ($homepage) {
         $page = $homepage;
         $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
-        $pageTitle = $page['title'] ?? 'Page not found';
+        $pageTitle = $page['title'] ?? t('frontend.page_not_found');
         $metaDescription = !empty($page['description']) ? $page['description'] : '';
         require __DIR__ . '/page.php';
         exit;
@@ -146,14 +146,14 @@ if ($isSingle) {
     if ($pageData) {
         $page = $pageData;
         $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
-        $pageTitle = $page['title'] ?? 'Page not found';
+        $pageTitle = $page['title'] ?? t('frontend.page_not_found');
         $metaDescription = !empty($page['description']) ? $page['description'] : '';
         require __DIR__ . '/page.php';
     } else {
         $post = $post ?? null;
         if ($post) {
             $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
-            $pageTitle = $post['title'] ?? 'Post not found';
+            $pageTitle = $post['title'] ?? t('frontend.post_not_found');
             $metaDescription = !empty($post['description']) ? $post['description'] : '';
             require __DIR__ . '/post.php';
         } else {
@@ -184,9 +184,9 @@ $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
         <?php if ($isTag): ?>
             <h1 ><?= e($tagParam !== '' ? 'Tag: ' . $tagParam : 'Tags') ?></h1>
             <?php if ($tagSlug === ''): ?>
-                <p>No tag selected.</p>
+                <p><?= e(t('frontend.no_tag_selected')) ?></p>
             <?php elseif (!$allPosts): ?>
-                <p>No posts found for this tag.</p>
+                <p><?= e(t('frontend.no_posts_for_tag')) ?></p>
             <?php else: ?>
                 <?php
                 $paginationBase = base_path() . '/tag/' . rawurlencode($tagSlug);

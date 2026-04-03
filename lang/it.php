@@ -30,6 +30,7 @@ return [
     // Frontend (public-facing)
     // -------------------------------------------------------------------------
     'frontend' => [
+        'site_title_fallback'   => 'Page',
         'pagination_newer'      => '⬅ Articoli recenti',
         'pagination_older'      => 'Articoli precedenti ➡',
         'no_posts'              => 'Ancora nessun articolo, inizia a scrivere! 🙃',
@@ -46,6 +47,8 @@ return [
         'search_results'        => '{n} risultati trovati.',
         'page_not_found'        => 'Pagina non trovata',
         'page_not_found_detail' => 'La pagina richiesta non è stata trovata.',
+        'no_tag_selected'       => 'No tag selected.',
+        'no_posts_for_tag'      => 'No posts found for this tag.',
     ],
 
     // -------------------------------------------------------------------------

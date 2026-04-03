@@ -10,7 +10,7 @@ if (!function_exists('font_stack_css') || !function_exists('require_setup_redire
 $post = $post ?? null;
 $config = $config ?? [];
 $fontStack = $fontStack ?? font_stack_css($config['theme']['font_stack'] ?? 'sans');
-$pageTitle = $pageTitle ?? ($post['title'] ?? 'Post not found');
+$pageTitle = $pageTitle ?? ($post['title'] ?? t('frontend.post_not_found'));
 $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['description'] : '');
 
 ?>

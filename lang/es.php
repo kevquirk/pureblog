@@ -31,6 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Inicio',
+        'site_title_fallback'   => 'Page',
         'pagination_newer'      => '⬅ Entradas más recientes',
         'pagination_older'      => 'Entradas más antiguas ➡',
         'no_posts'              => 'Aún no hay entradas, ¡ponte a escribir! 🙃',
@@ -47,6 +48,8 @@ return [
         'search_results'        => '{n} resultados encontrados.',
         'page_not_found'        => 'Página no encontrada',
         'page_not_found_detail' => 'La página que solicitaste no se pudo encontrar.',
+        'no_tag_selected'       => 'No tag selected.',
+        'no_posts_for_tag'      => 'No posts found for this tag.',
     ],
 
     // -------------------------------------------------------------------------

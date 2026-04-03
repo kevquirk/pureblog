@@ -32,6 +32,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Accueil',
+        'site_title_fallback'   => 'Page',
         'pagination_newer'      => '⬅ Articles plus récents',
         'pagination_older'      => 'Articles plus anciens ➡',
         'no_posts'              => 'Aucun article pour l’instant, commencez à écrire ! 🙃',
@@ -48,6 +49,8 @@ return [
         'search_results'        => '{n} résultats trouvés.',
         'page_not_found'        => 'Page introuvable',
         'page_not_found_detail' => 'La page que vous avez demandée est introuvable.',
+        'no_tag_selected'       => 'No tag selected.',
+        'no_posts_for_tag'      => 'No posts found for this tag.',
     ],
     // -------------------------------------------------------------------------
     // Admin

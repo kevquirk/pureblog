@@ -31,6 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Acasă',
+        'site_title_fallback'   => 'Page',
         'pagination_newer'      => '⬅ Articole mai noi',
         'pagination_older'      => 'Articole mai vechi ➡',
         'no_posts'              => 'Niciun articol încă, apucă-te de scris! 🙃',
@@ -47,6 +48,8 @@ return [
         'search_results'        => '{n} rezultate găsite.',
         'page_not_found'        => 'Pagina nu a fost găsită',
         'page_not_found_detail' => 'Pagina pe care ai solicitat-o nu a putut fi găsită.',
+        'no_tag_selected'       => 'No tag selected.',
+        'no_posts_for_tag'      => 'No posts found for this tag.',
     ],
 
     // -------------------------------------------------------------------------

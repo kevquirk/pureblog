@@ -10,7 +10,7 @@ if (!function_exists('font_stack_css') || !function_exists('require_setup_redire
 $page = $page ?? null;
 $config = $config ?? [];
 $fontStack = $fontStack ?? font_stack_css($config['theme']['font_stack'] ?? 'sans');
-$pageTitle = $pageTitle ?? ($page['title'] ?? 'Page not found');
+$pageTitle = $pageTitle ?? ($page['title'] ?? t('frontend.page_not_found'));
 $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['description'] : '');
 $blogFeedHidden = (($config['blog_page_slug'] ?? '') === '__hidden__');
 $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
@@ -20,8 +20,8 @@ $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
 <?php render_masthead_layout($config, ['page' => $page ?? null]); ?>
     <main>
         <?php if (!$page): ?>
-            <h2>Page not found</h2>
-            <p>The page you requested could not be found.</p>
+            <h2><?= e(t('frontend.page_not_found')) ?></h2>
+            <p><?= e(t('frontend.page_not_found_detail')) ?></p>
         <?php else: ?>
             <?php
             $isBlogPage = !$blogFeedHidden && !empty($config['blog_page_slug']) && ($page['slug'] ?? '') === $config['blog_page_slug'];
