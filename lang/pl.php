@@ -75,7 +75,7 @@ return [
             'username'       => 'Użytkownik',
             'password'       => 'Hasło',
             'submit'         => 'Zaloguj',
-            'error_invalid'  => 'Nieprawidłowe użytkonik lub hasło.',
+            'error_invalid'  => 'Nieprawidłowe użytkownik lub hasło.',
             'error_lockout'  => 'Zbyt dużo nieudanych prób. Spróbuj ponownie za {minutes} minut.',
             'error_lockout_5'=> 'Zbyd dużo nieudanych prób. Spróbuj ponownie za 5 minut.',
         ],
