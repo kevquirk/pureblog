@@ -237,7 +237,7 @@ require __DIR__ . '/../includes/admin-head.php';
             </div>
             <div class="dashboard-stat-card dashboard-stat-card-metric">
                 <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_words_this_year')) ?></p>
-                <p class="dashboard-stat-value"><?= e(number_format($totalWordsThisYear)) ?><?php if ($booksThisYear > 0): ?><br><span class="dashboard-stat-books">(<?= e(number_format($booksThisYear, 1)) ?> books)</span><?php endif; ?></p>
+                <p class="dashboard-stat-value"><?= e(number_format($totalWordsThisYear)) ?><?php if ($booksThisYear > 0): ?><br><span class="dashboard-stat-books">(<?= e(number_format($booksThisYear, 1)) ?> <?= e(t('admin.dashboard.stat_books')) ?>)</span><?php endif; ?></p>
             </div>
             <div class="dashboard-stat-card dashboard-stat-card-tags">
                 <p class="dashboard-stat-label"><?= e(t('admin.dashboard.stat_top_tags')) ?></p>
