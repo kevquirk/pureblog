@@ -278,7 +278,7 @@ return [
         'footer' => [
             'created_by' => 'was created with 💙 by',
             'docs'       => 'Read the docs',
-            'mastodon'   => 'Find us on Mastodon',
+            'mastodon'   => 'Mastodon',
             'source'     => 'Source code',
         ],
 

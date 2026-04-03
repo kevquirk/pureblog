@@ -296,7 +296,7 @@ return [
         'footer' => [
             'created_by' => 'wurde mit 💙 erstellt von',
             'docs'       => 'Dokumentation lesen',
-            'mastodon'   => 'Auf Mastodon finden',
+            'mastodon'   => 'Mastodon',
             'source'     => 'Quellcode',
         ],
         'settings' => [

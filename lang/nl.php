@@ -280,7 +280,7 @@ return [
         'footer' => [
             'created_by' => 'is met 💙 gemaakt door',
             'docs'       => 'Lees de documentatie',
-            'mastodon'   => 'Vind ons op Mastodon',
+            'mastodon'   => 'Mastodon',
             'source'     => 'Broncode',
         ],
         'settings' => [

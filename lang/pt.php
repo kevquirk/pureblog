@@ -279,7 +279,7 @@ return [
         'footer' => [
             'created_by' => 'foi criado com 💙 por',
             'docs'       => 'Ler a documentação',
-            'mastodon'   => 'Encontre-nos no Mastodon',
+            'mastodon'   => 'Mastodon',
             'source'     => 'Código-fonte',
         ],
         'settings' => [
