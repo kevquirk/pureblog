@@ -444,13 +444,14 @@ function copy_path_recursive(string $source, string $destination): void
 
 function backup_core_paths(string $backupRoot): void
 {
-    $preserveTop = preserved_top_level_paths();
+    // Exclude user data and recursive/cache paths; VERSION is a core file so it IS included.
+    $excludeFromBackup = ['backup', 'cache', 'config', 'content', 'data', '.htaccess'];
     $items = scandir(PUREBLOG_BASE_PATH) ?: [];
     foreach ($items as $item) {
         if ($item === '.' || $item === '..') {
             continue;
         }
-        if (in_array($item, $preserveTop, true)) {
+        if (in_array($item, $excludeFromBackup, true)) {
             continue;
         }
         $src = PUREBLOG_BASE_PATH . '/' . $item;
