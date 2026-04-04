@@ -335,7 +335,7 @@ require __DIR__ . '/../includes/admin-head.php';
             <h2 class="dashboard-h2"><?= e(t('admin.dashboard.all_tags')) ?></h2>
             <ul class="dashboard-all-tags-list">
                 <?php foreach ($tagCounts as $tag => $count): ?>
-                    <li><a href="<?= base_path() ?>/admin/content.php?tab=posts&tag=<?= urlencode($tag) ?>"><?= e($tagDisplayNames[$tag] ?? $tag) ?></a> <span class="dashboard-tag-count">(<?= (int) $count ?>)</span></li>
+                    <li><a href="<?= base_path() ?>/admin/content.php?tab=posts&tag=<?= urlencode((string) $tag) ?>"><?= e($tagDisplayNames[$tag] ?? $tag) ?></a> <span class="dashboard-tag-count">(<?= (int) $count ?>)</span></li>
                 <?php endforeach; ?>
             </ul>
         </div>
