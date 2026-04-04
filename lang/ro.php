@@ -31,7 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Acasă',
-        'site_title_fallback'   => 'Page',
+        'site_title_fallback'   => 'Pagină',
         'pagination_newer'      => '⬅ Articole mai noi',
         'pagination_older'      => 'Articole mai vechi ➡',
         'no_posts'              => 'Niciun articol încă, apucă-te de scris! 🙃',
@@ -48,8 +48,8 @@ return [
         'search_results'        => '{n} rezultate găsite.',
         'page_not_found'        => 'Pagina nu a fost găsită',
         'page_not_found_detail' => 'Pagina pe care ai solicitat-o nu a putut fi găsită.',
-        'no_tag_selected'       => 'No tag selected.',
-        'no_posts_for_tag'      => 'No posts found for this tag.',
+        'no_tag_selected'       => 'Nicio etichetă selectată.',
+        'no_posts_for_tag'      => 'Nicio postare găsită pentru această etichetă.',
     ],
 
     // -------------------------------------------------------------------------
@@ -324,6 +324,11 @@ return [
                 'homepage_default'   => 'Articole blog (implicit)',
                 'blog_use_homepage'  => 'Folosește pagina principală',
                 'blog_hidden'        => 'Ascuns (dezactivează pagina blog)',
+                'admin_ui_section'          => 'Interfață de administrare',
+                'admin_homepage'            => 'Pagina de start a administrării',
+                'admin_homepage_dashboard'  => 'Panou de bord',
+                'admin_homepage_content'    => 'Pagini',
+                'admin_hide_dashboard'      => 'Ascunde Panoul de bord din navigare',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Activează cache-ul paginii',
                 'rss_ttl'            => 'Durata cache-ului RSS',

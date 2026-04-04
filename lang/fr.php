@@ -49,8 +49,8 @@ return [
         'search_results'        => '{n} résultats trouvés.',
         'page_not_found'        => 'Page introuvable',
         'page_not_found_detail' => 'La page que vous avez demandée est introuvable.',
-        'no_tag_selected'       => 'No tag selected.',
-        'no_posts_for_tag'      => 'No posts found for this tag.',
+        'no_tag_selected'       => 'Aucune étiquette sélectionnée.',
+        'no_posts_for_tag'      => 'Aucun article trouvé pour cette étiquette.',
     ],
     // -------------------------------------------------------------------------
     // Admin
@@ -324,6 +324,11 @@ return [
                 'homepage_default'    => 'Articles du blog (défaut)',
                 'blog_use_homepage'   => 'Utiliser la page d’accueil',
                 'blog_hidden'         => 'Masqué (désactive  la page du blog)',
+                'admin_ui_section'          => "Interface d'administration",
+                'admin_homepage'            => "Page d'accueil de l'administration",
+                'admin_homepage_dashboard'  => 'Tableau de bord',
+                'admin_homepage_content'    => 'Pages',
+                'admin_hide_dashboard'      => 'Masquer le tableau de bord de la navigation',
                 'cache_section'       => 'Cache',
                 'cache_enable'        => 'Activer le cache de pages',
                 'rss_ttl'             => 'Durée du cache RSS',

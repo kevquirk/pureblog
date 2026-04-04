@@ -116,7 +116,7 @@ uasort($tagCountsThisYear, static fn(int $a, int $b): int => $b <=> $a);
 $topTagEntries = [];
 $n = 0;
 foreach ($tagCounts as $tag => $count) {
-    $topTagEntries[] = '<a href="' . base_path() . '/admin/content.php?tab=posts&tag=' . urlencode($tag) . '"><strong>' . e($tagDisplayNames[$tag] ?? $tag) . '</strong></a> (' . (int) $count . ')';
+    $topTagEntries[] = '<a href="' . base_path() . '/admin/content.php?tab=posts&tag=' . urlencode((string) $tag) . '"><strong>' . e($tagDisplayNames[$tag] ?? (string) $tag) . '</strong></a> (' . (int) $count . ')';
     if (++$n >= 5) break;
 }
 $topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : t('admin.dashboard.stat_no_tags');
@@ -124,7 +124,7 @@ $topTagsLabel = $topTagEntries ? implode(', ', $topTagEntries) : t('admin.dashbo
 $topTagEntriesThisYear = [];
 $n = 0;
 foreach ($tagCountsThisYear as $tag => $count) {
-    $topTagEntriesThisYear[] = '<a href="' . base_path() . '/admin/content.php?tab=posts&tag=' . urlencode($tag) . '&since=' . $recentCutoff . '"><strong>' . e($tagDisplayNames[$tag] ?? $tag) . '</strong></a> (' . (int) $count . ')';
+    $topTagEntriesThisYear[] = '<a href="' . base_path() . '/admin/content.php?tab=posts&tag=' . urlencode((string) $tag) . '&since=' . $recentCutoff . '"><strong>' . e($tagDisplayNames[$tag] ?? (string) $tag) . '</strong></a> (' . (int) $count . ')';
     if (++$n >= 5) break;
 }
 $topTagsThisYearLabel = $topTagEntriesThisYear ? implode(', ', $topTagEntriesThisYear) : t('admin.dashboard.stat_no_tags');
@@ -335,7 +335,7 @@ require __DIR__ . '/../includes/admin-head.php';
             <h2 class="dashboard-h2"><?= e(t('admin.dashboard.all_tags')) ?></h2>
             <ul class="dashboard-all-tags-list">
                 <?php foreach ($tagCounts as $tag => $count): ?>
-                    <li><a href="<?= base_path() ?>/admin/content.php?tab=posts&tag=<?= urlencode($tag) ?>"><?= e($tagDisplayNames[$tag] ?? $tag) ?></a> <span class="dashboard-tag-count">(<?= (int) $count ?>)</span></li>
+                    <li><a href="<?= base_path() ?>/admin/content.php?tab=posts&tag=<?= urlencode((string) $tag) ?>"><?= e($tagDisplayNames[$tag] ?? (string) $tag) ?></a> <span class="dashboard-tag-count">(<?= (int) $count ?>)</span></li>
                 <?php endforeach; ?>
             </ul>
         </div>

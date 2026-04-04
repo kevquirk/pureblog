@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $ogImagePreferred = trim($_POST['og_image_preferred'] ?? 'banner');
     $cacheEnabled = !empty($_POST['cache_enabled']);
     $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
+    $adminHomepage = in_array($_POST['admin_homepage'] ?? '', ['dashboard', 'content'], true) ? $_POST['admin_homepage'] : 'dashboard';
+    $adminHideDashboard = $adminHomepage === 'content' && !empty($_POST['admin_hide_dashboard']);
 
     if ($siteTitle === '') {
         $errors[] = t('admin.settings.site.error_title');
@@ -93,6 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['search_page_slug'] = $searchPageSlug;
         $config['cache']['enabled'] = $cacheEnabled;
         $config['cache']['rss_ttl'] = $rssttl;
+        $config['admin_homepage'] = $adminHomepage;
+        $config['admin_hide_dashboard'] = $adminHideDashboard;
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
@@ -261,6 +265,19 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
 
             <section class="section-divider">
+                <span class="title"><?= e(t('admin.settings.site.admin_ui_section')) ?></span>
+                <label for="admin_homepage"><?= e(t('admin.settings.site.admin_homepage')) ?></label>
+                <select id="admin_homepage" name="admin_homepage">
+                    <option value="dashboard"<?= ($config['admin_homepage'] ?? 'dashboard') === 'dashboard' ? ' selected' : '' ?>><?= e(t('admin.settings.site.admin_homepage_dashboard')) ?></option>
+                    <option value="content"<?= ($config['admin_homepage'] ?? 'dashboard') === 'content' ? ' selected' : '' ?>><?= e(t('admin.settings.site.admin_homepage_content')) ?></option>
+                </select>
+                <label class="inline-checkbox" for="admin_hide_dashboard">
+                    <input type="checkbox" id="admin_hide_dashboard" name="admin_hide_dashboard"<?= !empty($config['admin_hide_dashboard']) ? ' checked' : '' ?><?= ($config['admin_homepage'] ?? 'dashboard') !== 'content' ? ' disabled' : '' ?>>
+                    <?= e(t('admin.settings.site.admin_hide_dashboard')) ?>
+                </label>
+            </section>
+
+            <section class="section-divider">
                 <span class="title"><?= e(t('admin.settings.site.cache_section')) ?></span>
                 <label class="inline-checkbox" for="cache_enabled">
                     <input type="checkbox" id="cache_enabled" name="cache_enabled" <?= !empty($config['cache']['enabled']) ? 'checked' : '' ?>>
@@ -272,4 +289,12 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
         </form>
     </main>
+<script>
+    const adminHomepageSelect = document.getElementById('admin_homepage');
+    const hideDashboardCheckbox = document.getElementById('admin_hide_dashboard');
+    adminHomepageSelect.addEventListener('change', function () {
+        hideDashboardCheckbox.disabled = this.value !== 'content';
+        if (hideDashboardCheckbox.disabled) hideDashboardCheckbox.checked = false;
+    });
+</script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

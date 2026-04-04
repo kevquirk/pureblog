@@ -17,7 +17,8 @@ $lockoutUntil = (int) ($_SESSION['lockout_until'] ?? 0);
 $isLockedOut = $lockoutUntil > $now;
 
 if (is_admin_logged_in()) {
-    header('Location: ' . base_path() . '/admin/dashboard.php');
+    $adminLanding = ($config['admin_homepage'] ?? 'dashboard') === 'content' ? 'content.php' : 'dashboard.php';
+    header('Location: ' . base_path() . '/admin/' . $adminLanding);
     exit;
 }
 
@@ -38,7 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['is_admin'] = true;
             $_SESSION['login_failures'] = 0;
             $_SESSION['lockout_until'] = 0;
-            header('Location: ' . base_path() . '/admin/dashboard.php');
+            $adminLanding = ($config['admin_homepage'] ?? 'dashboard') === 'content' ? 'content.php' : 'dashboard.php';
+            header('Location: ' . base_path() . '/admin/' . $adminLanding);
             exit;
         }
 

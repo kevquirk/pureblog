@@ -31,7 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Inicio',
-        'site_title_fallback'   => 'Page',
+        'site_title_fallback'   => 'Página',
         'pagination_newer'      => '⬅ Entradas más recientes',
         'pagination_older'      => 'Entradas más antiguas ➡',
         'no_posts'              => 'Aún no hay entradas, ¡ponte a escribir! 🙃',
@@ -48,8 +48,8 @@ return [
         'search_results'        => '{n} resultados encontrados.',
         'page_not_found'        => 'Página no encontrada',
         'page_not_found_detail' => 'La página que solicitaste no se pudo encontrar.',
-        'no_tag_selected'       => 'No tag selected.',
-        'no_posts_for_tag'      => 'No posts found for this tag.',
+        'no_tag_selected'       => 'Ninguna etiqueta seleccionada.',
+        'no_posts_for_tag'      => 'No se encontraron entradas para esta etiqueta.',
     ],
 
     // -------------------------------------------------------------------------
@@ -324,6 +324,11 @@ return [
                 'homepage_default'    => 'Entradas del blog (predeterminado)',
                 'blog_use_homepage'   => 'Usar página de inicio',
                 'blog_hidden'         => 'Oculto (desactivar página del blog)',
+                'admin_ui_section'          => 'Interfaz de administración',
+                'admin_homepage'            => 'Página de inicio del administrador',
+                'admin_homepage_dashboard'  => 'Panel de control',
+                'admin_homepage_content'    => 'Páginas',
+                'admin_hide_dashboard'      => 'Ocultar el Panel de control de la navegación',
                 'cache_section'       => 'Caché',
                 'cache_enable'        => 'Activar caché de páginas',
                 'rss_ttl'             => 'Duración de la caché RSS',

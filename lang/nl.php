@@ -31,7 +31,7 @@ return [
     // -------------------------------------------------------------------------
     'frontend' => [
         'nav_home'              => 'Home',
-        'site_title_fallback'   => 'Page',
+        'site_title_fallback'   => 'Pagina',
         'pagination_newer'      => '⬅ Nieuwere artikelen',
         'pagination_older'      => 'Oudere artikelen ➡',
         'no_posts'              => 'Nog geen artikelen, tijd om te schrijven! 🙃',
@@ -48,8 +48,8 @@ return [
         'search_results'        => '{n} resultaten gevonden.',
         'page_not_found'        => 'Pagina niet gevonden',
         'page_not_found_detail' => 'De pagina die je hebt opgevraagd kon niet worden gevonden.',
-        'no_tag_selected'       => 'No tag selected.',
-        'no_posts_for_tag'      => 'No posts found for this tag.',
+        'no_tag_selected'       => 'Geen tag geselecteerd.',
+        'no_posts_for_tag'      => 'Geen berichten gevonden voor dit label.',
     ],
 
     // -------------------------------------------------------------------------
@@ -324,6 +324,11 @@ return [
                 'homepage_default'   => 'Blogposts (standaard)',
                 'blog_use_homepage'  => 'Gebruik homepagina',
                 'blog_hidden'        => 'Verborgen (blogpagina uitschakelen)',
+                'admin_ui_section'          => 'Beheerinterface',
+                'admin_homepage'            => 'Startpagina beheer',
+                'admin_homepage_dashboard'  => 'Dashboard',
+                'admin_homepage_content'    => "Pagina's",
+                'admin_hide_dashboard'      => 'Dashboard verbergen in navigatie',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Pagina-cache aanzetten',
                 'rss_ttl'            => 'RSS-cache tijdsduur',

@@ -103,10 +103,21 @@ unset($_SESSION['admin_action_flash']);
         $adminPath = trim($adminUriPath, '/');
         $isSettings = str_starts_with($adminPath, 'admin/settings');
         ?>
+        <?php
+        $adminHomepageSetting = $config['admin_homepage'] ?? 'dashboard';
+        $adminHideDashboard = !empty($config['admin_hide_dashboard']) && $adminHomepageSetting === 'content';
+        ?>
         <nav class="admin-nav" aria-label="Admin">
             <ul class="admin-nav-list">
-                <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
-                <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
+                <?php if ($adminHomepageSetting === 'content'): ?>
+                    <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
+                    <?php if (!$adminHideDashboard): ?>
+                        <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
+                    <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
+                <?php endif; ?>
                 <li><a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg> <?= e(t('admin.nav.settings')) ?></a></li>
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.nav.view_site')) ?></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
