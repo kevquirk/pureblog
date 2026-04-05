@@ -261,20 +261,24 @@ function _lang_translate_date(string $formatted): string
     $enDays        = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     $enDaysShort   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
+    // Build a single strtr map so that longer keys (e.g. "Monday") are matched
+    // before shorter ones (e.g. "Mon"), preventing partial-match corruption such
+    // as "Montag" → "Motag" when both full and short day arrays are present.
+    $map = [];
     if (count($months) === 12) {
-        $formatted = str_replace($enMonths, $months, $formatted);
+        $map += array_combine($enMonths, $months);
     }
     if (count($monthsShort) === 12) {
-        $formatted = str_replace($enMonthsShort, $monthsShort, $formatted);
+        $map += array_combine($enMonthsShort, $monthsShort);
     }
     if (count($days) === 7) {
-        $formatted = str_replace($enDays, $days, $formatted);
+        $map += array_combine($enDays, $days);
     }
     if (count($daysShort) === 7) {
-        $formatted = str_replace($enDaysShort, $daysShort, $formatted);
+        $map += array_combine($enDaysShort, $daysShort);
     }
 
-    return $formatted;
+    return $map ? strtr($formatted, $map) : $formatted;
 }
 
 function call_hook(string $name, array $args = []): void
