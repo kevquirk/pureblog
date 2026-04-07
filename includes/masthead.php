@@ -1,15 +1,15 @@
 <header>
-    <h1><a href="/"><?= e($config['site_title']) ?></a></h1>
+    <h1><a href="<?= base_path() ?>/"><?= e($config['site_title']) ?></a></h1>
     <?php if ($siteTagline !== ''): ?>
     <p class="tagline"><?= e($siteTagline) ?></p>
     <?php endif; ?>
     <?php if ($navPages || $customNavItems): ?>
         <nav class="site-nav">
             <ul>
-                <li><a href="/"<?= $currentPath === '' ? ' class="current"' : '' ?>>Home</a></li>
+                <li><a href="<?= base_path() ?>/"<?= $currentPath === '' ? ' class="current"' : '' ?>><?= e(t('frontend.nav_home')) ?></a></li>
                 <?php foreach ($navPages as $navPage): ?>
                     <?php $isCurrent = $currentPath === $navPage['slug']; ?>
-                    <li><a href="/<?= e($navPage['slug']) ?>"<?= $isCurrent ? ' class="current"' : '' ?>><?= e($navPage['title']) ?></a></li>
+                    <li><a href="<?= base_path() ?>/<?= e($navPage['slug']) ?>"<?= $isCurrent ? ' class="current"' : '' ?>><?= e($navPage['title']) ?></a></li>
                 <?php endforeach; ?>
                 <?php foreach ($customNavItems as $item): ?>
                     <?php

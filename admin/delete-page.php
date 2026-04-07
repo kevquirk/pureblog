@@ -20,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $slug = trim($_POST['slug'] ?? '');
     $page = $slug !== '' ? get_page_by_slug($slug, true) : null;
     if ($slug === '') {
-        $errors[] = 'Missing page slug.';
+        $errors[] = t('admin.delete_page.error_missing');
     } elseif (!$page) {
-        $errors[] = 'Page not found.';
+        $errors[] = t('admin.delete_page.error_not_found');
     } elseif (!delete_page_by_slug($slug)) {
-        $errors[] = 'Unable to delete page.';
+        $errors[] = t('admin.delete_page.error_delete');
     } else {
-        header('Location: ' . admin_url('pages.php') . '?deleted=1');
+        header('Location: ' . base_path() . '/admin/content.php?tab=pages&deleted=1');
         exit;
     }
 } else {
@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $page = $slug !== '' ? get_page_by_slug($slug, true) : null;
 }
 
-$adminTitle = 'Delete Page - Pureblog';
+$adminTitle = t('admin.delete_page.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main>
-        <h1>Delete Page</h1>
+        <h1><?= e(t('admin.delete_page.heading')) ?></h1>
 
 
         <?php if ($errors): ?>
-            <div class="notice">
+            <div class="notice delete">
                 <ul>
                     <?php foreach ($errors as $error): ?>
                         <li><?= e($error) ?></li>
@@ -52,13 +52,13 @@ require __DIR__ . '/../includes/admin-head.php';
         <?php endif; ?>
 
         <?php if (!$page): ?>
-            <p>This page has already been deleted (or no longer exists).</p>
+            <p><?= e(t('admin.delete_page.already_deleted')) ?></p>
         <?php else: ?>
-            <p>Are you sure you want to delete “<?= e($page['title']) ?>”?</p>
-            <form method="post">
-                <input type="hidden" name="slug" value="<?= e($page['slug']) ?>">
+            <p><?= e(t('admin.delete_page.confirm', ['title' => $page['title']])) ?></p>
+            <form method=”post”>
+                <input type=”hidden” name=”slug” value=”<?= e($page['slug']) ?>”>
                 <?= csrf_field() ?>
-                <button type="submit" class="delete">Yes, delete this page</button>
+                <button type=”submit” class=”delete”><?= e(t('admin.delete_page.submit')) ?></button>
             </form>
         <?php endif; ?>
     </main>

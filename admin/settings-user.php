@@ -24,15 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $passwordConfirm = $_POST['confirm_password'] ?? '';
 
     if ($adminUsername === '') {
-        $errors[] = 'Admin username is required.';
+        $errors[] = t('admin.settings.user.error_username');
     }
 
     if (($passwordNew !== '' || $passwordConfirm !== '') && $passwordNew !== $passwordConfirm) {
-        $errors[] = 'New password and confirmation do not match.';
+        $errors[] = t('admin.settings.user.error_password_match');
     }
 
     if ($passwordNew !== '' && !password_verify($passwordCurrent, $config['admin_password_hash'] ?? '')) {
-        $errors[] = 'Current password is incorrect.';
+        $errors[] = t('admin.settings.user.error_password_wrong');
     }
 
     if (!$errors) {
@@ -44,22 +44,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (save_config($config)) {
-            if ($adminPath !== $currentAdminPath) {
-                header('Location: /' . $adminPath . '/settings-user.php');
-                exit;
-            }
-            $notice = 'Settings updated.';
+            $notice = t('admin.settings.user.notice_updated');
         } else {
-            $errors[] = 'Failed to save settings.';
+            $errors[] = t('admin.settings.user.error_save');
         }
     }
 }
 
-$adminTitle = 'User Settings - Pureblog';
+$adminTitle = t('admin.settings.user.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>User settings</h1>
+        <h1><?= e(t('admin.settings.user.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>
@@ -70,8 +66,8 @@ require __DIR__ . '/../includes/admin-head.php';
         <form method="post" id="settings-form">
             <?= csrf_field() ?>
             <section class="section-divider">
-                <span class="title">Account</span>
-                <label for="admin_username">Admin username</label>
+                <span class="title"><?= e(t('admin.settings.user.section_account')) ?></span>
+                <label for="admin_username"><?= e(t('admin.settings.user.username')) ?></label>
                 <input type="text" id="admin_username" name="admin_username" value="<?= e($config['admin_username'] ?? '') ?>" required>
 
                 <label for="admin_path">Admin URL path</label>
@@ -89,14 +85,14 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
 
             <section class="section-divider">
-                <span class="title">Password Change</span>
-                <label for="current_password">Current password</label>
+                <span class="title"><?= e(t('admin.settings.user.section_password')) ?></span>
+                <label for="current_password"><?= e(t('admin.settings.user.current_password')) ?></label>
                 <input type="password" id="current_password" name="current_password">
 
-                <label for="new_password">New password</label>
+                <label for="new_password"><?= e(t('admin.settings.user.new_password')) ?></label>
                 <input type="password" id="new_password" name="new_password">
 
-                <label for="confirm_password">Confirm new password</label>
+                <label for="confirm_password"><?= e(t('admin.settings.user.confirm_password')) ?></label>
                 <input type="password" id="confirm_password" name="confirm_password">
             </section>
         </form>

@@ -20,13 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $slug = trim($_POST['slug'] ?? '');
     $post = $slug !== '' ? get_post_by_slug($slug, true) : null;
     if ($slug === '') {
-        $errors[] = 'Missing post slug.';
+        $errors[] = t('admin.delete_post.error_missing');
     } elseif (!$post) {
-        $errors[] = 'Post not found.';
+        $errors[] = t('admin.delete_post.error_not_found');
     } elseif (!delete_post_by_slug($slug)) {
-        $errors[] = 'Unable to delete post.';
+        $errors[] = t('admin.delete_post.error_delete');
     } else {
-        header('Location: ' . admin_url('dashboard.php') . '?deleted=1');
+        header('Location: ' . base_path() . '/admin/content.php?tab=posts&deleted=1');
         exit;
     }
 } else {
@@ -34,15 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $post = $slug !== '' ? get_post_by_slug($slug, true) : null;
 }
 
-$adminTitle = 'Delete Post - Pureblog';
+$adminTitle = t('admin.delete_post.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main>
-        <h1>Delete Post</h1>
+        <h1><?= e(t('admin.delete_post.heading')) ?></h1>
 
 
         <?php if ($errors): ?>
-            <div class="notice">
+            <div class="notice delete">
                 <ul>
                     <?php foreach ($errors as $error): ?>
                         <li><?= e($error) ?></li>
@@ -52,13 +52,13 @@ require __DIR__ . '/../includes/admin-head.php';
         <?php endif; ?>
 
         <?php if (!$post): ?>
-            <p>This post has already been deleted (or no longer exists).</p>
+            <p><?= e(t('admin.delete_post.already_deleted')) ?></p>
         <?php else: ?>
-            <p>Are you sure you want to delete “<?= e($post['title']) ?>”?</p>
-            <form method="post">
-                <input type="hidden" name="slug" value="<?= e($post['slug']) ?>">
+            <p><?= e(t('admin.delete_post.confirm', ['title' => $post['title']])) ?></p>
+            <form method=”post”>
+                <input type=”hidden” name=”slug” value=”<?= e($post['slug']) ?>”>
                 <?= csrf_field() ?>
-                <button type="submit" class="delete">Yes, delete this post</button>
+                <button type=”submit” class=”delete”><?= e(t('admin.delete_post.submit')) ?></button>
             </form>
         <?php endif; ?>
     </main>

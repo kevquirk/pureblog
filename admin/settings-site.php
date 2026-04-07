@@ -31,40 +31,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $footerInjectPage = trim($_POST['footer_inject_page'] ?? '');
     $footerInjectPost = trim($_POST['footer_inject_post'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
+    $searchExcerptLength = max(0, (int) ($_POST['search_excerpt_length'] ?? 2500));
+    $language = trim($_POST['language'] ?? '');
     $timezone = trim($_POST['timezone'] ?? '');
     $dateFormat = trim($_POST['date_format'] ?? '');
     $baseUrl = trim($_POST['base_url'] ?? '');
     $homepageSlug = trim($_POST['homepage_slug'] ?? '');
     $blogPageSlug = trim($_POST['blog_page_slug'] ?? '');
+    $searchPageSlug = trim($_POST['search_page_slug'] ?? '');
     $ogImagePreferred = trim($_POST['og_image_preferred'] ?? 'banner');
-    $hideHomepageTitle = !empty($_POST['hide_homepage_title']);
-    $hideBlogPageTitle = !empty($_POST['hide_blog_page_title']);
     $cacheEnabled = !empty($_POST['cache_enabled']);
     $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
+    $adminHomepage = in_array($_POST['admin_homepage'] ?? '', ['dashboard', 'content'], true) ? $_POST['admin_homepage'] : 'dashboard';
+    $adminHideDashboard = $adminHomepage === 'content' && !empty($_POST['admin_hide_dashboard']);
 
     if ($siteTitle === '') {
-        $errors[] = 'Site title is required.';
+        $errors[] = t('admin.settings.site.error_title');
     }
 
     if ($postsPerPage < 1 || $postsPerPage > 100) {
-        $errors[] = 'Posts per page must be between 1 and 100.';
+        $errors[] = t('admin.settings.site.error_posts_per_page');
     }
     if ($timezone === '' || !in_array($timezone, DateTimeZone::listIdentifiers(), true)) {
-        $errors[] = 'Timezone must be a valid PHP timezone identifier (e.g. UTC, Europe/London).';
+        $errors[] = t('admin.settings.site.error_timezone');
     }
     if ($dateFormat === '') {
-        $errors[] = 'Date format is required.';
+        $errors[] = t('admin.settings.site.error_date_format');
     }
 
     if ($homepageSlug !== '' && !isset($pageSlugLookup[$homepageSlug])) {
-        $errors[] = 'Homepage must reference an existing page.';
+        $errors[] = t('admin.settings.site.error_homepage');
     }
 
     if ($blogPageSlug !== '' && $blogPageSlug !== $hiddenBlogValue && !isset($pageSlugLookup[$blogPageSlug])) {
-        $errors[] = 'Blog page must reference an existing page.';
+        $errors[] = t('admin.settings.site.error_blog_page');
+    }
+    if ($searchPageSlug !== '' && !isset($pageSlugLookup[$searchPageSlug])) {
+        $errors[] = t('admin.settings.site.error_search_page');
     }
     if (!in_array($ogImagePreferred, ['banner', 'square'], true)) {
-        $errors[] = 'Open Graph image format must be banner or square.';
+        $errors[] = t('admin.settings.site.error_og_format');
     }
 
     if (!$errors) {
@@ -79,15 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['footer_inject_page'] = $footerInjectPage;
         $config['footer_inject_post'] = $footerInjectPost;
         $config['posts_per_page'] = $postsPerPage;
+        $config['search_excerpt_length'] = $searchExcerptLength;
+        $config['language'] = $language !== '' ? $language : 'en';
         $config['timezone'] = $timezone;
         $config['date_format'] = $dateFormat;
         $config['base_url'] = $baseUrl;
         $config['homepage_slug'] = $homepageSlug;
         $config['blog_page_slug'] = $blogPageSlug;
-        $config['hide_homepage_title'] = $hideHomepageTitle;
-        $config['hide_blog_page_title'] = $hideBlogPageTitle;
+        $config['search_page_slug'] = $searchPageSlug;
         $config['cache']['enabled'] = $cacheEnabled;
         $config['cache']['rss_ttl'] = $rssttl;
+        $config['admin_homepage'] = $adminHomepage;
+        $config['admin_hide_dashboard'] = $adminHideDashboard;
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
@@ -165,18 +174,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (save_config($config)) {
-            $notice = 'Settings updated.';
+            $notice = t('admin.settings.site.notice_updated');
         } else {
-            $errors[] = 'Failed to save settings.';
+            $errors[] = t('admin.settings.site.error_save');
         }
     }
 }
 
-$adminTitle = 'Site Settings - Pureblog';
+$adminTitle = t('admin.settings.site.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>Site settings</h1>
+        <h1><?= e(t('admin.settings.site.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>
@@ -187,113 +196,142 @@ require __DIR__ . '/../includes/admin-head.php';
         <form method="post" enctype="multipart/form-data" id="settings-form">
             <?= csrf_field() ?>
             <section class="section-divider">
-                <span class="title">Site Settings</span>
-                <label for="site_title">Site title</label>
+                <span class="title"><?= e(t('admin.settings.site.section_title')) ?></span>
+                <label for="site_title"><?= e(t('admin.settings.site.site_title')) ?></label>
                 <input type="text" id="site_title" name="site_title" value="<?= e($config['site_title']) ?>" required>
 
-                <label for="site_tagline">Site tagline (optional)</label>
+                <label for="site_tagline"><?= e(t('admin.settings.site.tagline')) ?></label>
                 <input type="text" id="site_tagline" name="site_tagline" value="<?= e($config['site_tagline']) ?>">
 
-                <label for="site_description">Site description</label>
+                <label for="site_description"><?= e(t('admin.settings.site.description')) ?></label>
                 <textarea id="site_description" name="site_description" rows="4"><?= e($config['site_description'] ?? '') ?></textarea>
 
-                <label for="site_email">Site email (optional)</label>
+                <label for="site_email"><?= e(t('admin.settings.site.email')) ?></label>
                 <input type="email" id="site_email" name="site_email" value="<?= e($config['site_email'] ?? '') ?>" placeholder="you@example.com">
 
-                <label for="posts_per_page">Posts per page</label>
+                <label for="posts_per_page"><?= e(t('admin.settings.site.posts_per_page')) ?></label>
                 <input type="number" id="posts_per_page" name="posts_per_page" min="1" max="100" value="<?= e((string) ($config['posts_per_page'] ?? 20)) ?>">
 
-                <label for="timezone">Timezone <span class="tip">(<a href="https://www.php.net/manual/en/timezones.php" target="_blank" rel="noopener noreferrer">PHP timezone list</a>)</span></label>
+                <label for="search_excerpt_length"><?= e(t('admin.settings.site.search_excerpt_length')) ?></label>
+                <input type="number" id="search_excerpt_length" name="search_excerpt_length" min="0" value="<?= e((string) ($config['search_excerpt_length'] ?? 2500)) ?>">
+                <p class="tip"><?= e(t('admin.settings.site.search_excerpt_length_tip')) ?></p>
+
+                <label for="language"><?= e(t('admin.settings.site.language')) ?> <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_language_link')) ?></a>, e.g. en, fr, pt-BR)</span></label>
+                <input type="text" id="language" name="language" value="<?= e((string) ($config['language'] ?? 'en')) ?>" placeholder="en">
+
+                <label for="timezone"><?= e(t('admin.settings.site.timezone')) ?> <span class="tip">(<a href="https://www.php.net/manual/en/timezones.php" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_timezone_link')) ?></a>)</span></label>
                 <input type="text" id="timezone" name="timezone" value="<?= e((string) ($config['timezone'] ?? date_default_timezone_get())) ?>" placeholder="UTC" required>
 
-                <label for="date_format">Date format <span class="tip">(<a href="https://www.php.net/manual/en/datetime.format.php" target="_blank" rel="noopener noreferrer">PHP date format docs</a>)</span></label>
+                <label for="date_format"><?= e(t('admin.settings.site.date_format')) ?> <span class="tip">(<a href="https://www.php.net/manual/en/datetime.format.php" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_date_format_link')) ?></a>)</span></label>
                 <input type="text" id="date_format" name="date_format" value="<?= e((string) ($config['date_format'] ?? 'F j, Y')) ?>" placeholder="F j, Y" required>
 
-                <label for="homepage_slug">Homepage</label>
+                <label for="homepage_slug"><?= e(t('admin.settings.site.homepage')) ?></label>
                 <select id="homepage_slug" name="homepage_slug">
-                    <option value="">Blog posts (default)</option>
+                    <option value=""><?= e(t('admin.settings.site.homepage_default')) ?></option>
                     <?php foreach ($pageOptions as $pageOption): ?>
                         <option value="<?= e($pageOption['slug']) ?>"<?= ($config['homepage_slug'] ?? '') === $pageOption['slug'] ? ' selected' : '' ?>>
                             <?= e($pageOption['title']) ?> (<?= e($pageOption['slug']) ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <label class="inline-checkbox" for="hide_homepage_title">
-                    <input type="checkbox" id="hide_homepage_title" name="hide_homepage_title" <?= !empty($config['hide_homepage_title']) ? 'checked' : '' ?>>
-                    Hide homepage title
-                </label>
-
-                <label for="blog_page_slug">Blog page</label>
+                <label for="blog_page_slug"><?= e(t('admin.settings.site.blog_page')) ?></label>
                 <select id="blog_page_slug" name="blog_page_slug">
-                    <option value="">Use homepage</option>
-                    <option value="<?= e($hiddenBlogValue) ?>"<?= ($config['blog_page_slug'] ?? '') === $hiddenBlogValue ? ' selected' : '' ?>>Hidden (disable blog page)</option>
+                    <option value=""><?= e(t('admin.settings.site.blog_use_homepage')) ?></option>
+                    <option value="<?= e($hiddenBlogValue) ?>"<?= ($config['blog_page_slug'] ?? '') === $hiddenBlogValue ? ' selected' : '' ?>><?= e(t('admin.settings.site.blog_hidden')) ?></option>
                     <?php foreach ($pageOptions as $pageOption): ?>
                         <option value="<?= e($pageOption['slug']) ?>"<?= ($config['blog_page_slug'] ?? '') === $pageOption['slug'] ? ' selected' : '' ?>>
                             <?= e($pageOption['title']) ?> (<?= e($pageOption['slug']) ?>)
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <label class="inline-checkbox" for="hide_blog_page_title">
-                    <input type="checkbox" id="hide_blog_page_title" name="hide_blog_page_title" <?= !empty($config['hide_blog_page_title']) ? 'checked' : '' ?>>
-                    Hide blog page title
-                </label>
 
-                <label for="base_url">Base URL</label>
-                <input type="text" id="base_url" name="base_url" value="<?= e($config['base_url']) ?>">
-
-                <label for="favicon">Favicon <span class="tip">(512px square works best)</span></label>
-                <input type="file" id="favicon" name="favicon" accept="image/*">
-                <?php if (!empty($config['assets']['favicon'])): ?>
-                    <p class="current-image">Current: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a></p>
-                <?php endif; ?>
-
-                <label for="og_image">Open Graph image <span class="tip">(1360x712 for banner, or 1200x1200 for square)</span></label>
-                <input type="file" id="og_image" name="og_image" accept="image/*">
-                <?php if (!empty($config['assets']['og_image'])): ?>
-                    <p class="current-image">Current: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
-                <?php endif; ?>
-
-                <label for="og_image_preferred">Open Graph image format</label>
-                <select id="og_image_preferred" name="og_image_preferred">
-                    <option value="banner"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'banner' ? ' selected' : '' ?>>Banner (default)</option>
-                    <option value="square"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'square' ? ' selected' : '' ?>>Square</option>
+                <label for="search_page_slug"><?= e(t('admin.settings.site.search_page')) ?></label>
+                <select id="search_page_slug" name="search_page_slug">
+                    <option value=""><?= e(t('admin.settings.site.search_page_none')) ?></option>
+                    <?php foreach ($pageOptions as $pageOption): ?>
+                        <option value="<?= e($pageOption['slug']) ?>"<?= ($config['search_page_slug'] ?? 'search') === $pageOption['slug'] ? ' selected' : '' ?>>
+                            <?= e($pageOption['title']) ?> (<?= e($pageOption['slug']) ?>)
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
-                <label for="custom_nav">Custom nav items <span class="tip">(one per line)</span></label>
+                <label for="base_url"><?= e(t('admin.settings.site.base_url')) ?></label>
+                <input type="text" id="base_url" name="base_url" value="<?= e($config['base_url']) ?>">
+
+                <label for="favicon"><?= e(t('admin.settings.site.favicon')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_favicon')) ?>)</span></label>
+                <input type="file" id="favicon" name="favicon" accept="image/*">
+                <?php if (!empty($config['assets']['favicon'])): ?>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a></p>
+                <?php endif; ?>
+
+                <label for="og_image"><?= e(t('admin.settings.site.og_image')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_og_image')) ?>)</span></label>
+                <input type="file" id="og_image" name="og_image" accept="image/*">
+                <?php if (!empty($config['assets']['og_image'])): ?>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
+                <?php endif; ?>
+
+                <label for="og_image_preferred"><?= e(t('admin.settings.site.og_image_format')) ?></label>
+                <select id="og_image_preferred" name="og_image_preferred">
+                    <option value="banner"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'banner' ? ' selected' : '' ?>><?= e(t('admin.settings.site.og_banner')) ?></option>
+                    <option value="square"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'square' ? ' selected' : '' ?>><?= e(t('admin.settings.site.og_square')) ?></option>
+                </select>
+
+                <label for="custom_nav"><?= e(t('admin.settings.site.custom_nav')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_one_per_line')) ?>)</span></label>
                 <textarea id="custom_nav" name="custom_nav" rows="4" placeholder="GitHub | https://github.com/you&#10;Projects | /projects"><?= e($config['custom_nav'] ?? '') ?></textarea>
 
-                <label for="custom_routes">Custom routes <span class="tip">(one per line)</span></label>
+                <label for="custom_routes"><?= e(t('admin.settings.site.custom_routes')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_one_per_line')) ?>)</span></label>
                 <textarea id="custom_routes" name="custom_routes" rows="4" placeholder="/archive | /content/includes/archive.php&#10;/reading | reading.php"><?= e($config['custom_routes'] ?? '') ?></textarea>
             </section>
 
             <section class="section-divider">
-                <span class="title">Header Injects</span>
-                <label for="head_inject_page">Page head HTML <span class="tip">(optional)</span></label>
+                <span class="title"><?= e(t('admin.settings.site.header_injects')) ?></span>
+                <label for="head_inject_page"><?= e(t('admin.settings.site.head_inject_page_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
                 <textarea id="head_inject_page" name="head_inject_page" rows="6" placeholder="&lt;link rel=&quot;stylesheet&quot; href=&quot;/content/css/comments.css&quot;&gt;"><?= e($config['head_inject_page'] ?? '') ?></textarea>
 
-                <label for="head_inject_post">Post head HTML <span class="tip">(optional)</span></label>
+                <label for="head_inject_post"><?= e(t('admin.settings.site.head_inject_post_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
                 <textarea id="head_inject_post" name="head_inject_post" rows="6" placeholder="&lt;meta name=&quot;x-custom&quot; content=&quot;value&quot;&gt;"><?= e($config['head_inject_post'] ?? '') ?></textarea>
             </section>
 
             <section class="section-divider">
-                <span class="title">Footer Injects</span>
-                <label for="footer_inject_page">Page footer HTML <span class="tip">(optional)</span></label>
+                <span class="title"><?= e(t('admin.settings.site.footer_injects')) ?></span>
+                <label for="footer_inject_page"><?= e(t('admin.settings.site.footer_inject_page_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
                 <textarea id="footer_inject_page" name="footer_inject_page" rows="6" placeholder="&lt;script src=&quot;/assets/js/page-only.js&quot; defer&gt;&lt;/script&gt;"><?= e($config['footer_inject_page'] ?? '') ?></textarea>
 
-                <label for="footer_inject_post">Post footer HTML <span class="tip">(optional)</span></label>
+                <label for="footer_inject_post"><?= e(t('admin.settings.site.footer_inject_post_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
                 <textarea id="footer_inject_post" name="footer_inject_post" rows="6" placeholder="&lt;script src=&quot;/assets/js/post-only.js&quot; defer&gt;&lt;/script&gt;"><?= e($config['footer_inject_post'] ?? '') ?></textarea>
             </section>
 
             <section class="section-divider">
-                <span class="title">Cache</span>
+                <span class="title"><?= e(t('admin.settings.site.admin_ui_section')) ?></span>
+                <label for="admin_homepage"><?= e(t('admin.settings.site.admin_homepage')) ?></label>
+                <select id="admin_homepage" name="admin_homepage">
+                    <option value="dashboard"<?= ($config['admin_homepage'] ?? 'dashboard') === 'dashboard' ? ' selected' : '' ?>><?= e(t('admin.settings.site.admin_homepage_dashboard')) ?></option>
+                    <option value="content"<?= ($config['admin_homepage'] ?? 'dashboard') === 'content' ? ' selected' : '' ?>><?= e(t('admin.settings.site.admin_homepage_content')) ?></option>
+                </select>
+                <label class="inline-checkbox" for="admin_hide_dashboard">
+                    <input type="checkbox" id="admin_hide_dashboard" name="admin_hide_dashboard"<?= !empty($config['admin_hide_dashboard']) ? ' checked' : '' ?><?= ($config['admin_homepage'] ?? 'dashboard') !== 'content' ? ' disabled' : '' ?>>
+                    <?= e(t('admin.settings.site.admin_hide_dashboard')) ?>
+                </label>
+            </section>
+
+            <section class="section-divider">
+                <span class="title"><?= e(t('admin.settings.site.cache_section')) ?></span>
                 <label class="inline-checkbox" for="cache_enabled">
                     <input type="checkbox" id="cache_enabled" name="cache_enabled" <?= !empty($config['cache']['enabled']) ? 'checked' : '' ?>>
-                    Enable page cache
+                    <?= e(t('admin.settings.site.cache_enable')) ?>
                 </label>
 
-                <label for="rss_ttl">RSS cache duration <span class="tip">(seconds, 0 to disable)</span></label>
+                <label for="rss_ttl"><?= e(t('admin.settings.site.rss_ttl')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_rss_ttl')) ?>)</span></label>
                 <input type="number" id="rss_ttl" name="rss_ttl" min="0" value="<?= e((string) ($config['cache']['rss_ttl'] ?? 3600)) ?>">
             </section>
         </form>
     </main>
+<script>
+    const adminHomepageSelect = document.getElementById('admin_homepage');
+    const hideDashboardCheckbox = document.getElementById('admin_hide_dashboard');
+    adminHomepageSelect.addEventListener('change', function () {
+        hideDashboardCheckbox.disabled = this.value !== 'content';
+        if (hideDashboardCheckbox.disabled) hideDashboardCheckbox.checked = false;
+    });
+</script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

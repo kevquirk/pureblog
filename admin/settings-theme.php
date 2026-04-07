@@ -45,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (save_config($config)) {
-            $notice = 'Theme colors reset to defaults.';
+            $notice = t('admin.settings.theme.notice_reset');
         } else {
-            $errors[] = 'Failed to save settings.';
+            $errors[] = t('admin.settings.theme.error_save');
         }
     } else {
     $fontChoice = $_POST['font_stack'] ?? 'sans';
@@ -67,23 +67,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $postListLayout = $_POST['post_list_layout'] ?? 'excerpt';
 
     if (!in_array($fontChoice, ['sans', 'serif', 'mono'], true)) {
-        $errors[] = 'Font stack must be sans, serif, or mono.';
+        $errors[] = t('admin.settings.theme.error_font');
     }
 
     if (!in_array($adminFontChoice, ['sans', 'serif', 'mono'], true)) {
-        $errors[] = 'Admin font stack must be sans, serif, or mono.';
+        $errors[] = t('admin.settings.theme.error_admin_font');
     }
 
     if (!in_array($adminColorMode, ['light', 'dark', 'auto'], true)) {
-        $errors[] = 'Admin color mode must be light, dark, or auto.';
+        $errors[] = t('admin.settings.theme.error_admin_color');
     }
 
     if (!in_array($colorMode, ['light', 'dark', 'auto'], true)) {
-        $errors[] = 'Color mode must be light, dark, or auto.';
+        $errors[] = t('admin.settings.theme.error_color_mode');
     }
 
     if (!in_array($postListLayout, ['excerpt', 'full', 'archive'], true)) {
-        $errors[] = 'Post list layout must be excerpt, full, or archive.';
+        $errors[] = t('admin.settings.theme.error_post_layout');
     }
 
     if (!$errors) {
@@ -104,19 +104,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['theme']['post_list_layout'] = $postListLayout;
 
             if (save_config($config)) {
-                $notice = 'Settings updated.';
+                $notice = t('admin.settings.theme.notice_updated');
             } else {
-                $errors[] = 'Failed to save settings.';
+                $errors[] = t('admin.settings.theme.error_save');
             }
         }
     }
 }
 
-$adminTitle = 'Theme Settings - Pureblog';
+$adminTitle = t('admin.settings.theme.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>Theme & layout settings</h1>
+        <h1><?= e(t('admin.settings.theme.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>
@@ -128,9 +128,9 @@ require __DIR__ . '/../includes/admin-head.php';
             <?= csrf_field() ?>
 
             <section class="section-divider">
-                <span class="title">Font Settings</span>
+                <span class="title"><?= e(t('admin.settings.theme.section_fonts')) ?></span>
 
-                <label><b>Site font</b></label>
+                <label><b><?= e(t('admin.settings.theme.site_font')) ?></b></label>
                 <label class="inline-radio font-preview font-preview-sans" for="font_stack_sans">
                     <input type="radio" id="font_stack_sans" name="font_stack" value="sans" <?= ($config['theme']['font_stack'] ?? 'sans') === 'sans' ? 'checked' : '' ?>>
                     Sans
@@ -144,7 +144,7 @@ require __DIR__ . '/../includes/admin-head.php';
                     Mono
                 </label>
 
-                <label><b>Admin font</b></label>
+                <label><b><?= e(t('admin.settings.theme.admin_font')) ?></b></label>
                 <label class="inline-radio font-preview font-preview-sans" for="admin_font_stack_sans">
                     <input type="radio" id="admin_font_stack_sans" name="admin_font_stack" value="sans" <?= ($config['theme']['admin_font_stack'] ?? 'sans') === 'sans' ? 'checked' : '' ?>>
                     Sans
@@ -160,126 +160,129 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
 
             <section class="section-divider">
-                <span class="title">Color Mode</span>
+                <span class="title"><?= e(t('admin.settings.theme.section_color_mode')) ?></span>
 
-                <label><b>Site color mode</b></label>
+                <label><b><?= e(t('admin.settings.theme.site_color_mode')) ?></b></label>
                 <label class="inline-radio" for="color_mode_light">
                     <input type="radio" id="color_mode_light" name="color_mode" value="light" <?= ($config['theme']['color_mode'] ?? 'light') === 'light' ? 'checked' : '' ?>>
-                    Light
+                    <?= e(t('admin.settings.theme.color_light')) ?>
                 </label>
                 <label class="inline-radio" for="color_mode_dark">
                     <input type="radio" id="color_mode_dark" name="color_mode" value="dark" <?= ($config['theme']['color_mode'] ?? 'light') === 'dark' ? 'checked' : '' ?>>
-                    Dark
+                    <?= e(t('admin.settings.theme.color_dark')) ?>
                 </label>
                 <label class="inline-radio" for="color_mode_auto">
                     <input type="radio" id="color_mode_auto" name="color_mode" value="auto" <?= ($config['theme']['color_mode'] ?? 'light') === 'auto' ? 'checked' : '' ?>>
-                    Auto
+                    <?= e(t('admin.settings.theme.color_auto')) ?>
                 </label>
 
-                <label><b>Admin color mode</b></label>
+                <label><b><?= e(t('admin.settings.theme.admin_color_mode')) ?></b></label>
                 <label class="inline-radio" for="admin_color_mode_light">
                     <input type="radio" id="admin_color_mode_light" name="admin_color_mode" value="light" <?= ($config['theme']['admin_color_mode'] ?? 'auto') === 'light' ? 'checked' : '' ?>>
-                    Light
+                    <?= e(t('admin.settings.theme.color_light')) ?>
                 </label>
                 <label class="inline-radio" for="admin_color_mode_dark">
                     <input type="radio" id="admin_color_mode_dark" name="admin_color_mode" value="dark" <?= ($config['theme']['admin_color_mode'] ?? 'auto') === 'dark' ? 'checked' : '' ?>>
-                    Dark
+                    <?= e(t('admin.settings.theme.color_dark')) ?>
                 </label>
                 <label class="inline-radio" for="admin_color_mode_auto">
                     <input type="radio" id="admin_color_mode_auto" name="admin_color_mode" value="auto" <?= ($config['theme']['admin_color_mode'] ?? 'auto') === 'auto' ? 'checked' : '' ?>>
-                    Auto
+                    <?= e(t('admin.settings.theme.color_auto')) ?>
                 </label>
             </section>
 
             <section class="section-divider">
-                <span class="title">Site custom colors</span>
+                <span class="title"><?= e(t('admin.settings.theme.section_colors')) ?></span>
 
-                <p><b>Browse the <a target="_blank" href="https://pureblog.org/themes">PureBlog theme gallery</a> for inspiration.</b></p>
+                <?php
+                $galleryLink = '<a target="_blank" rel="noopener noreferrer" href="https://pureblog.org/themes">' . e(t('admin.settings.theme.gallery_link')) . '</a>';
+                ?>
+                <p><b><?= str_replace('{link}', $galleryLink, t('admin.settings.theme.gallery_promo')) ?></b></p>
 
-                <h3>Light mode</h3>
+                <h3><?= e(t('admin.settings.theme.light_mode')) ?></h3>
                 <div class="color-grid">
                     <div class="color-field">
-                        <label for="background_color">Background color</label>
+                        <label for="background_color"><?= e(t('admin.settings.theme.color_background')) ?></label>
                         <input type="text" id="background_color" name="background_color" value="<?= e($config['theme']['background_color']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="text_color">Text color</label>
+                        <label for="text_color"><?= e(t('admin.settings.theme.color_text')) ?></label>
                         <input type="text" id="text_color" name="text_color" value="<?= e($config['theme']['text_color']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="accent_color">Accent color</label>
+                        <label for="accent_color"><?= e(t('admin.settings.theme.color_accent')) ?></label>
                         <input type="text" id="accent_color" name="accent_color" value="<?= e($config['theme']['accent_color']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="border_color">Border color</label>
+                        <label for="border_color"><?= e(t('admin.settings.theme.color_border')) ?></label>
                         <input type="text" id="border_color" name="border_color" value="<?= e($config['theme']['border_color']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="accent_bg_color">Accent background</label>
+                        <label for="accent_bg_color"><?= e(t('admin.settings.theme.color_accent_bg')) ?></label>
                         <input type="text" id="accent_bg_color" name="accent_bg_color" value="<?= e($config['theme']['accent_bg_color']) ?>">
                     </div>
                 </div>
-                <button class="link-button delete" type="submit" form="settings-form" name="reset_theme_light" value="1" aria-label="Reset light mode colors to defaults" onclick="return confirm('Reset light mode colors to defaults?');">
-                    <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-x"></use></svg>
-                    Reset light colors
+                <button class="link-button delete" type="submit" form="settings-form" name="reset_theme_light" value="1" aria-label="<?= e(t('admin.settings.theme.reset_light_confirm')) ?>" onclick="return confirm(<?= e(json_encode(t('admin.settings.theme.reset_light_confirm'))) ?>);">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
+                    <?= e(t('admin.settings.theme.reset_light')) ?>
                 </button>
 
-                <h3>Dark mode</h3>
+                <h3><?= e(t('admin.settings.theme.dark_mode')) ?></h3>
                 <div class="color-grid">
                     <div class="color-field">
-                        <label for="background_color_dark">Background color</label>
+                        <label for="background_color_dark"><?= e(t('admin.settings.theme.color_background')) ?></label>
                         <input type="text" id="background_color_dark" name="background_color_dark" value="<?= e($config['theme']['background_color_dark']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="text_color_dark">Text color</label>
+                        <label for="text_color_dark"><?= e(t('admin.settings.theme.color_text')) ?></label>
                         <input type="text" id="text_color_dark" name="text_color_dark" value="<?= e($config['theme']['text_color_dark']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="accent_color_dark">Accent color</label>
+                        <label for="accent_color_dark"><?= e(t('admin.settings.theme.color_accent')) ?></label>
                         <input type="text" id="accent_color_dark" name="accent_color_dark" value="<?= e($config['theme']['accent_color_dark']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="border_color_dark">Border color</label>
+                        <label for="border_color_dark"><?= e(t('admin.settings.theme.color_border')) ?></label>
                         <input type="text" id="border_color_dark" name="border_color_dark" value="<?= e($config['theme']['border_color_dark']) ?>">
                     </div>
                     <div class="color-field">
-                        <label for="accent_bg_color_dark">Accent background</label>
+                        <label for="accent_bg_color_dark"><?= e(t('admin.settings.theme.color_accent_bg')) ?></label>
                         <input type="text" id="accent_bg_color_dark" name="accent_bg_color_dark" value="<?= e($config['theme']['accent_bg_color_dark']) ?>">
                     </div>
                 </div>
-                <button class="link-button delete" type="submit" form="settings-form" name="reset_theme_dark" value="1" aria-label="Reset dark mode colors to defaults" onclick="return confirm('Reset dark mode colors to defaults?');">
-                    <svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-x"></use></svg>
-                    Reset dark colors
+                <button class="link-button delete" type="submit" form="settings-form" name="reset_theme_dark" value="1" aria-label="<?= e(t('admin.settings.theme.reset_dark_confirm')) ?>" onclick="return confirm(<?= e(json_encode(t('admin.settings.theme.reset_dark_confirm'))) ?>);">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
+                    <?= e(t('admin.settings.theme.reset_dark')) ?>
                 </button>
             </section>
 
             <section class="section-divider">
-                <span class="title">Post list layout</span>
-                
+                <span class="title"><?= e(t('admin.settings.theme.section_post_layout')) ?></span>
+
                 <div class="layout-options">
                     <label class="layout-choice" for="post_list_excerpt">
                         <input type="radio" id="post_list_excerpt" name="post_list_layout" value="excerpt" <?= ($config['theme']['post_list_layout'] ?? 'excerpt') === 'excerpt' ? 'checked' : '' ?>>
                         <picture class="layout-preview">
-                            <source srcset="/admin/images/layouts/layout-excerpt-dark.png" media="(prefers-color-scheme: dark)">
-                            <img src="/admin/images/layouts/layout-excerpt-light.png" alt="Post excerpt layout preview" loading="lazy">
+                            <source srcset="<?= base_path() ?>/admin/images/layouts/layout-excerpt-dark.png" media="(prefers-color-scheme: dark)">
+                            <img src="<?= base_path() ?>/admin/images/layouts/layout-excerpt-light.png" alt="<?= e(t('admin.settings.theme.layout_excerpt')) ?>" loading="lazy">
                         </picture>
-                        <span>Post excerpt</span>
+                        <span><?= e(t('admin.settings.theme.layout_excerpt')) ?></span>
                     </label>
                     <label class="layout-choice" for="post_list_full">
                         <input type="radio" id="post_list_full" name="post_list_layout" value="full" <?= ($config['theme']['post_list_layout'] ?? 'excerpt') === 'full' ? 'checked' : '' ?>>
                         <picture class="layout-preview">
-                            <source srcset="/admin/images/layouts/layout-full-dark.png" media="(prefers-color-scheme: dark)">
-                            <img src="/admin/images/layouts/layout-full-light.png" alt="Full post layout preview" loading="lazy">
+                            <source srcset="<?= base_path() ?>/admin/images/layouts/layout-full-dark.png" media="(prefers-color-scheme: dark)">
+                            <img src="<?= base_path() ?>/admin/images/layouts/layout-full-light.png" alt="<?= e(t('admin.settings.theme.layout_full')) ?>" loading="lazy">
                         </picture>
-                        <span>Full post</span>
+                        <span><?= e(t('admin.settings.theme.layout_full')) ?></span>
                     </label>
                     <label class="layout-choice" for="post_list_archive">
                         <input type="radio" id="post_list_archive" name="post_list_layout" value="archive" <?= ($config['theme']['post_list_layout'] ?? 'excerpt') === 'archive' ? 'checked' : '' ?>>
                         <picture class="layout-preview">
-                            <source srcset="/admin/images/layouts/layout-archive-dark.png" media="(prefers-color-scheme: dark)">
-                            <img src="/admin/images/layouts/layout-archive-light.png" alt="Archive layout preview" loading="lazy">
+                            <source srcset="<?= base_path() ?>/admin/images/layouts/layout-archive-dark.png" media="(prefers-color-scheme: dark)">
+                            <img src="<?= base_path() ?>/admin/images/layouts/layout-archive-light.png" alt="<?= e(t('admin.settings.theme.layout_archive')) ?>" loading="lazy">
                         </picture>
-                        <span>Date & title</span>
+                        <span><?= e(t('admin.settings.theme.layout_archive')) ?></span>
                     </label>
                 </div>
             </section>

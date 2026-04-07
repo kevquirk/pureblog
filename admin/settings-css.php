@@ -27,34 +27,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $adminCss = $_POST['admin_css'] ?? '';
 
     if (!is_dir($frontCssDir) && !mkdir($frontCssDir, 0755, true)) {
-        $errors[] = 'Unable to create front-end CSS directory.';
+        $errors[] = t('admin.settings.css.error_dir_front');
     }
 
     if (!is_dir($adminCssDir) && !mkdir($adminCssDir, 0755, true)) {
-        $errors[] = 'Unable to create admin CSS directory.';
+        $errors[] = t('admin.settings.css.error_dir_admin');
     }
 
     if (!$errors) {
         if (file_put_contents($frontCssPath, $frontCss) === false) {
-            $errors[] = 'Failed to save front-end CSS.';
+            $errors[] = t('admin.settings.css.error_save_front');
         }
 
         if (file_put_contents($adminCssPath, $adminCss) === false) {
-            $errors[] = 'Failed to save admin CSS.';
+            $errors[] = t('admin.settings.css.error_save_admin');
         }
     }
 
     if (!$errors) {
-        $notice = 'Custom CSS saved.';
+        $notice = t('admin.settings.css.notice_saved');
     }
 }
 
-$adminTitle = 'Custom CSS - Pureblog';
+$adminTitle = t('admin.settings.css.page_title');
 $codeMirror = 'css';
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1>Custom CSS settings</h1>
+        <h1><?= e(t('admin.settings.css.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <?php $settingsSaveFormId = 'settings-form'; ?>
@@ -65,12 +65,12 @@ require __DIR__ . '/../includes/admin-head.php';
         <form method="post" id="settings-form">
             <?= csrf_field() ?>
             <section class="section-divider">
-                <span class="title">Front-end CSS</span>
-                <textarea id="front_css" name="front_css" rows="16" spellcheck="false" placeholder="Add some custom CSS to your website..."><?= e($frontCss) ?></textarea>
+                <span class="title"><?= e(t('admin.settings.css.section_front')) ?></span>
+                <textarea id="front_css" name="front_css" rows="16" spellcheck="false" placeholder="<?= e(t('admin.settings.css.placeholder_front')) ?>"><?= e($frontCss) ?></textarea>
             </section>
             <section class="section-divider">
-                <span class="title">Admin CSS</span>
-                <textarea id="admin_css" name="admin_css" rows="16" spellcheck="false" placeholder="Add some custom CSS to the Pure Blog CMS..."><?= e($adminCss) ?></textarea>
+                <span class="title"><?= e(t('admin.settings.css.section_admin')) ?></span>
+                <textarea id="admin_css" name="admin_css" rows="16" spellcheck="false" placeholder="<?= e(t('admin.settings.css.placeholder_admin')) ?>"><?= e($adminCss) ?></textarea>
             </section>
         </form>
     </main>

@@ -9,7 +9,7 @@ start_admin_session();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    header('Location: ' . admin_url('dashboard.php'));
+    header('Location: ' . base_path() . '/admin/dashboard.php');
     exit;
 }
 
@@ -17,5 +17,5 @@ verify_csrf();
 $_SESSION = [];
 session_destroy();
 
-header('Location: ' . admin_url('index.php'));
+header('Location: ' . base_path() . '/admin/index.php');
 exit;

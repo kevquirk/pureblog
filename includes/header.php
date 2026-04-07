@@ -16,16 +16,21 @@ $ogImage = $config['assets']['og_image'] ?? '';
 $isSquareOgImage = $ogImagePreferred === 'square';
 ?>
 <!DOCTYPE html>
-<html lang="en" data-theme="<?= e($mode) ?>">
+<html lang="<?= e($config['language'] ?? 'en') ?>" data-theme="<?= e($mode) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php
-    $currentPath = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '', '/');
+    $uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+    $bp = base_path();
+    if ($bp !== '' && str_starts_with($uriPath, $bp)) {
+        $uriPath = substr($uriPath, strlen($bp));
+    }
+    $currentPath = trim($uriPath, '/');
     $isHome = $currentPath === '';
     $fullTitle = $isHome ? $pageTitle : trim($pageTitle . ' - ' . $siteTitle);
-    $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-    if ($requestPath === '' || $requestPath === '/index.php') {
+    $requestPath = $uriPath !== '' ? $uriPath : '/';
+    if ($requestPath === '/index.php') {
         $requestPath = '/';
     }
     $canonicalUrl = rtrim(get_base_url(), '/') . $requestPath;
@@ -36,8 +41,22 @@ $isSquareOgImage = $ogImagePreferred === 'square';
     <?php endif; ?>
     <link rel="canonical" href="<?= e($canonicalUrl) ?>">
     <?php if (!empty($config['assets']['favicon'])): ?>
-        <link rel="icon" href="<?= e($config['assets']['favicon']) ?>">
+        <?php $faviconHref = $config['assets']['favicon']; ?>
+        <?php if ($faviconHref[0] === '/') { $faviconHref = base_path() . $faviconHref; } ?>
+        <link rel="icon" href="<?= e($faviconHref) ?>">
     <?php endif; ?>
+    <meta property="og:type" content="<?= isset($post) ? 'article' : 'website' ?>">
+    <meta property="og:url" content="<?= e($canonicalUrl) ?>">
+    <meta property="og:site_name" content="<?= e($siteTitle) ?>">
+    <meta property="og:title" content="<?= e($fullTitle) ?>">
+    <?php if ($metaDescription !== ''): ?>
+        <meta property="og:description" content="<?= e($metaDescription) ?>">
+    <?php endif; ?>
+    <?php
+    $ogLocaleMap = ['de' => 'de_DE', 'fr' => 'fr_FR', 'es' => 'es_ES', 'it' => 'it_IT', 'nl' => 'nl_NL', 'pt' => 'pt_PT', 'ro' => 'ro_RO'];
+    $ogLocale = $ogLocaleMap[$config['language'] ?? 'en'] ?? 'en_US';
+    ?>
+    <meta property="og:locale" content="<?= e($ogLocale) ?>">
     <?php if ($ogImage !== ''): ?>
         <meta property="og:image" content="<?= e($ogImage) ?>">
         <?php if ($isSquareOgImage): ?>
@@ -45,11 +64,11 @@ $isSquareOgImage = $ogImagePreferred === 'square';
             <meta property="og:image:height" content="600">
         <?php endif; ?>
     <?php endif; ?>
-    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="/feed.php">
+    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= base_path() ?>/feed.php">
     <style>
         body { background: <?= e($config['theme']['background_color']) ?>; }
     </style>
-    <link rel="stylesheet" href="/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
+    <link rel="stylesheet" href="<?= base_path() ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {
             --bg-light: <?= e($config['theme']['background_color']) ?>;

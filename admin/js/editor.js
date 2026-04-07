@@ -108,8 +108,127 @@
   }
 
   safeResize();
-  cm.on('change', safeResize);
+  cm.on('change', () => { safeResize(); scheduleAutosave(); });
   cm.on('refresh', safeResize);
+
+  const autosaveStatus = document.getElementById('autosave-status');
+  let autosaveTimer = null;
+
+  function setAutosaveStatus(text) {
+    if (autosaveStatus) autosaveStatus.textContent = text;
+  }
+
+  async function discardAutosave() {
+    const slugValue = (slugField?.value ?? '').trim();
+    if (slugValue === '') return;
+    const formData = new FormData();
+    formData.set('csrf_token', config.csrfToken);
+    formData.set('action', 'discard');
+    formData.set('slug', slugValue);
+    formData.set('editor_type', config.editorType || 'post');
+    await fetch((config.basePath || '') + '/admin/autosave.php', {
+      method: 'POST',
+      body: formData,
+      credentials: 'same-origin',
+    }).catch(() => {});
+  }
+
+  async function doAutosave() {
+    const slugValue = (slugField?.value ?? '').trim();
+    if (slugValue === '') return;
+
+    setAutosaveStatus(config.strings.autosaving);
+    try {
+      cm.save();
+      const formData = new FormData(editorForm);
+      formData.set('editor_type', config.editorType || 'post');
+      formData.set('action', 'save');
+      const response = await fetch((config.basePath || '') + '/admin/autosave.php', {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+      });
+      const data = await response.json();
+      if (data.success) {
+        const now = new Date();
+        setAutosaveStatus(config.strings.autosaved + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      } else {
+        setAutosaveStatus(config.strings.autosave_failed);
+      }
+    } catch (e) {
+      setAutosaveStatus(config.strings.autosave_failed);
+    }
+  }
+
+  function scheduleAutosave() {
+    if ((slugField?.value ?? '').trim() === '') return;
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(doAutosave, 10000);
+  }
+
+  [titleField, slugField, descriptionField, dateField, tagsField].forEach((field) => {
+    field?.addEventListener('input', scheduleAutosave);
+  });
+
+  // Discard autosave on successful manual save (form submit).
+  editorForm?.addEventListener('submit', () => { discardAutosave(); });
+
+  // Show restore banner if an autosave exists.
+  if (config.autosave) {
+    const saved = config.autosave;
+    const time  = new Date(saved.timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const preview = document.createElement('div');
+    preview.className = 'autosave-preview';
+    preview.hidden = true;
+    preview.innerHTML =
+      (saved.title   ? '<p><strong>' + config.strings.title_label + '</strong> ' + saved.title.replace(/</g, '&lt;') + '</p>' : '') +
+      (saved.content ? '<pre class="autosave-preview-content">' + saved.content.replace(/</g, '&lt;') + '</pre>' : '');
+
+    const banner = document.createElement('div');
+    banner.className = 'notice autosave-restore-notice';
+    banner.innerHTML =
+      config.strings.autosave_banner.replace('{time}', time) + ' ' +
+      '<button type="button" class="autosave-btn" id="autosave-view-btn">' + config.strings.view + '</button> ' +
+      '<button type="button" class="autosave-btn" id="autosave-restore-btn">' + config.strings.restore + '</button> ' +
+      '<button type="button" class="autosave-btn delete" id="autosave-discard-btn">' + config.strings.discard + '</button>';
+
+    const main = document.querySelector('main');
+    if (main) {
+      main.insertBefore(preview, main.firstChild);
+      main.insertBefore(banner, preview);
+    }
+
+    document.getElementById('autosave-view-btn')?.addEventListener('click', () => {
+      const isHidden = preview.hidden;
+      preview.hidden = !isHidden;
+      document.getElementById('autosave-view-btn').textContent = isHidden ? config.strings.hide : config.strings.view;
+    });
+
+    document.getElementById('autosave-restore-btn')?.addEventListener('click', () => {
+      const titleField2 = editorForm?.querySelector('[name="title"]');
+      const descField2  = editorForm?.querySelector('[name="description"]');
+      const tagsField2  = editorForm?.querySelector('[name="tags"]');
+      const dateField2  = editorForm?.querySelector('[name="date"]');
+      const navField2   = editorForm?.querySelector('[name="include_in_nav"]');
+      const statusField = editorForm?.querySelector('[name="status"]');
+
+      if (titleField2  && saved.title       != null) titleField2.value  = saved.title;
+      if (descField2   && saved.description != null) descField2.value   = saved.description;
+      if (tagsField2   && saved.tags        != null) tagsField2.value   = saved.tags;
+      if (dateField2   && saved.date        != null) dateField2.value   = saved.date;
+      if (navField2    && saved.include_in_nav != null) navField2.value = saved.include_in_nav;
+      if (statusField  && saved.status      != null) statusField.value  = saved.status;
+      if (saved.content != null) { cm.setValue(saved.content); cm.save(); }
+
+      banner.remove();
+    });
+
+    document.getElementById('autosave-discard-btn')?.addEventListener('click', async () => {
+      await discardAutosave();
+      banner.remove();
+    });
+  }
 
   const getScrollKey = () => {
     const slugValue = (slugField?.value ?? '').trim();
@@ -152,7 +271,7 @@
           credentials: 'same-origin',
         });
         if (!response.ok) {
-          throw new Error('Save failed');
+          throw new Error(config.strings.save_failed);
         }
         const responseUrl = new URL(response.url, window.location.origin);
         const savedSlug = responseUrl.searchParams.get('slug') || (slugField?.value ?? '').trim();
@@ -172,7 +291,7 @@
         allowUploadSubmit = true;
         uploadForm.submit();
       } catch (error) {
-        alert('Unable to save before uploading image.');
+        alert(config.strings.save_before_upload);
       }
     });
   }
@@ -181,13 +300,13 @@
     const statusValue = statusField?.value ?? '';
     const slugValue = (slugField?.value ?? '').trim();
     if (statusValue === 'published' && slugValue !== '') {
-      window.open(`/${encodeURIComponent(slugValue)}`, '_blank');
+      window.open(`${config.basePath || ''}/${encodeURIComponent(slugValue)}`, '_blank');
       return;
     }
 
     const form = document.createElement('form');
     form.method = 'post';
-    form.action = `${adminBasePath}/preview.php`;
+    form.action = (config.basePath || '') + '/admin/preview.php';
     form.target = '_blank';
 
     const fields = [
@@ -255,12 +374,12 @@
       }
       try {
         await navigator.clipboard.writeText(markdown);
-        button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-check"></use></svg> Copied';
+        button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-check"></use></svg> ' + config.strings.copied;
         setTimeout(() => {
-          button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-copy"></use></svg> Copy';
+          button.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-copy"></use></svg> ' + config.strings.copy;
         }, 1500);
       } catch (error) {
-        alert('Unable to copy to clipboard. Please copy manually.');
+        alert(config.strings.copy_failed);
       }
     });
   });
@@ -279,8 +398,8 @@
     const dateValue = (dateField?.value ?? '').trim();
     if (slugValue === '' || (config.editorType === 'post' && dateValue === '')) {
       alert(config.editorType === 'post'
-        ? 'Save the post first so it has a slug and date.'
-        : 'Save the page first so it has a slug.');
+        ? config.strings.save_post_first
+        : config.strings.save_page_first);
       return;
     }
 
@@ -300,7 +419,7 @@
         }
         formData.append('csrf_token', config.csrfToken || '');
 
-        const response = await fetch(`${adminBasePath}/upload-image.php`, {
+        const response = await fetch((config.basePath || '') + '/admin/upload-image.php', {
           method: 'POST',
           body: formData,
         });
@@ -317,7 +436,7 @@
         const cursor = doc.getCursor();
         doc.replaceRange(markdown, cursor);
       } catch (error) {
-        alert('Image upload failed.');
+        alert(config.strings.upload_failed);
       }
     }
   });

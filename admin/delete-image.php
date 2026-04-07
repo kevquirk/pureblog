@@ -16,20 +16,23 @@ $filename = trim($_POST['filename'] ?? '');
 $editorType = trim($_POST['editor_type'] ?? 'post');
 
 $redirect = $editorType === 'page'
-    ? admin_url('edit-page.php') . '?slug=' . urlencode($slug)
-    : admin_url('edit-post.php') . '?slug=' . urlencode($slug);
+    ? base_path() . '/admin/edit-page.php?slug=' . urlencode($slug)
+    : base_path() . '/admin/edit-post.php?slug=' . urlencode($slug);
 
 if ($slug === '' || ($editorType !== 'page' && $date === '') || $filename === '') {
-    header('Location: ' . $redirect . '&upload_error=' . urlencode('Missing image data.'));
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_delete_missing_data')));
     exit;
 }
 
-$folderName = $editorType === 'page'
-    ? $slug
-    : $slug;
+$folderName = $slug;
 $baseDir = realpath(__DIR__ . '/../content/images');
 if ($baseDir === false) {
-    header('Location: ' . $redirect . '&upload_error=' . urlencode('Image folder not found.'));
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_image_folder_missing')));
+    exit;
+}
+
+if (!is_safe_image_slug($folderName)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_image_invalid_path')));
     exit;
 }
 
@@ -41,13 +44,23 @@ if ($targetDir === false || !str_starts_with($targetDir, $baseDir . '/')) {
 }
 $targetFile = $targetDir . '/' . basename($filename);
 
+if (!validate_image_path($baseDir, $targetDir)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_image_invalid_path')));
+    exit;
+}
+
+if (!validate_image_path($baseDir, $targetFile)) {
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_image_invalid_path')));
+    exit;
+}
+
 if (!is_file($targetFile)) {
-    header('Location: ' . $redirect . '&upload_error=' . urlencode('Image not found.'));
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_image_not_found')));
     exit;
 }
 
 if (!unlink($targetFile)) {
-    header('Location: ' . $redirect . '&upload_error=' . urlencode('Unable to delete image.'));
+    header('Location: ' . $redirect . '&upload_error=' . urlencode(t('admin.editor.error_delete_failed')));
     exit;
 }
 

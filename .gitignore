@@ -1,1 +1,6 @@
+/backup/
 /cache/
+.claude/
+/vendor/
+.phpunit.result.cache
+.phpunit.cache/

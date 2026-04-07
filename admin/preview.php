@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'slug' => $slug,
         'created_at' => time(),
     ];
-    $redirect = admin_url('preview.php') . '?type=' . urlencode($editorType);
+    $redirect = base_path() . '/admin/preview.php?type=' . urlencode($editorType);
     if ($slug !== '') {
         $redirect .= '&slug=' . urlencode($slug);
     }
@@ -98,14 +98,14 @@ if ($useSnapshot && $preview) {
 
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['font_stack'] ?? 'sans');
-$pageTitle = $title !== '' ? $title : 'Preview';
+$pageTitle = $title !== '' ? $title : t('admin.editor.preview_title');
 $metaDescription = $description;
 header('Cache-Control: no-store, no-cache, must-revalidate');
 header('Pragma: no-cache');
 
 if ($editorType === 'page') {
     $page = [
-        'title' => $title !== '' ? $title : 'Preview',
+        'title' => $title !== '' ? $title : t('admin.editor.preview_title'),
         'slug' => '',
         'status' => 'draft',
         'description' => $description,
@@ -117,7 +117,7 @@ if ($editorType === 'page') {
 }
 
 $post = array_merge($extraFields, [
-    'title' => $title !== '' ? $title : 'Preview',
+    'title' => $title !== '' ? $title : t('admin.editor.preview_title'),
     'slug' => $slug,
     'date' => $date,
     'status' => 'draft',
