@@ -1,3 +1,8 @@
+# Prevent PHP execution in content directory
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
 <FilesMatch "\.md$">
     RewriteEngine On
     RewriteRule ^ /index.php [L,QSA]
