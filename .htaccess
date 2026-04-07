@@ -1,5 +1,22 @@
 RewriteEngine On
 
+# Disable directory listing
+Options -Indexes
+
+# Block hidden files (starting with .)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block sensitive directories
+RewriteRule ^(?:config|data|backup)(?:/|$) - [F,L]
+
+# Block sensitive files
+RewriteRule (^|/)(?:VERSION|.*\.md)$ - [F,L]
+
+# Block .git directory access
+RewriteRule (^|/)\.git(?:/|$) - [F,L]
+
 # Redirect sitemap.xml to sitemap.php
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 
