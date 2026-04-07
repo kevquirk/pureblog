@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../functions.php';
+require __DIR__ . '/../functions.php';
 require_setup_redirect();
 
 start_admin_session();
@@ -17,8 +17,6 @@ $notice = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
     verify_csrf();
     $adminUsername = trim($_POST['admin_username'] ?? '');
-    $adminPath = normalize_admin_path_segment((string) ($_POST['admin_path'] ?? 'admin'));
-    $currentAdminPath = normalize_admin_path_segment((string) ($config['admin_path'] ?? 'admin'));
     $passwordCurrent = $_POST['current_password'] ?? '';
     $passwordNew = $_POST['new_password'] ?? '';
     $passwordConfirm = $_POST['confirm_password'] ?? '';
@@ -37,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
 
     if (!$errors) {
         $config['admin_username'] = $adminUsername;
-        $config['admin_path'] = $adminPath;
 
         if ($passwordNew !== '') {
             $config['admin_password_hash'] = password_hash($passwordNew, PASSWORD_DEFAULT);
@@ -69,19 +66,6 @@ require __DIR__ . '/../includes/admin-head.php';
                 <span class="title"><?= e(t('admin.settings.user.section_account')) ?></span>
                 <label for="admin_username"><?= e(t('admin.settings.user.username')) ?></label>
                 <input type="text" id="admin_username" name="admin_username" value="<?= e($config['admin_username'] ?? '') ?>" required>
-
-                <label for="admin_path">Admin URL path</label>
-                <input
-                    type="text"
-                    id="admin_path"
-                    name="admin_path"
-                    value="<?= e(normalize_admin_path_segment((string) ($config['admin_path'] ?? 'admin'))) ?>"
-                    pattern="[a-zA-Z0-9_-]+"
-                    minlength="1"
-                    maxlength="60"
-                    required
-                >
-                <p class="tip">Current admin URL: <code><?= e(admin_url('index.php')) ?></code></p>
             </section>
 
             <section class="section-divider">

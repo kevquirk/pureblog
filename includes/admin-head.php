@@ -47,7 +47,7 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
     } else {
         $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => t('admin.nav.invalid_action')];
     }
-    $redirectTo = (string) ($_SERVER['REQUEST_URI'] ?? admin_url('dashboard.php'));
+    $redirectTo = (string) ($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php');
     header('Location: ' . $redirectTo);
     exit;
 }
@@ -122,7 +122,7 @@ unset($_SESSION['admin_action_flash']);
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.nav.view_site')) ?></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
                     <li>
-                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? admin_url('dashboard.php')) ?>" class="inline-form">
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="clear_cache">
                             <button class="delete" type="submit" class="link-button">
@@ -138,7 +138,7 @@ unset($_SESSION['admin_action_flash']);
                     $confirmAttr = $actionButton['confirm'] !== '' ? ' onclick="return confirm(\'' . e($actionButton['confirm']) . '\');"' : '';
                     ?>
                     <li>
-                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? admin_url('dashboard.php')) ?>" class="inline-form">
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="<?= e($actionButton['id']) ?>">
                             <button type="submit" class="<?= e($buttonClass) ?>"<?= $confirmAttr ?>>

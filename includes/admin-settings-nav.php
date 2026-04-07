@@ -15,11 +15,8 @@ $settingsItems = [
 $settingsSaveFormId = $settingsSaveFormId ?? '';
 ?>
 <ul class="settings-nav-list" aria-label="Settings sections">
-    <?php foreach ($settingsItems as $script => $item): ?>
-        <?php
-        $href = admin_url($script);
-        $isCurrent = $internalPath === 'admin/' . $script;
-        ?>
+    <?php foreach ($settingsItems as $href => $item): ?>
+        <?php $isCurrent = $settingsPath === ltrim($href, '/'); ?>
         <li>
             <a href="<?= e($bp . $href) ?>"<?= $isCurrent ? ' class="current"' : '' ?>>
                 <svg class="icon" aria-hidden="true"><use href="#icon-<?= e($item['icon']) ?>"></use></svg>

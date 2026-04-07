@@ -17,43 +17,6 @@ if ($bp !== '' && str_starts_with($requestUriPath, $bp)) {
 $requestPath = trim(rawurldecode($requestUriPath), '/');
 $requestPathWithSlash = $requestPath === '' ? '/' : ('/' . $requestPath);
 
-$adminPath = normalize_admin_path_segment((string) ($config['admin_path'] ?? 'admin'));
-if ($adminPath !== 'admin' && ($requestPath === $adminPath || str_starts_with($requestPath, $adminPath . '/'))) {
-    $adminRelativePath = $requestPath === $adminPath
-        ? 'index.php'
-        : substr($requestPath, strlen($adminPath) + 1);
-    $adminRelativePath = trim((string) $adminRelativePath, '/');
-    if ($adminRelativePath === '') {
-        $adminRelativePath = 'index.php';
-    }
-    if (!str_ends_with($adminRelativePath, '.php')) {
-        $adminRelativePath .= '.php';
-    }
-
-    $adminRoot = realpath(__DIR__ . '/admin');
-    $adminTarget = realpath(__DIR__ . '/admin/' . $adminRelativePath);
-    if (
-        $adminRoot === false
-        || $adminTarget === false
-        || !str_starts_with($adminTarget, $adminRoot . '/')
-        || !is_file($adminTarget)
-    ) {
-        require __DIR__ . '/404.php';
-        exit;
-    }
-
-    // Parse query string from REQUEST_URI since nginx may not pass it correctly during rewrite
-    $adminQueryString = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_QUERY);
-    if ($adminQueryString !== null && $adminQueryString !== '') {
-        $_SERVER['QUERY_STRING'] = $adminQueryString;
-        parse_str($adminQueryString, $parsedQuery);
-        $_GET = array_merge($_GET, $parsedQuery);
-    }
-
-    require $adminTarget;
-    exit;
-}
-
 $queryString = $_SERVER['QUERY_STRING'] ?? '';
 $cacheKey = $queryString !== '' ? $requestPathWithSlash . '?' . $queryString : $requestPathWithSlash;
 if (!cache_should_bypass($config)) {
