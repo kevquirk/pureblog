@@ -92,6 +92,7 @@ require __DIR__ . '/includes/admin-head.php';
         <?php endif; ?>
 
         <form method="post">
+            <?= csrf_field() ?>
             <label for="language"><?= e(t('setup.language')) ?></label>
             <select id="language" name="language" onchange="window.location.href='?lang='+encodeURIComponent(this.value)">
                 <?php foreach (lang_available() as $code => $nativeName): ?>
