@@ -126,7 +126,7 @@ function load_update_ignore_patterns(): array
 function is_path_ignored(string $relative, array $patterns): bool
 {
     foreach ($patterns as $pattern) {
-        if (fnmatch($pattern, $relative)) {
+        if (fnmatch($pattern, $relative) || str_starts_with($relative, rtrim($pattern, '/') . '/')) {
             return true;
         }
     }
