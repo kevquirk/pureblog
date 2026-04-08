@@ -791,6 +791,8 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
             @opcache_reset();
         }
 
+        @unlink(PUREBLOG_BASE_PATH . '/content/.version-cache');
+
         return [
             'ok' => true,
             'message' => t('admin.settings.updates.notice_update_applied'),
