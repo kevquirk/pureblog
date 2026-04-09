@@ -90,43 +90,43 @@ main h1 {
 
 /* Format headers */
 h1 {
-  font-size: 3rem;
-  margin-top: 0;
+    font-size: 3rem;
+    margin-top: 0;
 }
 
 header h1 {
-  margin-top: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 header h1 a {
-  color: var(--text-color);
-  text-decoration: none;
+    color: var(--text-color);
+    text-decoration: none;
 }
 
 header h1 a:hover {
-  color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 h2 {
-  font-size: 2.4rem;
-  margin-top: 3rem;
+    font-size: 2.4rem;
+    margin-top: 3rem;
 }
 
 h3 {
-  font-size: 2rem;
-  margin-top: 3rem;
+    font-size: 2rem;
+    margin-top: 3rem;
 }
 
 h4 {
-  font-size: 1.44rem;
+    font-size: 1.44rem;
 }
 
 h5 {
-  font-size: 1.15rem;
+    font-size: 1.15rem;
 }
 
 h6 {
-  font-size: 0.96rem;
+    font-size: 0.96rem;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -136,26 +136,26 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 h1, h2, h3 {
-  line-height: 1.1;
+    line-height: 1.1;
 }
 
 /* Reduce header size on mobile */
 @media only screen and (max-width: 720px) {
-  h1 {
-    font-size: 2.5rem;
-  }
+    h1 {
+        font-size: 2.5rem;
+    }
 
-  h2 {
-    font-size: 2.1rem;
-  }
+    h2 {
+        font-size: 2.1rem;
+    }
 
-  h3 {
-    font-size: 1.75rem;
-  }
+    h3 {
+        font-size: 1.75rem;
+    }
 
-  h4 {
-    font-size: 1.25rem;
-  }
+    h4 {
+        font-size: 1.25rem;
+    }
 }
 
 p {
@@ -163,8 +163,8 @@ p {
 }
 
 p.post-date {
-  margin: -1.5rem 0 2rem 0;
-  font-size: 1rem;
+    margin: -1.5rem 0 2rem 0;
+    font-size: 1rem;
 }
 
 a {
@@ -215,40 +215,40 @@ article {
 
 /** Format archive view **/
 p.post-archive-view {
-  font-size: 1.25rem;
-  margin-bottom: -1rem;
+    font-size: 1.25rem;
+    margin-bottom: -1rem;
 }
 
 p.post-archive-view time {
-  padding-right: 2rem;
+    padding-right: 2rem;
 }
 
 /** Format excerpt view **/
 .excerpt-view,
 .tag-item {
-  margin-bottom: 4rem;
+    margin-bottom: 4rem;
 }
 
 .excerpt-view h2,
 .tag-item h2 {
-  font-size: 1.8rem;
-  margin: 0 0 -1rem 0;
+    font-size: 1.8rem;
+    margin: 0 0 -1rem 0;
 }
 
 .excerpt-view p,
 .tag-item p {
-  font-size: 1rem;
+    font-size: 1rem;
 }
 
 /** Format full post view **/
 .full-post-view {
-  margin-bottom: 4rem;
+    margin-bottom: 4rem;
 }
 
 .full-post-view hr {
-  border-color: var(--border-color);
-  margin-top: 4rem;
-  max-width: 70%;
+    border-color: var(--border-color);
+    margin-top: 4rem;
+    max-width: 70%;
 }
 
 .notice {
@@ -319,7 +319,7 @@ button, a.button {
 }
 
 button:hover, a.button:hover {
-    background-color: var(--text-color);   
+    background-color: var(--text-color);
 }
 
 figure {
@@ -349,12 +349,14 @@ pre {
     border-radius: 5px;
     margin: 2rem 0;
     padding: 1rem;
+    overflow-x: auto;
 }
 
 pre code {
-    text-wrap: auto;
     border: none;
     padding: 0;
+    white-space: pre;
+    text-wrap: nowrap;
 }
 
 code {
@@ -366,7 +368,7 @@ code {
 }
 
 h2 code, h3 code {
-  font-size: 90%;
+    font-size: 90%;
 }
 
 kbd {
@@ -394,238 +396,238 @@ cite {
 }
 
 details {
-  padding: 0.7rem 1rem;
-  margin: 2rem 0;
-  background: var(--accent-bg-color);
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
+    padding: 0.7rem 1rem;
+    margin: 2rem 0;
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
 }
 
 summary {
-  cursor: pointer;
-  font-weight: bold;
-  padding: 0.7rem 1rem;
-  margin: -0.7rem -1rem;
-  word-break: break-all;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0.7rem 1rem;
+    margin: -0.7rem -1rem;
+    word-break: break-all;
 }
 
 details[open] > summary + * {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 details[open] > summary {
-  margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 details[open] > :last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 /* Format tables */
 table {
-  border-collapse: collapse;
-  margin: 1.5rem 0;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
 }
 
 figure > table {
-  width: max-content;
-  margin: 0;
+    width: max-content;
+    margin: 0;
 }
 
 td,
 th {
-  border: 1px solid var(--border-color);
-  text-align: start;
-  padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    text-align: start;
+    padding: 0.5rem;
 }
 
 th {
-  background-color: var(--accent-bg-color);
-  font-weight: bold;
+    background-color: var(--accent-bg-color);
+    font-weight: bold;
 }
 
 tr:nth-child(even) {
-  background-color: var(--accent-bg-color);
+    background-color: var(--accent-bg-color);
 }
 
 /* Format forms */
 textarea,
 select,
 input {
-  font-size: inherit;
-  font-family: inherit;
-  padding: 0.5em;
-  margin-bottom: 0.5rem;
-  border-radius: 5px;
-  box-shadow: none;
-  max-width: 100%;
-  display: inline-block;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0.5em;
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+    box-shadow: none;
+    max-width: 100%;
+    display: inline-block;
 }
 
 textarea,
 select,
 input {
-  color: var(--text-color);
-  background-color: var(--bg-color);
-  border: 1px solid var(--border-color);
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
 }
 
 label {
-  display: block;
+    display: block;
 }
 
 textarea:not([cols]) {
-  width: 100%;
+    width: 100%;
 }
 
 /* checkbox and radio button style */
 input[type="checkbox"],
 input[type="radio"] {
-  vertical-align: middle;
-  position: relative;
-  width: min-content;
+    vertical-align: middle;
+    position: relative;
+    width: min-content;
 }
 
 input[type="checkbox"] + label,
 input[type="radio"] + label {
-  display: inline-block;
+    display: inline-block;
 }
 
 input[type="radio"] {
-  border-radius: 100%;
+    border-radius: 100%;
 }
 
 input[type="checkbox"]:checked,
 input[type="radio"]:checked {
-  background-color: var(--accent-color);
+    background-color: var(--accent-color);
 }
 
 input[type="checkbox"]:checked::after {
-  /* Creates a rectangle with colored right and bottom borders which is rotated to look like a check mark */
-  content: " ";
-  width: 0.2em;
-  height: 0.4em;
-  border-radius: 0;
-  position: absolute;
-  top: 0.04em;
-  left: 0.18em;
-  background-color: transparent;
-  border-right: solid var(--bg) 0.08em;
-  border-bottom: solid var(--bg) 0.08em;
-  font-size: 1.8em;
-  transform: rotate(45deg);
+    /* Creates a rectangle with colored right and bottom borders which is rotated to look like a check mark */
+    content: " ";
+    width: 0.2em;
+    height: 0.4em;
+    border-radius: 0;
+    position: absolute;
+    top: 0.04em;
+    left: 0.18em;
+    background-color: transparent;
+    border-right: solid var(--bg) 0.08em;
+    border-bottom: solid var(--bg) 0.08em;
+    font-size: 1.8em;
+    transform: rotate(45deg);
 }
 
 input[type="radio"]:checked::after {
-  /* creates a colored circle for the checked radio button  */
-  content: " ";
-  width: 0.3em;
-  height: 0.3em;
-  border-radius: 100%;
-  position: absolute;
-  top: 0.125em;
-  background-color: var(--bg-color);
-  left: 0.125em;
-  font-size: 1.8em;
+    /* creates a colored circle for the checked radio button  */
+    content: " ";
+    width: 0.3em;
+    height: 0.3em;
+    border-radius: 100%;
+    position: absolute;
+    top: 0.125em;
+    background-color: var(--bg-color);
+    left: 0.125em;
+    font-size: 1.8em;
 }
 
 /* Makes input fields wider on smaller screens */
 @media only screen and (max-width: 720px) {
-  textarea,
-  select,
-  input {
-    width: 100%;
-  }
+    textarea,
+    select,
+    input {
+        width: 100%;
+    }
 }
 
 /* Set a height for color input */
 input[type="color"] {
-  height: 2.5rem;
-  padding:  0.2rem;
+    height: 2.5rem;
+    padding: 0.2rem;
 }
 
 /* do not show border around file selector button */
 input[type="file"] {
-  border: 0;
+    border: 0;
 }
 
-.button[aria-disabled="true"], 
+.button[aria-disabled="true"],
 input:disabled,
 textarea:disabled,
 select:disabled,
 button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.5;
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
-.button[aria-disabled="true"]:hover, 
+.button[aria-disabled="true"]:hover,
 button[disabled]:hover,
 button:disabled:hover {
     background: var(--accent-color);
 }
 
 .icon {
-  position: relative;
-  top: 0.1em;
-  padding-right: .25rem;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  stroke-width: 0;
-  stroke: currentColor;
-  fill: currentColor;
-  margin: 0;
+    position: relative;
+    top: 0.1em;
+    padding-right: .25rem;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+    margin: 0;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 /* Post navigation */
 .post-nav {
-  display: flex;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  margin: 3rem auto;
-  max-width: 100%;
-  padding: 0;
+    display: flex;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    margin: 3rem auto;
+    max-width: 100%;
+    padding: 0;
 }
 
 .post-nav a {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .post-nav p {
-  padding: 1rem 0;
+    padding: 1rem 0;
 }
 
 .post-nav div {
-  flex: 1 1 0;
+    flex: 1 1 0;
 }
 
 .post-nav-next {
-  text-align: right;
+    text-align: right;
 }
 
 /* Change behaviour on smaller screens */
 @media (max-width:800px) {
-  .post-nav {
-    display: block;
-  }
+    .post-nav {
+        display: block;
+    }
 }
 
 .footnotes {
-  font-size: 1rem;
-  font-style: italic;
-  margin-top: 2.5rem;
-  border-bottom: 1px solid var(--border-color);
-  border-top: 1px solid var(--border-color);
+    font-size: 1rem;
+    font-style: italic;
+    margin-top: 2.5rem;
+    border-bottom: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
 }
 
 .footnotes hr {
-  display: none;
+    display: none;
 }
 
 hr {
-  border-color: var(--border-color);
+    border-color: var(--border-color);
 }
