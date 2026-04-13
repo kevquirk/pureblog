@@ -97,6 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
     }
 
+    $post = apply_filter('on_filter_post', $post);
+
     if ($post['title'] === '') {
         $errors[] = t('admin.editor.error_title_required');
     } elseif ($post['slug'] === '' && slugify($post['title']) === '') {
@@ -215,7 +217,7 @@ require __DIR__ . '/../includes/admin-head.php';
                     </nav>
 
                     <label for="title"><?= e(t('admin.editor.title_label')) ?></label>
-                    <input type="text" id="title" name="title" value="<?= e($post['title']) ?>" required autocomplete="off">
+                    <input type="text" id="title" name="title" value="<?= e($post['title']) ?>" autocomplete="off">
 
                     <label for="content"><?= e(t('admin.editor.content_label')) ?> <span class="tip">(<a target="_blank" rel="noopener noreferrer" href="https://pureblog.org/markdown-helper"><?= e(t('admin.editor.tip_markdown')) ?></a>)</span></label>
                     <textarea id="content" name="content" rows="18" autocomplete="off"><?= e($post['content']) ?></textarea>
