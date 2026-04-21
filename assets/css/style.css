@@ -214,13 +214,23 @@ article {
 }
 
 /** Format archive view **/
-p.post-archive-view {
+.archive-list {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5rem 2rem;
     font-size: 1.25rem;
-    margin-bottom: -1rem;
 }
 
-p.post-archive-view time {
-    padding-right: 2rem;
+@media (max-width: 600px) {
+    .archive-list {
+        grid-template-columns: 1fr;
+        gap: 0rem;
+    }
+
+    .archive-list a {
+        margin-bottom: 1rem;
+        display: block;
+    }
 }
 
 /** Format excerpt view **/

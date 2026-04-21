@@ -5,18 +5,19 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
 ?>
 <?php if (!$posts): ?>
     <p><?= e(t('frontend.no_posts')) ?></p>
+<?php elseif ($postListLayout === 'archive'): ?>
+    <!-- Archive view -->
+    <div class="archive-list">
+        <?php foreach ($posts as $post): ?>
+            <time datetime="<?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) ($post['date'] ?? ''), $config ?? [])) ?></time>
+            <a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a>
+        <?php endforeach; ?>
+    </div>
 <?php else: ?>
     <?php foreach ($posts as $post): ?>
         <article class="post-item">
-            <!-- Archive view -->
-            <?php if ($postListLayout === 'archive'): ?>
-                <p class="post-archive-view">
-                    <time datetime="<?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) ($post['date'] ?? ''), $config ?? [])) ?></time>
-                    <span class="post-archive-title"><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></span>
-                </p>
-            
             <!-- Excerpt view -->
-            <?php elseif ($postListLayout === 'excerpt'): ?>
+            <?php if ($postListLayout === 'excerpt'): ?>
                 <div class="excerpt-view">
                     <h2><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h2>
                     <?php if ($post['date']): ?>
@@ -50,22 +51,22 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
             <?php endif; ?>
         </article>
     <?php endforeach; ?>
-    <?php if ($totalPages > 1): ?>
-        <nav class="pagination">
-            <?php if ($currentPage > 1): ?>
-                <?php
-                $prevParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage - 1)]);
-                $prevHref = e($paginationBase) . '?' . e(http_build_query($prevParams));
-                ?>
-                <a href="<?= $prevHref ?>"><?= e(t('frontend.pagination_newer')) ?></a>
-            <?php endif; ?>
-            <?php if ($currentPage < $totalPages): ?>
-                <?php
-                $nextParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage + 1)]);
-                $nextHref = e($paginationBase) . '?' . e(http_build_query($nextParams));
-                ?>
-                <a href="<?= $nextHref ?>"><?= e(t('frontend.pagination_older')) ?></a>
-            <?php endif; ?>
-        </nav>
-    <?php endif; ?>
+<?php endif; ?>
+<?php if (($posts ?? []) && $totalPages > 1): ?>
+    <nav class="pagination">
+        <?php if ($currentPage > 1): ?>
+            <?php
+            $prevParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage - 1)]);
+            $prevHref = e($paginationBase) . '?' . e(http_build_query($prevParams));
+            ?>
+            <a href="<?= $prevHref ?>"><?= e(t('frontend.pagination_newer')) ?></a>
+        <?php endif; ?>
+        <?php if ($currentPage < $totalPages): ?>
+            <?php
+            $nextParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage + 1)]);
+            $nextHref = e($paginationBase) . '?' . e(http_build_query($nextParams));
+            ?>
+            <a href="<?= $nextHref ?>"><?= e(t('frontend.pagination_older')) ?></a>
+        <?php endif; ?>
+    </nav>
 <?php endif; ?>
