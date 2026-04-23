@@ -397,6 +397,10 @@ blockquote {
     font-style: italic;
 }
 
+blockquote em {
+    font-style: normal;
+}
+
 blockquote p {
     opacity: 0.8;
 }
