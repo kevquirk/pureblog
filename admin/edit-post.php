@@ -423,7 +423,8 @@ require __DIR__ . '/../includes/admin-head.php';
 
             matches.forEach(tag => {
                 const li = document.createElement('li');
-                li.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+                li.textContent = tag;
+                li.dataset.tag = tag;
                 li.addEventListener('mousedown', e => { e.preventDefault(); applySelection(tag); });
                 list.appendChild(li);
             });
@@ -439,7 +440,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 const items = list.querySelectorAll('li');
                 if (activeIndex >= 0 && items[activeIndex]) {
                     e.preventDefault();
-                    applySelection(items[activeIndex].textContent);
+                    applySelection(items[activeIndex].dataset.tag);
                 }
             }
             if (e.key === 'Escape') hide();
