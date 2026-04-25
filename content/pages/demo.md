@@ -144,6 +144,12 @@ body {
 <p class="notice">This is a notice box. It's useful for calling out snippets of information. Cool, huh?</p>
 ```
 
+If you prefer not to use HTML, you can do it in Markdown too, which allows you to use markdown within the notice as well:
+
+```markdown
+This is a notice box. It's useful for calling out snippets of information. Cool, huh? {.notice}
+```
+
 ## Images
 
 Images within your main content are always full width and have rounded corners to them. The `figcaption` element is also formatted in Pure Blog. Here are examples of images with and without a caption:
