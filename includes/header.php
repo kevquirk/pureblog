@@ -13,6 +13,9 @@ $headInject = get_contextual_inject($config, 'head', [
 $frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
 $ogImagePreferred = $config['assets']['og_image_preferred'] ?? 'banner';
 $ogImage = $config['assets']['og_image'] ?? '';
+if ($ogImage !== '' && $ogImage[0] === '/') {
+    $ogImage = rtrim(get_base_url(), '/') . $ogImage;
+}
 $isSquareOgImage = $ogImagePreferred === 'square';
 ?>
 <!DOCTYPE html>
@@ -20,6 +23,7 @@ $isSquareOgImage = $ogImagePreferred === 'square';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Pure Blog">
     <?php
     $uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
     $bp = base_path();
@@ -42,7 +46,7 @@ $isSquareOgImage = $ogImagePreferred === 'square';
     <link rel="canonical" href="<?= e($canonicalUrl) ?>">
     <?php if (!empty($config['assets']['favicon'])): ?>
         <?php $faviconHref = $config['assets']['favicon']; ?>
-        <?php if ($faviconHref[0] === '/') { $faviconHref = base_path() . $faviconHref; } ?>
+        <?php if ($faviconHref[0] === '/') { $faviconHref = rtrim(get_base_url(), '/') . $faviconHref; } ?>
         <link rel="icon" href="<?= e($faviconHref) ?>">
     <?php endif; ?>
     <meta property="og:type" content="<?= isset($post) ? 'article' : 'website' ?>">
@@ -64,11 +68,11 @@ $isSquareOgImage = $ogImagePreferred === 'square';
             <meta property="og:image:height" content="600">
         <?php endif; ?>
     <?php endif; ?>
-    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= base_path() ?>/feed">
+    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= rtrim(get_base_url(), '/') ?>/feed">
     <style>
         body { background: <?= e($config['theme']['background_color']) ?>; }
     </style>
-    <link rel="stylesheet" href="<?= base_path() ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
+    <link rel="stylesheet" href="<?= rtrim(get_base_url(), '/') ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {
             --bg-light: <?= e($config['theme']['background_color']) ?>;
