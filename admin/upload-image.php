@@ -22,8 +22,6 @@ if ($slug === '') {
     $error = t('admin.editor.error_upload_no_file');
 } elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
     $error = t('admin.editor.error_upload_failed');
-} elseif ($_FILES['image']['size'] > (3 * 1024 * 1024)) {
-    $error = t('admin.editor.error_upload_too_large');
 } else {
     $allowedTypes = [
         'image/jpeg' => 'jpg',

@@ -181,7 +181,6 @@ return [
             'error_upload_no_slug'       => 'Save the post first so it has a slug.',
             'error_upload_no_file'       => 'No image uploaded.',
             'error_upload_failed'        => 'Upload failed.',
-            'error_upload_too_large'     => 'Image is too large. Max size is 3MB.',
             'error_upload_type'          => 'Unsupported image type. Use JPG, PNG, GIF, WebP, or AVIF.',
             'error_upload_invalid_slug'  => 'Invalid slug for image folder.',
             'error_image_folder_missing' => 'Image folder not found.',

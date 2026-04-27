@@ -181,7 +181,6 @@ return [
             'error_upload_no_slug'       => 'Zapisz post, aby wygenerować mu slug.',
             'error_upload_no_file'       => 'Brak przesłanego obrazu.',
             'error_upload_failed'        => 'Przesyłanie nieudane.',
-            'error_upload_too_large'     => 'Obraz jest za duży. Max rozmiar to 3MB.',
             'error_upload_type'          => 'Niewspierany typ obrazu. Użyj JPG, PNG, GIF, WebP, lub AVIF.',
             'error_upload_invalid_slug'  => 'Nieprawidłowy slug dla katalogu obrazów.',
             'error_image_folder_missing' => 'Nie udało się odnaleźć katalogu obrazów.',

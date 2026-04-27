@@ -170,7 +170,6 @@ return [
             'error_upload_no_slug'       => '請先儲存文章以產生網址別名。',
             'error_upload_no_file'       => '未選擇圖片。',
             'error_upload_failed'        => '上傳失敗。',
-            'error_upload_too_large'     => '圖片過大，最大允許 3MB。',
             'error_upload_type'          => '不支援的圖片格式，請使用 JPG、PNG、GIF、WebP 或 AVIF。',
             'error_upload_invalid_slug'  => '圖片資料夾的網址別名無效。',
             'error_image_folder_missing' => '找不到圖片資料夾。',

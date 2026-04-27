@@ -181,7 +181,6 @@ return [
             'error_upload_no_slug'       => 'Enregistrez d\'abord l\'article pour qu\'il ait un slug.',
             'error_upload_no_file'       => 'Aucune image téléversée.',
             'error_upload_failed'        => 'Échec du téléversement.',
-            'error_upload_too_large'     => 'L\'image est trop grande. Taille maximale: 3Mo.',
             'error_upload_type'          => 'Type d\'image non pris en charge. Utilisez JPG, PNG, GIF, WebP ou AVIF.',
             'error_upload_invalid_slug'  => 'Slug invalide pour le dossier d\'images.',
             'error_image_folder_missing' => 'Dossier d\'images introuvable.',
