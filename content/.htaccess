@@ -1,4 +1,11 @@
+Options -Indexes
+
+# Block direct access to .md files
 <FilesMatch "\.md$">
-    RewriteEngine On
-    RewriteRule ^ /index.php [L,QSA]
+    Require all denied
 </FilesMatch>
+
+# Block directories/files that are only used via PHP server-side includes
+RewriteEngine On
+RewriteRule ^layouts/ - [F,L]
+RewriteRule ^functions\.php$ - [F,L]
