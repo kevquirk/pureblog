@@ -150,6 +150,34 @@ If you prefer not to use HTML, you can do it in Markdown too, which allows you t
 This is a notice box. It's useful for calling out snippets of information. Cool, huh? {.notice}
 ```
 
+## Markdown in HTML
+
+By adding `markdown="1"` to a block-level HTML element, you can write markdown inside it instead of HTML. This works with elements like `div`, `blockquote`, `aside`, `details`, and more.
+
+<div markdown="1">
+Here I don't have to add HTML, I can use **markdown** instead. I can also add [links](https://example.com) and `inline code`.
+</div>
+
+```
+<div markdown="1">
+Here I don't have to add HTML, I can use **markdown** instead. I can also add [links](https://example.com) and `inline code`.
+</div>
+```
+
+The following elements are supported:
+
+- `div`
+- `p`
+- `blockquote`
+- `aside`
+- `details`/`summary`
+- `section`, `article`, `header`, `footer`, `nav`
+- `figure`/`figcaption`
+- `pre`, `ul`, `ol`, `li`, `dl`, `dt`, `dd`
+- `table`, `thead`, `tbody`, `tr`, `th`, `td`
+
+Inline elements like `span`, `a`, `em`, `strong` etc. do **not** support it — the attribute is only processed for block-level elements since markdown parsing is line-based.
+
 ## Images
 
 Images within your main content are always full width and have rounded corners to them. The `figcaption` element is also formatted in Pure Blog. Here are examples of images with and without a caption:
