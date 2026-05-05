@@ -235,6 +235,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             <ul class="image-list">
                             <?php foreach ($images as $image): ?>
                                 <li>
+                                    <img src="<?= e($image['url']) ?>" width="30" height="30" class="image-list-preview" alt="<?= e($image['filename']) ?>" loading="lazy"/>
                                     <code><?= e($image['filename']) ?></code>
                                     <button type="button" class="link-button copy-markdown" data-markdown="<?= e($image['markdown']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.editor.copy')) ?></button>
                                 <form method="post" action="<?= base_path() ?>/admin/delete-image.php" class="inline-form" onsubmit="return confirm('<?= e(t('admin.page_editor.delete_image_confirm')) ?>');">

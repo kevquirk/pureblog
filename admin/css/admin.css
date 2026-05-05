@@ -479,17 +479,30 @@ button.save:hover {
 }
 
 .image-list li {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
     margin-bottom: 1rem;
 }
 
 .image-list code {
     display: inline-block;
-    word-break: break-all;
     font-size: 1rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .image-list button {
     font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.image-list-preview {
+    object-fit: cover;
+    flex-shrink: 0;
 }
 
 .inline-form {
