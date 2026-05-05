@@ -480,16 +480,28 @@ button.save:hover {
 
 .image-list li {
     margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
 }
 
 .image-list code {
     display: inline-block;
     word-break: break-all;
     font-size: 1rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
 }
 
 .image-list button {
     font-size: 0.8rem;
+    text-wrap: nowrap;
+}
+
+.image-list .image-list-preview {
+    object-fit: cover;
 }
 
 .inline-form {
