@@ -50,6 +50,8 @@ return [
         'page_not_found_detail' => 'The page you requested could not be found.',
         'no_tag_selected'       => 'No tag selected.',
         'no_posts_for_tag'      => 'No posts found for this tag.',
+        'edit_post'             => 'Edit post',
+        'edit_page'             => 'Edit page',
     ],
 
     // -------------------------------------------------------------------------

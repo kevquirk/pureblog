@@ -53,6 +53,8 @@ return [
         'page_not_found_detail' => 'Żądana strona nie istnieje.',
         'no_tag_selected'       => 'Nie wybrano tagów.',
         'no_posts_for_tag'      => 'Nie znaleziono postów dla wybranego tagu.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------

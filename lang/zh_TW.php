@@ -45,6 +45,8 @@ return [
         'page_not_found_detail' => '您所要求的頁面不存在。',
         'no_tag_selected'       => '未選擇標籤。',
         'no_posts_for_tag'      => '此標籤下沒有文章。',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     'admin' => [

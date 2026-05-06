@@ -54,6 +54,8 @@ return [
         'page_not_found_detail' => 'La page que vous avez demandée est introuvable.',
         'no_tag_selected'       => 'Aucune étiquette sélectionnée.',
         'no_posts_for_tag'      => 'Aucun article trouvé pour cette étiquette.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
     // -------------------------------------------------------------------------
     // Admin

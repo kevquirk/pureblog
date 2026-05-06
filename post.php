@@ -12,6 +12,8 @@ $config = $config ?? [];
 $fontStack = $fontStack ?? font_stack_css($config['theme']['font_stack'] ?? 'sans');
 $pageTitle = $pageTitle ?? ($post['title'] ?? t('frontend.post_not_found'));
 $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['description'] : '');
+start_admin_session();
+$isAdminLoggedIn = is_admin_logged_in();
 
 ?>
 <?php if ($__p = find_include('header')) require $__p; ?>
@@ -46,6 +48,12 @@ $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['de
                 ]) ?>
             </article>
             <?php endif; ?>
+        <?php endif; ?>
+        <?php if ($isAdminLoggedIn): ?>
+            <a class="admin-edit-link" href="<?= e(base_path() . '/admin/edit-post.php?slug=' . urlencode((string) ($post['slug'] ?? ''))) ?>">
+                <svg class="icon" aria-hidden="true"><use href="#icon-edit"></use></svg>
+                <span><?= e(t('frontend.edit_page')) ?></span>
+            </a>
         <?php endif; ?>
     </main>
     <?php render_footer_layout($config, ['post' => $post ?? null]); ?>

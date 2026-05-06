@@ -56,6 +56,8 @@ return [
         'page_not_found_detail' => 'Die angeforderte Seite konnte nicht gefunden werden.',
         'no_tag_selected'       => 'Kein Tag ausgewählt.',
         'no_posts_for_tag'      => 'Keine Beiträge für diesen Tag gefunden.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
 

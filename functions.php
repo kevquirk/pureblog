@@ -2065,7 +2065,16 @@ function cache_should_bypass(array $config): bool
     if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
         return true;
     }
-    return isset($_GET['q']);
+    if (isset($_GET['q'])) {
+        return true;
+    }
+    if (!empty($_COOKIE[session_name()])) {
+        start_admin_session();
+        if (is_admin_logged_in()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function get_cache_file_path(string $key, string $ext = 'html'): string

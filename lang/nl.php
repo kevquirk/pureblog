@@ -53,6 +53,8 @@ return [
         'page_not_found_detail' => 'De pagina die je hebt opgevraagd kon niet worden gevonden.',
         'no_tag_selected'       => 'Geen tag geselecteerd.',
         'no_posts_for_tag'      => 'Geen berichten gevonden voor dit label.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------

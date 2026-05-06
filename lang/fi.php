@@ -53,6 +53,8 @@ return [
         'page_not_found_detail' => 'Hakemaasi sivua ei löytynyt.',
         'no_tag_selected'       => 'Ei valittua tagia.',
         'no_posts_for_tag'      => 'Tällä tagilla ei löytynyt julkaisuja.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------

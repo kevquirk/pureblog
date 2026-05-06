@@ -14,6 +14,8 @@ $pageTitle = $pageTitle ?? ($page['title'] ?? t('frontend.page_not_found'));
 $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['description'] : '');
 $blogFeedHidden = (($config['blog_page_slug'] ?? '') === '__hidden__');
 $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
+start_admin_session();
+$isAdminLoggedIn = is_admin_logged_in();
 
 ?>
 <?php if ($__p = find_include('header')) require $__p; ?>
@@ -91,6 +93,12 @@ $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
                         <?php endif; ?>
                     </section>
                 <?php endif; ?>
+                <?php if ($isAdminLoggedIn): ?>
+                <a class="admin-edit-link" href="<?= e(base_path() . '/admin/edit-page.php?slug=' . urlencode((string) ($page['slug'] ?? ''))) ?>">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-edit"></use></svg>
+                    <span><?= e(t('frontend.edit_page')) ?></span>
+                </a>
+            <?php endif; ?>
             </article>
         <?php endif; ?>
     </main>

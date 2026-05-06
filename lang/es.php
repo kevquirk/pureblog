@@ -53,6 +53,8 @@ return [
         'page_not_found_detail' => 'La página que solicitaste no se pudo encontrar.',
         'no_tag_selected'       => 'Ninguna etiqueta seleccionada.',
         'no_posts_for_tag'      => 'No se encontraron entradas para esta etiqueta.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------

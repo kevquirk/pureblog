@@ -53,6 +53,8 @@ return [
         'page_not_found_detail' => 'Pagina pe care ai solicitat-o nu a putut fi găsită.',
         'no_tag_selected'       => 'Nicio etichetă selectată.',
         'no_posts_for_tag'      => 'Nicio postare găsită pentru această etichetă.',
+        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
+        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
