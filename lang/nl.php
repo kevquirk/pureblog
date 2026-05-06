@@ -1,5 +1,8 @@
 <?php
 
+// New additions to this language file may have English placeholder values.
+// These are marked with "ENGLISH PLACEHOLDER" and should be reviewed by a native speaker.
+
 return [
 
     'name' => 'Nederlands',
@@ -136,6 +139,8 @@ return [
             'filter_all_tags'       => 'Alle tags',
             'filter_status'         => 'Status',
             'filter_all_statuses'   => 'Alle',
+            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
+            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
             'filter_apply'          => 'Toepassen',
             'filter_active'         => 'Gefilterd op: {label}.',
             'filter_clear'          => 'Wissen',

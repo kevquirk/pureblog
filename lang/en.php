@@ -136,6 +136,8 @@ return [
             'filter_all_tags'       => 'All tags',
             'filter_status'         => 'Status',
             'filter_all_statuses'   => 'All',
+            'filter_layout'         => 'Layout',
+            'filter_all_layouts'    => 'All layouts',
             'filter_apply'          => 'Apply',
             'filter_active'         => 'Filtered by: {label}.',
             'filter_clear'          => 'Clear',

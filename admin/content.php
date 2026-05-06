@@ -9,6 +9,7 @@ start_admin_session();
 require_admin_login();
 
 $config = load_config();
+$availableLayouts = get_layouts();
 
 $tab = (string) ($_GET['tab'] ?? 'posts');
 if (!in_array($tab, ['posts', 'pages'], true)) {
@@ -23,6 +24,7 @@ $filterYear  = isset($_GET['year'])  ? (int) $_GET['year']  : 0;
 $filterMonth = isset($_GET['month']) ? (int) $_GET['month'] : 0;
 $filterTag    = trim((string) ($_GET['tag'] ?? ''));
 $filterStatus = trim((string) ($_GET['status'] ?? ''));
+$filterLayout = trim((string) ($_GET['layout'] ?? ''));
 $filterSince  = isset($_GET['since']) ? (int) $_GET['since'] : 0;
 if (!in_array($filterStatus, ['draft', 'published'], true)) {
     $filterStatus = '';
@@ -65,6 +67,23 @@ krsort($availableYears);
 ksort($availableTags);
 $availableYears = array_keys($availableYears);
 
+$usedLayouts = [];
+foreach ($allPosts as $p) {
+    $l = trim((string) ($p['layout'] ?? ''));
+    if ($l !== '') {
+        $usedLayouts[$l] ??= ucfirst($l);
+    }
+}
+foreach ($availableLayouts as $lay) {
+    if (isset($usedLayouts[$lay['name']])) {
+        $usedLayouts[$lay['name']] = $lay['label'];
+    }
+}
+ksort($usedLayouts);
+if ($filterLayout !== '' && !isset($usedLayouts[$filterLayout])) {
+    $filterLayout = '';
+}
+
 // Apply filters
 $filteredPosts = filter_posts_by_query($allPosts, $search);
 if ($filterYear > 0 || $filterMonth > 0) {
@@ -99,11 +118,16 @@ if ($filterSince > 0) {
         return (int) ($post['timestamp'] ?? 0) >= $filterSince;
     }));
 }
+if ($filterLayout !== '') {
+    $filteredPosts = array_values(array_filter($filteredPosts, function (array $post) use ($filterLayout): bool {
+        return trim((string) ($post['layout'] ?? '')) === $filterLayout;
+    }));
+}
 
 // Build a human-readable label and clear-URL for any active filter
 $filterLabel    = '';
 $filterClearUrl = '';
-$anyFilter = $filterYear > 0 || $filterMonth > 0 || $filterTag !== '' || $filterStatus !== '' || $filterSince > 0;
+$anyFilter = $filterYear > 0 || $filterMonth > 0 || $filterTag !== '' || $filterStatus !== '' || $filterSince > 0 || $filterLayout !== '';
 if ($anyFilter) {
     $parts = [];
     if ($filterYear > 0 && $filterMonth > 0) {
@@ -119,6 +143,9 @@ if ($anyFilter) {
     if ($filterStatus !== '') {
         $parts[] = t('admin.editor.status_' . $filterStatus);
     }
+    if ($filterLayout !== '') {
+        $parts[] = $usedLayouts[$filterLayout];
+    }
     if ($filterSince > 0 && $filterYear === 0) {
         $parts[] = t('admin.content.filter_recent');
     }
@@ -132,7 +159,6 @@ $totalPosts = count($filteredPosts);
 $totalPages = $totalPosts > 0 ? (int) ceil($totalPosts / $perPage) : 1;
 $offset = ($page - 1) * $perPage;
 $posts = array_slice($filteredPosts, $offset, $perPage);
-$availableLayouts = get_layouts();
 
 // Pages data
 $pages = get_all_pages(true);
@@ -269,6 +295,18 @@ require __DIR__ . '/../includes/admin-head.php';
                                 </select>
                             </div>
 
+                            <?php if ($usedLayouts): ?>
+                            <div class="content-filter-field">
+                                <label for="filter-layout"><?= e(t('admin.content.filter_layout')) ?></label>
+                                <select id="filter-layout" name="layout">
+                                    <option value=""><?= e(t('admin.content.filter_all_layouts')) ?></option>
+                                    <?php foreach ($usedLayouts as $layoutName => $layoutLabel): ?>
+                                        <option value="<?= e($layoutName) ?>"<?= $filterLayout === $layoutName ? ' selected' : '' ?>><?= e($layoutLabel) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <?php endif; ?>
+
                             <div class="content-filter-actions">
                                 <button type="submit"><?= e(t('admin.content.filter_apply')) ?></button>
                                 <?php if ($detailsOpen): ?>
@@ -307,6 +345,7 @@ require __DIR__ . '/../includes/admin-head.php';
                         if ($filterMonth > 0)  { $pageParams['month'] = $filterMonth; }
                         if ($filterTag !== '')    { $pageParams['tag']    = $filterTag; }
                         if ($filterStatus !== '') { $pageParams['status'] = $filterStatus; }
+                        if ($filterLayout !== '') { $pageParams['layout'] = $filterLayout; }
                         if ($filterSince > 0)    { $pageParams['since']  = $filterSince; }
                         if ($search !== '')    { $pageParams['q']     = $search; }
                     ?>

@@ -1,5 +1,8 @@
 <?php
 
+// New additions to this language file may have English placeholder values.
+// These are marked with "ENGLISH PLACEHOLDER" and should be reviewed by a native speaker.
+
 return [
 
     'name' => 'Română',
@@ -136,6 +139,8 @@ return [
             'filter_all_tags'       => 'Toate etichetele',
             'filter_status'         => 'Stare',
             'filter_all_statuses'   => 'Toate',
+            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
+            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
             'filter_apply'          => 'Aplică',
             'filter_active'         => 'Filtrat după: {label}.',
             'filter_clear'          => 'Șterge',

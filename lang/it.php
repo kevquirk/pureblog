@@ -1,5 +1,8 @@
 <?php
 
+// New additions to this language file may have English placeholder values.
+// These are marked with "ENGLISH PLACEHOLDER" and should be reviewed by a native speaker.
+
 return [
 
     'name' => 'Italiano',
@@ -136,6 +139,8 @@ return [
             'filter_all_tags'       => 'Tutti i tag',
             'filter_status'         => 'Stato',
             'filter_all_statuses'   => 'Tutti',
+            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
+            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
             'filter_apply'          => 'Applica',
             'filter_active'         => 'Filtrato per: {label}.',
             'filter_clear'          => 'Cancella',

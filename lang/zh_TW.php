@@ -1,5 +1,8 @@
 <?php
 
+// New additions to this language file may have English placeholder values.
+// These are marked with "ENGLISH PLACEHOLDER" and should be reviewed by a native speaker.
+
 return [
 
     'name' => '繁體中文',
@@ -125,6 +128,8 @@ return [
             'filter_all_tags'       => '所有標籤',
             'filter_status'         => '狀態',
             'filter_all_statuses'   => '全部',
+            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
+            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
             'filter_apply'          => '套用',
             'filter_active'         => '篩選條件：{label}。',
             'filter_clear'          => '清除',
