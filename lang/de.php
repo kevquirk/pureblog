@@ -56,8 +56,8 @@ return [
         'page_not_found_detail' => 'Die angeforderte Seite konnte nicht gefunden werden.',
         'no_tag_selected'       => 'Kein Tag ausgewählt.',
         'no_posts_for_tag'      => 'Keine Beiträge für diesen Tag gefunden.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Beitrag bearbeiten',
+        'edit_page'             => 'Seite bearbeiten',
     ],
 
 
@@ -149,8 +149,8 @@ return [
             'filter_all_tags'       => 'Alle Tags',
             'filter_status'         => 'Status',
             'filter_all_statuses'   => 'Alle',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Layout',
+            'filter_all_layouts'    => 'Alle Layouts',
             'filter_apply'          => 'Anwenden',
             'filter_active'         => 'Gefiltert nach: {label}.',
             'filter_clear'          => 'Zurücksetzen',
