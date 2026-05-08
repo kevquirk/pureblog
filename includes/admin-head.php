@@ -161,6 +161,12 @@ unset($_SESSION['admin_action_flash']);
                 </li>
             </ul>
         </nav>
+        <p style="display:block;max-width:70rem;margin:0 auto 2rem auto;" class="notice">
+            <strong>Pure Blog v3.0.0 is now available</strong> which introduces breaking changes, so you will need to
+            <a href="https://codeberg.org/kevquirk/pureblog/releases/tag/v3.0.0" target="_blank" rel="noopener noreferrer">upgrade manually</a>.
+            The source code has also moved to Codeberg -
+            <a href="https://pureblog.org/upgrading-to-v300-and-moving-to-codeberg" target="_blank" rel="noopener noreferrer">read more here</a>.
+        </p>
         <?php if (is_array($adminActionFlash) && isset($adminActionFlash['message'])): ?>
             <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
             <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
