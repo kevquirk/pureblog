@@ -861,21 +861,10 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     $renameFrom = null;
     if ($originalSlug !== null && $originalSlug !== $slug) {
         $existingPath = find_post_filepath_by_slug($originalSlug);
-    } elseif ($originalDate !== null && $originalDate !== '') {
-        $originalPrefix = format_datetime_for_display($originalDate, $config, 'Y-m-d');
-        if ($originalPrefix === '') {
-            $normalizedOriginal = normalize_date_value($originalDate);
-            $originalPrefix = $normalizedOriginal !== null
-                ? format_datetime_for_display($normalizedOriginal, $config, 'Y-m-d')
-                : '';
-        }
-        if ($originalPrefix === '') {
-            $originalPrefix = $datePrefix;
-        }
-        $originalFilename = $originalPrefix . '-' . $slug . '.md';
-        $candidate = PUREBLOG_POSTS_PATH . '/' . $originalFilename;
-        if (is_file($candidate) && $candidate !== $path) {
-            $renameFrom = $candidate;
+    } elseif ($originalSlug !== null) {
+        $actualPath = find_post_filepath_by_slug($originalSlug);
+        if ($actualPath !== null && $actualPath !== $path) {
+            $renameFrom = $actualPath;
         }
     }
 
