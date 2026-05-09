@@ -54,8 +54,8 @@ return [
         'page_not_found_detail' => 'La page que vous avez demandée est introuvable.',
         'no_tag_selected'       => 'Aucune étiquette sélectionnée.',
         'no_posts_for_tag'      => 'Aucun article trouvé pour cette étiquette.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Éditer l\'article',
+        'edit_page'             => 'Éditer la page',
     ],
     // -------------------------------------------------------------------------
     // Admin
@@ -141,8 +141,8 @@ return [
             'filter_all_tags'       => 'Tous les tags',
             'filter_status'         => 'Statut',
             'filter_all_statuses'   => 'Tous',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Mise en page',
+            'filter_all_layouts'    => 'Toutes les mises en page',
             'filter_apply'          => 'Appliquer',
             'filter_active'         => 'Filtré par: {label}.',
             'filter_clear'          => 'Effacer',
@@ -438,8 +438,8 @@ return [
                 'error_dir_admin'   => 'Impossible de créer le répertoire CSS admin.',
                 'section_front'     => 'CSS frontal',
                 'section_admin'     => 'CSS admin',
-                'placeholder_front' => 'Ajoutez du CSS personnalisé à votre site...',
-                'placeholder_admin' => 'Ajoutez du CSS personnalisé au CMS Pure Blog...',
+                'placeholder_front' => 'Ajoutez du CSS personnalisé au site public...',
+                'placeholder_admin' => 'Ajoutez du CSS personnalisé à l\'admin...',
             ],
 
             'updates' => [
