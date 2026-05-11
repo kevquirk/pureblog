@@ -75,7 +75,7 @@ function default_config(): array
         'admin_username' => '',
         'admin_password_hash' => '',
         'cache' => [
-            'enabled' => false,
+            'enabled' => true,
             'rss_ttl' => 3600,
         ],
         'theme' => [
