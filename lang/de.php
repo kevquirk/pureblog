@@ -55,7 +55,7 @@ return [
         'page_not_found'        => 'Seite nicht gefunden',
         'page_not_found_detail' => 'Die angeforderte Seite konnte nicht gefunden werden.',
         'no_tag_selected'       => 'Kein Tag ausgewählt.',
-        'no_posts_for_tag'      => 'Keine Beiträge für diesen Tag gefunden.',
+        'no_posts_for_tag'      => 'Keine Beiträge für dieses Tag gefunden.',
         'edit_post'             => 'Beitrag bearbeiten',
         'edit_page'             => 'Seite bearbeiten',
     ],
