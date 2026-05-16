@@ -8,34 +8,51 @@ include_in_nav: true
 
 This demo not only shows you how to format commonly used elements in pages and posts, it will also show you how to use them in the markdown editor. There are some elements that markdown doesn't support, where this occurs, HTML is used instead.
 
-## Basic Typography
+## Content
+
+1. [Basic Typography](#basic-typography)
+   * [Links & Buttons](#links-buttons)
+2. [Other typography elements](#other-typography-elements)
+   1. [Lists](#lists)
+   2. [Blockquotes](#blockquotes)
+   3. [Code blocks](#code-blocks)
+   4. [Notice box](#notice-box)
+3. [Markdown in HTML](#markdown-in-html)
+4. [Images](#images)
+5. [Details & Accordions](#details-accordions)
+6. [Tables](#tables)
+7. [Forms](#forms)
+
+## Basic Typography {#basic-typography}
 
 All the typography in Pure Blog uses `rem` for sizing. This means that accessibility is maintained for those who change their browser font size. The `body` element has a size of `1.15rem`  which makes all the standard font sizes slightly larger. This equates to `18.4px` for paragraph text, instead of the standard `16px`.
 
 The heading elements also have an increased top margin in order to break blocks of text up better, which improves readability.
 
-# Heading 1
+# Heading 1 {#heading-1}
 
-## Heading 2
+## Heading 2 {#heading-2}
 
-### Heading 3
+### Heading 3 {#heading-3}
 
-#### Heading 4
+#### Heading 4 {#heading-4}
 
-##### Heading 5
+##### Heading 5 {#heading-5}
 
-###### Heading 6
+###### Heading 6 {#heading-6}
 
 ```
-# Heading 1
-## Heading 2
-### Heading 3
-#### Heading 4
-##### Heading 5
-###### Heading 6
+# Heading 1 {#heading-1}
+## Heading 2 {#heading-2}
+### Heading 3 {#heading-3}
+#### Heading 4 {#heading-4}
+##### Heading 5 {#heading-5}
+###### Heading 6 {#heading-6}
 ```
 
-### Links & Buttons
+If you don't have a need for heading IDs (`{#heading-1}`…`{#heading-6}`), you can just leave them out.
+
+### Links & Buttons {#links-buttons}
 
 Links are formatted very simply. They use the `accent-color` CSS variable and are underlined. There is a `:hover` effect that removes the underline.
 
@@ -55,7 +72,7 @@ Buttons use the same `accent-color` CSS variable for their colour. When hovering
 <a class="button" href="https://example.com">I'm a button with a link</a>
 ```
 
-## Other typography elements
+## Other typography elements {#other-typography-elements}
 
 There are a number of other typography elements that you can use. Some of the common ones are:
 
@@ -73,7 +90,7 @@ _Italic text_ or *Italic text*
 <kbd>Alt+F4</kbd>
 ```
 
-### Lists
+### Lists {#lists}
 
 We all love a good list, right? I know my wife does!
 
@@ -96,7 +113,7 @@ We all love a good list, right? I know my wife does!
 2. Do that thing
 3. Do the other thing
 ```
-### Blockquotes
+### Blockquotes {#blockquotes}
 
 Sometimes you may want to quote someone else in your HTML. For this we use the `blockquote` element. Here's what a quote looks like in Pure Blog:
 
@@ -110,7 +127,7 @@ Sometimes you may want to quote someone else in your HTML. For this we use the `
 > <cite>– Stephen King</cite>
 ```
 
-### Code blocks
+### Code blocks {#code-blocks}
 
 Code blocks are different from the inline `code` element. Code blocks are used when you want to display a block of code, like this:
 
@@ -136,7 +153,7 @@ body {
 ```
 ````
 
-### Notice box
+### Notice box {#notice-box}
 
 <p class="notice">This is a notice box. It's useful for calling out snippets of information. Cool, huh?</p>
 
@@ -150,7 +167,7 @@ If you prefer not to use HTML, you can do it in Markdown too, which allows you t
 This is a notice box. It's useful for calling out snippets of information. Cool, huh? {.notice}
 ```
 
-## Markdown in HTML
+## Markdown in HTML {#markdown-in-html}
 
 By adding `markdown="1"` to a block-level HTML element, you can write markdown inside it instead of HTML. This works with elements like `div`, `blockquote`, `aside`, `details`, and more.
 
@@ -178,7 +195,7 @@ The following elements are supported:
 
 Inline elements like `span`, `a`, `em`, `strong` etc. do **not** support it — the attribute is only processed for block-level elements since markdown parsing is line-based.
 
-## Images
+## Images {#images}
 
 Images within your main content are always full width and have rounded corners to them. The `figcaption` element is also formatted in Pure Blog. Here are examples of images with and without a caption:
 
@@ -196,7 +213,7 @@ Images within your main content are always full width and have rounded corners t
 *This is a black swan*
 ```
 
-## Details & Accordions
+## Details & Accordions {#details-accordions}
 
 Details elements are cool to play with. They're especially useful when it comes to things like FAQ pages. Many people invoke JavaScript, or `div` for life when they use accordions. I don't really understand why that is when it's available in plain old HTML:
 
@@ -248,7 +265,7 @@ To do this, you need to group the `details` elements together with a `name`, lik
 </details>
 ```
 
-## Tables
+## Tables {#tables}
 
 Like lists, sometimes you may need to add a table to your webpage. In Pure Blog tables automatically highlight every other row to make reading easier. Table header text is also bold. Here's what they look like:
 
@@ -293,7 +310,7 @@ Like lists, sometimes you may need to add a table to your webpage. In Pure Blog 
 </table>
 ```
 
-## Forms
+## Forms {#forms}
 
 Forms are useful for all kinds of things on webpages. Contact forms, newsletter sign ups etc. Forms also look pretty good on Pure Blog:
 
