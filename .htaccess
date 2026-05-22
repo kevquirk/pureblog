@@ -1,7 +1,21 @@
+Options -Indexes
 RewriteEngine On
 
 # Redirect sitemap.xml to sitemap.php
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
+
+# Block access to sensitive directories and files
+RewriteRule ^data/ - [F,L]
+RewriteRule ^content/autosaves/ - [F,L]
+RewriteRule ^content/layouts/ - [F,L]
+RewriteRule ^content/functions\.php$ - [F,L]
+RewriteRule ^.*\.md$ - [F,L]
+RewriteRule ^content/images/.*\.ph(p[0-9]?|tml)$ - [F,L]
+
+# To restrict /admin access by IP address, uncomment and replace YOUR.IP.ADDRESS
+# with your IP. Add one RewriteCond line per allowed IP address.
+# RewriteCond %{REMOTE_ADDR} !^YOUR\.IP\.ADDRESS$
+# RewriteRule ^admin/ - [F,L]
 
 # Allow direct access to existing files and folders
 RewriteCond %{REQUEST_FILENAME} -f [OR]

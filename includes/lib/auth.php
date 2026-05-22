@@ -98,7 +98,6 @@ function record_login_failure(string $ip): array
 
     if (!is_dir(PUREBLOG_DATA_PATH)) {
         mkdir(PUREBLOG_DATA_PATH, 0755, true);
-        file_put_contents(PUREBLOG_DATA_PATH . '/.htaccess', "Deny from all\n");
     }
     file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT), LOCK_EX);
 
@@ -151,9 +150,10 @@ function set_remember_me_cookie(): void
 
     if (!is_dir(PUREBLOG_DATA_PATH)) {
         mkdir(PUREBLOG_DATA_PATH, 0755, true);
-        file_put_contents(PUREBLOG_DATA_PATH . '/.htaccess', "Deny from all\n");
     }
-    file_put_contents($file, json_encode($tokens, JSON_PRETTY_PRINT), LOCK_EX);
+    if (file_put_contents($file, json_encode($tokens, JSON_PRETTY_PRINT), LOCK_EX) === false) {
+        return;
+    }
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
