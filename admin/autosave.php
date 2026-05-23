@@ -51,10 +51,9 @@ if ($action === 'discard') {
     exit;
 }
 
-// Ensure the autosaves directory exists and is protected.
+// Ensure the autosaves directory exists.
 if (!is_dir($autosaveDir)) {
     mkdir($autosaveDir, 0755, true);
-    file_put_contents($autosaveDir . '/.htaccess', "Deny from all\n");
 }
 
 if ($editorType === 'page') {
