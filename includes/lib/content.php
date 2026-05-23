@@ -134,6 +134,41 @@ function is_safe_image_slug(string $slug): bool
     return $slug !== '' && preg_match('/^[\p{L}\p{N}\-_]+$/u', $slug) === 1;
 }
 
+function strip_image_metadata(string $path, string $mimeType): void
+{
+    if (class_exists('Imagick')) {
+        try {
+            $img = new Imagick($path);
+            $img->stripImage();
+            $img->writeImage($path);
+            $img->destroy();
+        } catch (Exception $e) {
+            // silently fail — upload still succeeds
+        }
+        return;
+    }
+
+    // GD fallback: re-encoding drops all metadata
+    [$loader, $saver] = match($mimeType) {
+        'image/jpeg' => ['imagecreatefromjpeg', fn($i) => imagejpeg($i, $path, 90)],
+        'image/png'  => ['imagecreatefrompng',  fn($i) => imagepng($i, $path)],
+        'image/webp' => ['imagecreatefromwebp', fn($i) => imagewebp($i, $path)],
+        default      => [null, null],
+    };
+
+    if ($loader === null || !function_exists($loader)) {
+        return;
+    }
+
+    $img = $loader($path);
+    if ($img === false) {
+        return;
+    }
+
+    $saver($img);
+    imagedestroy($img);
+}
+
 function slugify(string $value): string
 {
     $value = trim($value);

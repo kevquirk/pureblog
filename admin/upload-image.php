@@ -78,6 +78,7 @@ if ($error === '') {
         if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
             $error = t('admin.editor.error_upload_save');
         } else {
+            strip_image_metadata($destination, $mimeType);
             call_hook('on_image_uploaded', [$destination]);
             $webpDestination = preg_replace('/\.[^.]+$/', '.webp', $destination) ?? $destination;
             if ($webpDestination !== $destination && file_exists($webpDestination)) {
