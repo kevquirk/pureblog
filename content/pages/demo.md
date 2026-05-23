@@ -13,10 +13,10 @@ This demo not only shows you how to format commonly used elements in pages and p
 1. [Basic Typography](#basic-typography)
    * [Links & Buttons](#links-buttons)
 2. [Other typography elements](#other-typography-elements)
-   1. [Lists](#lists)
-   2. [Blockquotes](#blockquotes)
-   3. [Code blocks](#code-blocks)
-   4. [Notice box](#notice-box)
+   * [Lists](#lists)
+   * [Blockquotes](#blockquotes)
+   * [Code blocks](#code-blocks)
+   * [Notice box](#notice-box)
 3. [Markdown in HTML](#markdown-in-html)
 4. [Images](#images)
 5. [Details & Accordions](#details-accordions)
@@ -29,28 +29,26 @@ All the typography in Pure Blog uses `rem` for sizing. This means that accessibi
 
 The heading elements also have an increased top margin in order to break blocks of text up better, which improves readability.
 
-# Heading 1 {#heading-1}
+# Heading 1
 
-## Heading 2 {#heading-2}
+## Heading 2
 
-### Heading 3 {#heading-3}
+### Heading 3
 
-#### Heading 4 {#heading-4}
+#### Heading 4
 
-##### Heading 5 {#heading-5}
+##### Heading 5
 
-###### Heading 6 {#heading-6}
+###### Heading 6
 
 ```
-# Heading 1 {#heading-1}
-## Heading 2 {#heading-2}
-### Heading 3 {#heading-3}
-#### Heading 4 {#heading-4}
-##### Heading 5 {#heading-5}
-###### Heading 6 {#heading-6}
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
 ```
-
-If you don't have a need for heading IDs (`{#heading-1}`…`{#heading-6}`), you can just leave them out.
 
 ### Links & Buttons {#links-buttons}
 
