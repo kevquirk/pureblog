@@ -55,6 +55,7 @@ return [
         'no_posts_for_tag'      => 'No se encontraron entradas para esta etiqueta.',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
@@ -319,6 +320,7 @@ return [
                 'language'            => 'Idioma',
                 'timezone'            => 'Zona horaria',
                 'date_format'         => 'Formato de fecha',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'            => 'Página de inicio',
                 'blog_page'           => 'Página del blog',
                 'base_url'            => 'URL base',

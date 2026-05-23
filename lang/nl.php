@@ -55,6 +55,7 @@ return [
         'no_posts_for_tag'      => 'Geen berichten gevonden voor dit label.',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
@@ -319,6 +320,7 @@ return [
                 'language'           => 'Taal',
                 'timezone'           => 'Tijdzone',
                 'date_format'        => 'Datum formatering',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'           => 'Homepagina',
                 'blog_page'          => 'Blogpagina',
                 'base_url'           => 'Basis URL',

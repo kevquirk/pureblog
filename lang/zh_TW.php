@@ -47,6 +47,7 @@ return [
         'no_posts_for_tag'      => '此標籤下沒有文章。',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     'admin' => [
@@ -306,6 +307,7 @@ return [
                 'language'           => '語言',
                 'timezone'           => '時區',
                 'date_format'        => '日期格式',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'           => '首頁',
                 'blog_page'          => '部落格頁面',
                 'base_url'           => '網站網址',

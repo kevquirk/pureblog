@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $blogPageSlug = trim($_POST['blog_page_slug'] ?? '');
     $searchPageSlug = trim($_POST['search_page_slug'] ?? '');
     $ogImagePreferred = trim($_POST['og_image_preferred'] ?? 'banner');
+    $showReadingTime = !empty($_POST['show_reading_time']);
     $cacheEnabled = !empty($_POST['cache_enabled']);
     $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
     $adminHomepage = in_array($_POST['admin_homepage'] ?? '', ['dashboard', 'content'], true) ? $_POST['admin_homepage'] : 'dashboard';
@@ -85,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['language'] = $language !== '' ? $language : 'en';
         $config['timezone'] = $timezone;
         $config['date_format'] = $dateFormat;
+        $config['show_reading_time'] = $showReadingTime;
         $config['base_url'] = $baseUrl;
         $config['homepage_slug'] = $homepageSlug;
         $config['blog_page_slug'] = $blogPageSlug;
@@ -196,6 +198,11 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="date_format"><?= e(t('admin.settings.site.date_format')) ?> <span class="tip">(<a href="https://www.php.net/manual/en/datetime.format.php" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_date_format_link')) ?></a>)</span></label>
                 <input type="text" id="date_format" name="date_format" value="<?= e((string) ($config['date_format'] ?? 'F j, Y')) ?>" placeholder="F j, Y" required>
+
+                <label class="inline-checkbox" for="show_reading_time">
+                    <input type="checkbox" id="show_reading_time" name="show_reading_time"<?= !empty($config['show_reading_time']) ? ' checked' : '' ?>>
+                    <?= e(t('admin.settings.site.show_reading_time')) ?>
+                </label>
 
                 <label for="homepage_slug"><?= e(t('admin.settings.site.homepage')) ?></label>
                 <select id="homepage_slug" name="homepage_slug">

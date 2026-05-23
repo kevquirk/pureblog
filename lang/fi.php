@@ -55,6 +55,7 @@ return [
         'no_posts_for_tag'      => 'Tällä tagilla ei löytynyt julkaisuja.',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
@@ -318,6 +319,7 @@ return [
                 'language'           => 'Kieli',
                 'timezone'           => 'Aikavyöhyke',
                 'date_format'        => 'Päivänmäärän formaatti',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'           => 'Kotisivu',
                 'blog_page'          => 'Blogisivu',
                 'base_url'           => 'Kanta-URL',

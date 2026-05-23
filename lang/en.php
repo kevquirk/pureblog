@@ -52,6 +52,7 @@ return [
         'no_posts_for_tag'      => 'No posts found for this tag.',
         'edit_post'             => 'Edit post',
         'edit_page'             => 'Edit page',
+        'reading_time'          => '{n} min read',
     ],
 
     // -------------------------------------------------------------------------
@@ -314,6 +315,7 @@ return [
                 'language'           => 'Language',
                 'timezone'           => 'Timezone',
                 'date_format'        => 'Date format',
+                'show_reading_time'  => 'Show reading time on posts',
                 'homepage'           => 'Homepage',
                 'blog_page'          => 'Blog page',
                 'base_url'           => 'Base URL',

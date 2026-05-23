@@ -55,6 +55,7 @@ return [
         'no_posts_for_tag'      => 'Nie znaleziono postów dla wybranego tagu.',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
@@ -317,6 +318,7 @@ return [
                 'language'           => 'Język',
                 'timezone'           => 'Strefa czasowa',
                 'date_format'        => 'Format daty',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'           => 'Strona główna',
                 'blog_page'          => 'Blog',
                 'base_url'           => 'Adres URL',

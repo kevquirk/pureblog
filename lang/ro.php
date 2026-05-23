@@ -55,6 +55,7 @@ return [
         'no_posts_for_tag'      => 'Nicio postare găsită pentru această etichetă.',
         'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
         'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
     ],
 
     // -------------------------------------------------------------------------
@@ -319,6 +320,7 @@ return [
                 'language'           => 'Limbă',
                 'timezone'           => 'Fus orar',
                 'date_format'        => 'Format dată',
+                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
                 'homepage'           => 'Pagina principală',
                 'blog_page'          => 'Pagina blogului',
                 'base_url'           => 'URL de bază',

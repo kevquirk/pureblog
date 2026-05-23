@@ -305,6 +305,13 @@ function format_datetime_for_display(?string $value, array $config, ?string $for
     return _lang_translate_date($dt->format($effectiveFormat));
 }
 
+function calculate_reading_time(string $content): string
+{
+    $wordCount = str_word_count(strip_tags($content));
+    $minutes = max(1, (int) ceil($wordCount / 200));
+    return t('frontend.reading_time', ['n' => $minutes]);
+}
+
 function relative_time(int $timestamp): string
 {
     $diff = max(0, time() - $timestamp);
