@@ -341,6 +341,75 @@ function format_post_date_for_rss(?string $value, array $config): string
 }
 
 // ---------------------------------------------------------------------------
+// Post scheduler
+// ---------------------------------------------------------------------------
+
+function publish_scheduled_posts(): int
+{
+    if (!is_dir(PUREBLOG_POSTS_PATH)) {
+        return 0;
+    }
+
+    $files = glob(PUREBLOG_POSTS_PATH . '/*.md') ?: [];
+    $config = load_config();
+    $now = new DateTimeImmutable('now', site_timezone_object($config));
+    $count = 0;
+
+    foreach ($files as $file) {
+        $front = parse_post_meta_only($file);
+        if (($front['status'] ?? '') !== 'scheduled') {
+            continue;
+        }
+
+        $dt = parse_post_datetime_with_timezone($front['date'] ?? '', $config);
+        if ($dt === null || $dt > $now) {
+            continue;
+        }
+
+        $parsed = parse_post_file($file);
+        $fm = $parsed['front_matter'];
+        $knownKeys = ['title', 'slug', 'date', 'status', 'tags', 'description', 'categories', 'layout'];
+        $post = array_merge(
+            array_diff_key($fm, array_flip($knownKeys)),
+            [
+                'title'       => $fm['title'] ?? 'Untitled',
+                'slug'        => $fm['slug'] ?? '',
+                'date'        => $fm['date'] ?? '',
+                'status'      => 'published',
+                'tags'        => $fm['tags'] ?? [],
+                'description' => $fm['description'] ?? '',
+                'content'     => $parsed['content'],
+                'layout'      => $fm['layout'] ?? '',
+            ]
+        );
+
+        $saveError = '';
+        if (save_post($post, $post['slug'], $post['date'], 'scheduled', $saveError)) {
+            $count++;
+        }
+    }
+
+    return $count;
+}
+
+function maybe_publish_scheduled_posts(): void
+{
+    if (!is_dir(PUREBLOG_POSTS_PATH)) {
+        return;
+    }
+
+    $lockFile = PUREBLOG_POSTS_PATH . '/.scheduler.lock';
+    $interval = 300; // 5 minutes
+
+    if (is_file($lockFile) && (time() - (int) filemtime($lockFile)) < $interval) {
+        return;
+    }
+
+    @file_put_contents($lockFile, (string) time());
+    publish_scheduled_posts();
+}
+
+// ---------------------------------------------------------------------------
 // Post and page I/O
 // ---------------------------------------------------------------------------
 

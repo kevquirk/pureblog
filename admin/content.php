@@ -22,7 +22,7 @@ $filterTag    = trim((string) ($_GET['tag'] ?? ''));
 $filterStatus = trim((string) ($_GET['status'] ?? ''));
 $filterLayout = trim((string) ($_GET['layout'] ?? ''));
 $filterSince  = isset($_GET['since']) ? (int) $_GET['since'] : 0;
-if (!in_array($filterStatus, ['draft', 'published'], true)) {
+if (!in_array($filterStatus, ['draft', 'scheduled', 'published'], true)) {
     $filterStatus = '';
 }
 if ($filterYear < 2000 || $filterYear > 2100) {
@@ -37,8 +37,15 @@ if ($filterSince < 0 || $filterSince > time()) {
 
 $allPosts = get_all_posts_meta(true);
 usort($allPosts, function (array $a, array $b): int {
-    if ($a['status'] !== $b['status']) {
-        return $a['status'] === 'draft' ? -1 : 1;
+    $order = ['draft' => 0, 'scheduled' => 1, 'published' => 2];
+    $aOrder = $order[$a['status'] ?? 'draft'] ?? 0;
+    $bOrder = $order[$b['status'] ?? 'draft'] ?? 0;
+    if ($aOrder !== $bOrder) {
+        return $aOrder <=> $bOrder;
+    }
+    // Scheduled: soonest first so you see what's coming up next
+    if (($a['status'] ?? '') === 'scheduled') {
+        return ($a['timestamp'] <=> $b['timestamp']);
     }
     return ($b['timestamp'] <=> $a['timestamp']);
 });
@@ -287,6 +294,7 @@ require __DIR__ . '/../includes/admin-head.php';
                                 <select id="filter-status" name="status">
                                     <option value=""><?= e(t('admin.content.filter_all_statuses')) ?></option>
                                     <option value="published"<?= $filterStatus === 'published' ? ' selected' : '' ?>><?= e(t('admin.editor.status_published')) ?></option>
+                                    <option value="scheduled"<?= $filterStatus === 'scheduled' ? ' selected' : '' ?>><?= e(t('admin.editor.status_scheduled')) ?></option>
                                     <option value="draft"<?= $filterStatus === 'draft' ? ' selected' : '' ?>><?= e(t('admin.editor.status_draft')) ?></option>
                                 </select>
                             </div>

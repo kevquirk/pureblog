@@ -155,6 +155,7 @@ return [
             'date_label'            => '日期',
             'status_label'          => '狀態',
             'status_draft'          => '草稿',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => '已發布',
             'images_title'          => '圖片',
             'no_images'             => '尚無圖片。',

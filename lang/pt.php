@@ -165,6 +165,7 @@ return [
             'date_label'            => 'Data',
             'status_label'          => 'Estado',
             'status_draft'          => 'Rascunho',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => 'Publicado',
             'images_title'          => 'Imagens',
             'no_images'             => 'Ainda não há imagens.',

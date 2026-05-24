@@ -166,6 +166,7 @@ return [
             'date_label'            => 'Dată',
             'status_label'          => 'Status',
             'status_draft'          => 'Ciornă',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => 'Publicat',
             'images_title'          => 'Imagini',
             'no_images'             => 'Nicio imagine încă.',

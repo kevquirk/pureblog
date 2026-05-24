@@ -166,6 +166,7 @@ return [
             'date_label'            => 'Date',
             'status_label'          => 'Statut',
             'status_draft'          => 'Brouillon',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => 'Publié',
             'images_title'          => 'Images',
             'no_images'             => 'Aucune image pour l\'instant.',

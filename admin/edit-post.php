@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $errors[] = t('admin.editor.error_empty_slug');
     }
 
-    if (!in_array($post['status'], ['draft', 'published'], true)) {
+    if (!in_array($post['status'], ['draft', 'published', 'scheduled'], true)) {
         $errors[] = t('admin.editor.error_invalid_status');
     }
 
@@ -280,6 +280,7 @@ require __DIR__ . '/../includes/admin-head.php';
                         <label for="status"><?= e(t('admin.editor.status_label')) ?></label>
                         <select id="status" name="status" form="editor-form">
                             <option value="draft" <?= $post['status'] === 'draft' ? 'selected' : '' ?>><?= e(t('admin.editor.status_draft')) ?></option>
+                            <option value="scheduled" <?= $post['status'] === 'scheduled' ? 'selected' : '' ?>><?= e(t('admin.editor.status_scheduled')) ?></option>
                             <option value="published" <?= $post['status'] === 'published' ? 'selected' : '' ?>><?= e(t('admin.editor.status_published')) ?></option>
                         </select>
 

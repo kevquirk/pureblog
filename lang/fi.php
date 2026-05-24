@@ -166,6 +166,7 @@ return [
             'date_label'            => 'Päivänmäärä',
             'status_label'          => 'Tila',
             'status_draft'          => 'Luonnos',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => 'Julkaistu',
             'images_title'          => 'Kuvat',
             'no_images'             => 'Ei kuvia toistaiseksi.',

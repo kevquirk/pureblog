@@ -140,3 +140,7 @@ if (is_file($_userFunctions)) {
     require $_userFunctions;
 }
 unset($_userFunctions);
+
+if (PHP_SAPI !== 'cli') {
+    maybe_publish_scheduled_posts();
+}

@@ -579,6 +579,10 @@ th, td {
     color: var(--red);
 }
 
+.admin-list-meta .status.scheduled {
+    color: var(--accent-color);
+}
+
 .dashboard-h2 {
     font-size: 1.6rem;
     margin-top: 4rem;

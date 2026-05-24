@@ -166,6 +166,7 @@ return [
             'date_label'            => 'Datum',
             'status_label'          => 'Status',
             'status_draft'          => 'Klad',
+            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
             'status_published'      => 'Gepubliceerd',
             'images_title'          => 'Afbeeldingen',
             'no_images'             => 'Nog geen afbeeldingen.',
