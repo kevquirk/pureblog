@@ -175,7 +175,7 @@ return [
             'date_label'            => 'Datum',
             'status_label'          => 'Status',
             'status_draft'          => 'Entwurf',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Geplant',
             'status_published'      => 'Veröffentlicht',
             'images_title'          => 'Bilder',
             'no_images'             => 'Noch keine Bilder.',
