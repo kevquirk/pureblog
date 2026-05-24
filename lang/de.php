@@ -58,7 +58,7 @@ return [
         'no_posts_for_tag'      => 'Keine Beiträge für dieses Tag gefunden.',
         'edit_post'             => 'Beitrag bearbeiten',
         'edit_page'             => 'Seite bearbeiten',
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} min Lesezeit',
     ],
 
 
@@ -337,7 +337,7 @@ return [
                 'language'           => 'Sprache',
                 'timezone'           => 'Zeitzone',
                 'date_format'        => 'Datumsformat',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Lesezeit bei Beiträgen anzeigen',
                 'homepage'           => 'Startseite',
                 'blog_page'          => 'Blog-Seite',
                 'base_url'           => 'Basis-URL',
