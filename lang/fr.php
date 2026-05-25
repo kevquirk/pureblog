@@ -56,7 +56,7 @@ return [
         'no_posts_for_tag'      => 'Aucun article trouvé pour cette étiquette.',
         'edit_post'             => 'Éditer l\'article',
         'edit_page'             => 'Éditer la page',
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'reading_time'          => '{n} minutes de lecture',
     ],
     // -------------------------------------------------------------------------
     // Admin
@@ -166,7 +166,7 @@ return [
             'date_label'            => 'Date',
             'status_label'          => 'Statut',
             'status_draft'          => 'Brouillon',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Programmé',
             'status_published'      => 'Publié',
             'images_title'          => 'Images',
             'no_images'             => 'Aucune image pour l\'instant.',
@@ -320,7 +320,7 @@ return [
                 'language'            => 'Langue',
                 'timezone'            => 'Fuseau horaire',
                 'date_format'         => 'Format de date',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Afficher la durée de lecture des articles',
                 'homepage'            => 'Page d\'accueil',
                 'blog_page'           => 'Page du blog',
                 'base_url'            => 'URL de base',
