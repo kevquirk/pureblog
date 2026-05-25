@@ -784,6 +784,17 @@ function layout_context(?array $post = null, ?array $config = null, ?array $adja
     return $ctx;
 }
 
+function render_post_navigation(): string
+{
+    $ctx = layout_context();
+    return render_layout_partial('post-meta', [
+        'post'          => $ctx['post'],
+        'config'        => $ctx['config'],
+        'previous_post' => $ctx['adjacentPosts']['previous'] ?? null,
+        'next_post'     => $ctx['adjacentPosts']['next'] ?? null,
+    ]);
+}
+
 function render_layout_file(string $file, array $post, array $config, array $adjacentPosts): void
 {
     layout_context($post, $config, $adjacentPosts);
