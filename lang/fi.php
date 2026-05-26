@@ -53,9 +53,9 @@ return [
         'page_not_found_detail' => 'Hakemaasi sivua ei löytynyt.',
         'no_tag_selected'       => 'Ei valittua tagia.',
         'no_posts_for_tag'      => 'Tällä tagilla ei löytynyt julkaisuja.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Muokkaa julkaisua',
+        'edit_page'             => 'Muokkaa sivua',
+        'reading_time'          => 'lukuaika: {n} min',
     ],
 
     // -------------------------------------------------------------------------
@@ -142,8 +142,8 @@ return [
             'filter_all_tags'       => 'Kaikki tagit',
             'filter_status'         => 'Tila',
             'filter_all_statuses'   => 'Kaikki',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Ulkoasu',
+            'filter_all_layouts'    => 'Kaikki ulkoasut',
             'filter_apply'          => 'Aseta',
             'filter_active'         => 'Suodatettu {label} mukaan.',
             'filter_clear'          => 'Tyhjennä',
@@ -166,7 +166,7 @@ return [
             'date_label'            => 'Päivänmäärä',
             'status_label'          => 'Tila',
             'status_draft'          => 'Luonnos',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Ajastettu',
             'status_published'      => 'Julkaistu',
             'images_title'          => 'Kuvat',
             'no_images'             => 'Ei kuvia toistaiseksi.',
@@ -320,7 +320,7 @@ return [
                 'language'           => 'Kieli',
                 'timezone'           => 'Aikavyöhyke',
                 'date_format'        => 'Päivänmäärän formaatti',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Näytä lukuaika julkaisujen yhteydessä',
                 'homepage'           => 'Kotisivu',
                 'blog_page'          => 'Blogisivu',
                 'base_url'           => 'Kanta-URL',
