@@ -226,8 +226,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Taalbestanden ontbreken — dit kan gebeuren na een update van 1.9.7.',
-            'lang_missing_repair' => 'Klik hier om automatisch te herstellen',
         ],
 
         'post_editor' => [
@@ -490,7 +488,6 @@ return [
                 'notice_update_applied'      => 'Update succesvol toegepast.',
                 'notice_backup_restored'     => 'Back-up succesvol hersteld.',
                 'notice_backup_deleted'      => 'Back-up succesvol verwijderd.',
-                'notice_lang_restored'       => 'Taalbestanden succesvol hersteld.',
                 'already_latest_version'     => 'U gebruikt al de nieuwste versie ({tag}).',
                 'error_curl_init'            => 'Kan curl niet initialiseren.',
                 'error_github_request'       => 'Codeberg-verzoek mislukt (HTTP {status}).',
@@ -519,10 +516,6 @@ return [
                 'error_choose_delete'        => 'Kies een back-up om te verwijderen.',
                 'error_release_metadata'     => 'Kan release-informatie niet ophalen van Codeberg.',
                 'error_lang_download'        => 'Downloaden van release-zip mislukt.',
-                'error_lang_zip_open'        => 'Openen van release-zip mislukt.',
-                'error_lang_zip_extract'     => 'Uitpakken van release-zip mislukt.',
-                'error_lang_dir_missing'     => 'Lang/-map niet gevonden in het release-pakket.',
-                'error_lang_repair'          => 'Taalreparatie mislukt: {error}',
                 'error_build_plan'           => 'Kan pakketplan niet aanmaken.',
                 'error_dir_create'           => 'Kan map niet aanmaken: {path}',
                 'error_file_copy'            => 'Kan bestand niet kopiëren: {path}',

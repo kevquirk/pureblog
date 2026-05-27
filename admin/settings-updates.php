@@ -10,20 +10,6 @@ require __DIR__ . '/../includes/updater.php';
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
-// ── Lang repair ──────────────────────────────────────────────────────────────
-// Handles installs where lang/ was missed during an update from a pre-denylist
-// version of the updater.
-if (isset($_GET['repair_lang'])) {
-    $repairResult = repair_missing_lang();
-    if ($repairResult['ok']) {
-        $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.updates.notice_lang_restored')];
-    } else {
-        $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => t('admin.settings.updates.error_lang_repair', ['error' => ($repairResult['error'] ?? '')])];
-    }
-    header('Location: ' . base_path() . '/admin/settings-updates.php');
-    exit;
-}
-
 $latest = null;
 if (isset($_GET['check'])) {
     $latest = fetch_latest_pureblog_release();

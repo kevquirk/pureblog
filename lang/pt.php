@@ -225,8 +225,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Os ficheiros de idioma estão em falta — isto pode acontecer após uma atualização a partir de 1.9.7.',
-            'lang_missing_repair' => 'Clique aqui para reparar automaticamente',
         ],
 
         'post_editor' => [
@@ -487,7 +485,6 @@ return [
                 'notice_update_applied'      => 'Atualização aplicada com sucesso.',
                 'notice_backup_restored'     => 'Cópia de segurança restaurada com sucesso.',
                 'notice_backup_deleted'      => 'Cópia de segurança eliminada com sucesso.',
-                'notice_lang_restored'       => 'Ficheiros de idioma restaurados com sucesso.',
                 'already_latest_version'     => 'Já está na versão mais recente ({tag}).',
                 'error_curl_init'            => 'Impossível inicializar o curl.',
                 'error_github_request'       => 'Pedido ao Codeberg falhou (HTTP {status}).',
@@ -516,10 +513,6 @@ return [
                 'error_choose_delete'        => 'Por favor, escolha uma cópia de segurança para eliminar.',
                 'error_release_metadata'     => 'Impossível obter informações da versão do Codeberg.',
                 'error_lang_download'        => 'Falha ao transferir o zip da versão.',
-                'error_lang_zip_open'        => 'Falha ao abrir o zip da versão.',
-                'error_lang_zip_extract'     => 'Falha ao extrair o zip da versão.',
-                'error_lang_dir_missing'     => 'Diretório lang/ não encontrado no pacote da versão.',
-                'error_lang_repair'          => 'Reparação de idioma falhada: {error}',
                 'error_build_plan'           => 'Impossível criar o plano do pacote.',
                 'error_dir_create'           => 'Impossível criar diretório: {path}',
                 'error_file_copy'            => 'Impossível copiar ficheiro: {path}',

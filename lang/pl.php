@@ -224,8 +224,6 @@ return [
         ],
 
         'notices' => [
-            'lang_missing'        => 'Nie znaleziono plików językowych \u2014 może to być efekt aktualizacji z 1.9.7.',
-            'lang_missing_repair' => 'Kliknij tutaj, aby naprawić automatycznie',
         ],
 
         'post_editor' => [
@@ -488,7 +486,6 @@ return [
                 'notice_update_applied'      => 'Aktualizacja wykonana pomyślnie.',
                 'notice_backup_restored'     => 'Odtworzenie z kopii zapasowej pomyślne.',
                 'notice_backup_deleted'      => 'Kopia zapasowa usunięta pomyślnie.',
-                'notice_lang_restored'       => 'Plik językowy odtworzony pomyślnie.',
                 'already_latest_version'     => 'Używasz aktualnej wersji ({tag}).',
                 'error_curl_init'            => 'Nie udało się zainicjować programu curl.',
                 'error_github_request'       => 'Połączenie do Codeberg nieudane (HTTP {status}).',
@@ -517,10 +514,6 @@ return [
                 'error_choose_delete'        => 'Wybierz kopię zapasową do usunięcia.',
                 'error_release_metadata'     => 'Nie udało się pobrać danych o wydaniu z Codeberg.',
                 'error_lang_download'        => 'Nie udało się pobrać paczki zip wydania.',
-                'error_lang_zip_open'        => 'Nie udało się otworzyć paczki zip wydania.',
-                'error_lang_zip_extract'     => 'Nie udało się rozpakować paczki zip wydania.',
-                'error_lang_dir_missing'     => 'Nie znaleziono katalogu lang/ w paczce wydania.',
-                'error_lang_repair'          => 'Nie udało się naprawić języka: {error}',
                 'error_build_plan'           => 'Nie udało się zbudować planu paczki.',
                 'error_dir_create'           => 'Tworzenie katalogu nieudane: {path}',
                 'error_file_copy'            => 'Kopiowanie pliku nieudane: {path}',

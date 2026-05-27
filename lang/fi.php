@@ -225,8 +225,6 @@ return [
         ],
 
         'notices' => [
-            'lang_missing'        => 'Kielitiedostoja puuttuu \u2014 näin voi käydä päivitettäessä versiosta 1.9.7.',
-            'lang_missing_repair' => 'Klikkaa tästä korjataksesi automaattisesti',
         ],
 
         'post_editor' => [
@@ -489,7 +487,6 @@ return [
                 'notice_update_applied'      => 'Päivitys suoritettiin onnistuneesti.',
                 'notice_backup_restored'     => 'Varmuuskopio palautettiin onnistuneesti.',
                 'notice_backup_deleted'      => 'Varmuuskopio poistettiin onnistuneesti.',
-                'notice_lang_restored'       => 'Kielitiedostot palautettiin onnistuneesti.',
                 'already_latest_version'     => 'Käytät jo uusinta versiota ({tag}).',
                 'error_curl_init'            => 'curl:in alustaminen epäonnistui.',
                 'error_github_request'       => 'Codeberg-pyyntö epäonnistui (HTTP {status}).',
@@ -518,10 +515,6 @@ return [
                 'error_choose_delete'        => 'Ole hyvä ja valitse poistettava varmuuskopio.',
                 'error_release_metadata'     => 'Julkaisuversion tietojen hakeminen Codebergista ei onnistunut.',
                 'error_lang_download'        => 'Julkaisuversion zip-tiedoston lataaminen epäonnistui.',
-                'error_lang_zip_open'        => 'Julkaisuversion zip-tiedoston avaaminen epäonnistui.',
-                'error_lang_zip_extract'     => 'Julkaisuversion zip-tiedoston purkaminen epäonnistui.',
-                'error_lang_dir_missing'     => 'lang/-kohdekansiota ei löytynyt julkaisuversion paketista.',
-                'error_lang_repair'          => 'Kielen korvaaminen epäonnistui: {error}',
                 'error_build_plan'           => 'Pakettisuunnitelmaa ei voitu luoda.',
                 'error_dir_create'           => 'Kohdekansiota {path} ei voitu luoda.',
                 'error_file_copy'            => 'Tiedoston {path} kopiointi epäonnistui.',

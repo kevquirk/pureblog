@@ -165,9 +165,6 @@ unset($_SESSION['admin_action_flash']);
             <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
             <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
         <?php endif; ?>
-        <?php if (!is_dir(PUREBLOG_BASE_PATH . '/lang')): ?>
-            <p class="notice delete"><?= e(t('admin.notices.lang_missing')) ?> <a href="<?= base_path() ?>/admin/settings-updates.php?repair_lang=1"><?= e(t('admin.notices.lang_missing_repair')) ?></a>.</p>
-        <?php endif; ?>
         <?php
         $searchSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
         if ($searchSlug !== '' && empty($config['search_page_notified']) && get_page_by_slug($searchSlug) === null):

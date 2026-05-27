@@ -203,26 +203,3 @@ function pureblog_http_download(string $url, string $destination, int $timeout =
     return null;
 }
 
-function fetch_latest_pureblog_release(): array
-{
-    $result = pureblog_http_get(
-        'https://codeberg.org/api/v1/repos/kevquirk/pureblog/releases/latest',
-        5,
-        ['User-Agent: Pureblog-Updates-Check', 'Accept: application/json']
-    );
-    if (!$result['ok']) {
-        return ['ok' => false, 'error' => $result['error']];
-    }
-    $json = json_decode($result['body'], true);
-    if (!is_array($json)) {
-        return ['ok' => false, 'error' => t('admin.settings.updates.error_github_json')];
-    }
-    return [
-        'ok'           => true,
-        'tag'          => (string) ($json['tag_name'] ?? ''),
-        'name'         => (string) ($json['name'] ?? ''),
-        'url'          => (string) ($json['html_url'] ?? 'https://codeberg.org/kevquirk/pureblog/releases'),
-        'zipball_url'  => (string) ($json['zipball_url'] ?? ''),
-        'published_at' => (string) ($json['published_at'] ?? ''),
-    ];
-}

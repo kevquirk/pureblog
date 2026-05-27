@@ -236,8 +236,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Sprachdateien fehlen — dies kann nach einem Update von 1.9.7 passieren.',
-            'lang_missing_repair' => 'Hier klicken, um automatisch zu reparieren',
         ],
 
         'post_editor' => [
@@ -511,7 +509,6 @@ return [
                 'notice_update_applied'      => 'Update erfolgreich angewendet.',
                 'notice_backup_restored'     => 'Backup erfolgreich wiederhergestellt.',
                 'notice_backup_deleted'      => 'Backup erfolgreich gelöscht.',
-                'notice_lang_restored'       => 'Sprachdateien erfolgreich wiederhergestellt.',
                 'already_latest_version'     => 'Du verwendest bereits die neueste Version ({tag}).',
                 'error_curl_init'            => 'curl konnte nicht initialisiert werden.',
                 'error_github_request'       => 'Codeberg-Anfrage fehlgeschlagen (HTTP {status}).',
@@ -540,10 +537,6 @@ return [
                 'error_choose_delete'        => 'Bitte wähle ein Backup zum Löschen.',
                 'error_release_metadata'     => 'Release-Informationen konnten nicht von Codeberg abgerufen werden.',
                 'error_lang_download'        => 'Release-Zip konnte nicht heruntergeladen werden.',
-                'error_lang_zip_open'        => 'Release-Zip konnte nicht geöffnet werden.',
-                'error_lang_zip_extract'     => 'Release-Zip konnte nicht entpackt werden.',
-                'error_lang_dir_missing'     => 'lang/-Verzeichnis nicht im Release-Paket gefunden.',
-                'error_lang_repair'          => 'Sprachreparatur fehlgeschlagen: {error}',
                 'error_build_plan'           => 'Paketplan konnte nicht erstellt werden.',
                 'error_dir_create'           => 'Verzeichnis konnte nicht erstellt werden: {path}',
                 'error_file_copy'            => 'Datei konnte nicht kopiert werden: {path}',

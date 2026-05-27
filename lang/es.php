@@ -226,8 +226,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Faltan los archivos de idioma — esto puede ocurrir tras actualizar desde 1.9.7.',
-            'lang_missing_repair' => 'Haz clic aquí para reparar automáticamente',
         ],
 
         'post_editor' => [
@@ -490,7 +488,6 @@ return [
                 'notice_update_applied'      => 'Actualización aplicada correctamente.',
                 'notice_backup_restored'     => 'Copia de seguridad restaurada correctamente.',
                 'notice_backup_deleted'      => 'Copia de seguridad eliminada correctamente.',
-                'notice_lang_restored'       => 'Archivos de idioma restaurados correctamente.',
                 'already_latest_version'     => 'Ya estás en la última versión ({tag}).',
                 'error_curl_init'            => 'No se pudo inicializar curl.',
                 'error_github_request'       => 'La solicitud a Codeberg falló (HTTP {status}).',
@@ -519,10 +516,6 @@ return [
                 'error_choose_delete'        => 'Por favor, elige una copia de seguridad para eliminar.',
                 'error_release_metadata'     => 'No se pudo obtener información de la versión desde Codeberg.',
                 'error_lang_download'        => 'Error al descargar el zip de la versión.',
-                'error_lang_zip_open'        => 'Error al abrir el zip de la versión.',
-                'error_lang_zip_extract'     => 'Error al extraer el zip de la versión.',
-                'error_lang_dir_missing'     => 'Directorio lang/ no encontrado en el paquete de la versión.',
-                'error_lang_repair'          => 'La reparación del idioma falló: {error}',
                 'error_build_plan'           => 'No se pudo crear el plan del paquete.',
                 'error_dir_create'           => 'No se pudo crear el directorio: {path}',
                 'error_file_copy'            => 'No se pudo copiar el archivo: {path}',

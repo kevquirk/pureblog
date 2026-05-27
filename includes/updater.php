@@ -727,60 +727,26 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
     }
 }
 
-function repair_missing_lang(): array
+function fetch_latest_pureblog_release(): array
 {
-    $currentVersion = detect_current_pureblog_version();
-    $tag = 'v' . ltrim($currentVersion, 'v');
-    $endpoint = 'https://api.github.com/repos/kevquirk/pureblog/releases/tags/' . urlencode($tag);
     $result = pureblog_http_get(
-        $endpoint,
+        'https://codeberg.org/api/v1/repos/kevquirk/pureblog/releases/latest',
         5,
-        ['User-Agent: Pureblog-Updates-Check', 'Accept: application/vnd.github+json']
+        ['User-Agent: Pureblog-Updates-Check', 'Accept: application/json']
     );
     if (!$result['ok']) {
-        return ['ok' => false, 'error' => t('admin.settings.updates.error_release_metadata')];
+        return ['ok' => false, 'error' => $result['error']];
     }
     $json = json_decode($result['body'], true);
-    $zipballUrl = is_array($json) ? (string) ($json['zipball_url'] ?? '') : '';
-    if ($zipballUrl === '') {
-        return ['ok' => false, 'error' => t('admin.settings.updates.error_release_metadata')];
+    if (!is_array($json)) {
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_github_json')];
     }
-
-    $tmpBase    = sys_get_temp_dir() . '/pureblog-lang-repair-' . bin2hex(random_bytes(6));
-    $tmpZip     = $tmpBase . '.zip';
-    $tmpExtract = $tmpBase . '-extract';
-
-    try {
-        $err = download_url_to_file($zipballUrl, $tmpZip);
-        if ($err !== null) {
-            return ['ok' => false, 'error' => $err];
-        }
-
-        $zip = new ZipArchive();
-        if ($zip->open($tmpZip) !== true) {
-            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_zip_open')];
-        }
-        if (!$zip->extractTo($tmpExtract)) {
-            $zip->close();
-            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_zip_extract')];
-        }
-        $zip->close();
-
-        $sourceRoot = $tmpExtract;
-        $entries = array_values(array_filter(scandir($tmpExtract) ?: [], fn($e) => $e !== '.' && $e !== '..'));
-        if (count($entries) === 1 && is_dir($tmpExtract . '/' . $entries[0])) {
-            $sourceRoot = $tmpExtract . '/' . $entries[0];
-        }
-
-        $langSource = $sourceRoot . '/lang';
-        if (!is_dir($langSource)) {
-            return ['ok' => false, 'error' => t('admin.settings.updates.error_lang_dir_missing')];
-        }
-
-        copy_path_recursive($langSource, PUREBLOG_BASE_PATH . '/lang');
-        return ['ok' => true];
-    } finally {
-        @unlink($tmpZip);
-        remove_directory_recursive($tmpExtract);
-    }
+    return [
+        'ok'           => true,
+        'tag'          => (string) ($json['tag_name'] ?? ''),
+        'name'         => (string) ($json['name'] ?? ''),
+        'url'          => (string) ($json['html_url'] ?? 'https://codeberg.org/kevquirk/pureblog/releases'),
+        'zipball_url'  => (string) ($json['zipball_url'] ?? ''),
+        'published_at' => (string) ($json['published_at'] ?? ''),
+    ];
 }

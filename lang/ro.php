@@ -226,8 +226,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Fișierele de limbă lipsesc — acest lucru se poate întâmpla după o actualizare de la 1.9.7.',
-            'lang_missing_repair' => 'Apăsați aici pentru a repara automat',
         ],
 
         'post_editor' => [
@@ -490,7 +488,6 @@ return [
                 'notice_update_applied'      => 'Actualizare aplicată cu succes.',
                 'notice_backup_restored'     => 'Copie de rezervă restaurată cu succes.',
                 'notice_backup_deleted'      => 'Copie de rezervă ştearsă cu succes.',
-                'notice_lang_restored'       => 'Fişierele de limbă au fost restaurate cu succes.',
                 'already_latest_version'     => 'Folosiți deja cea mai recentă versiune ({tag}).',
                 'error_curl_init'            => 'Imposibil de inițializat curl.',
                 'error_github_request'       => 'Cererea Codeberg a eşuat (HTTP {status}).',
@@ -519,10 +516,6 @@ return [
                 'error_choose_delete'        => 'Vă rugăm să alețeți o copie de rezervă de şters.',
                 'error_release_metadata'     => 'Imposibil de obținut informații despre versiune de la Codeberg.',
                 'error_lang_download'        => 'Descărcarea fişierului zip al versiunii a eşuat.',
-                'error_lang_zip_open'        => 'Deschiderea fişierului zip al versiunii a eşuat.',
-                'error_lang_zip_extract'     => 'Extragerea fişierului zip al versiunii a eşuat.',
-                'error_lang_dir_missing'     => 'Directorul lang/ nu a fost găsit în pachetul versiunii.',
-                'error_lang_repair'          => 'Repararea limbii a eşuat: {error}',
                 'error_build_plan'           => 'Imposibil de creat planul pachetului.',
                 'error_dir_create'           => 'Imposibil de creat directorul: {path}',
                 'error_file_copy'            => 'Imposibil de copiat fişierul: {path}',

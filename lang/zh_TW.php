@@ -213,8 +213,6 @@ return [
         ],
 
         'notices' => [
-            'lang_missing'        => '語言檔案遺失，這可能發生在從 1.9.7 版更新之後。',
-            'lang_missing_repair' => '點此自動修復',
         ],
 
         'post_editor' => [
@@ -477,7 +475,6 @@ return [
                 'notice_update_applied'      => '更新已成功套用。',
                 'notice_backup_restored'     => '備份已成功還原。',
                 'notice_backup_deleted'      => '備份已成功刪除。',
-                'notice_lang_restored'       => '語言檔案已成功修復。',
                 'already_latest_version'     => '您已是最新版本（{tag}）。',
                 'error_curl_init'            => '無法初始化 curl。',
                 'error_github_request'       => 'Codeberg 請求失敗（HTTP {status}）。',
@@ -506,10 +503,6 @@ return [
                 'error_choose_delete'        => '請選擇要刪除的備份。',
                 'error_release_metadata'     => '無法從 Codeberg 取得版本資訊。',
                 'error_lang_download'        => '下載版本 zip 失敗。',
-                'error_lang_zip_open'        => '開啟版本 zip 失敗。',
-                'error_lang_zip_extract'     => '解壓縮版本 zip 失敗。',
-                'error_lang_dir_missing'     => '版本套件中找不到 lang/ 資料夾。',
-                'error_lang_repair'          => '語言修復失敗：{error}',
                 'error_build_plan'           => '無法建立套件計畫。',
                 'error_dir_create'           => '無法建立資料夾：{path}',
                 'error_file_copy'            => '無法複製檔案：{path}',

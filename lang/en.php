@@ -221,8 +221,6 @@ return [
         ],
 
         'notices' => [
-            'lang_missing'        => 'Language files are missing \u2014 this can happen after updating from 1.9.7.',
-            'lang_missing_repair' => 'Click here to repair automatically',
         ],
 
         'post_editor' => [
@@ -485,7 +483,6 @@ return [
                 'notice_update_applied'      => 'Update applied successfully.',
                 'notice_backup_restored'     => 'Backup restored successfully.',
                 'notice_backup_deleted'      => 'Backup deleted successfully.',
-                'notice_lang_restored'       => 'Language files restored successfully.',
                 'already_latest_version'     => 'You are already on the latest release ({tag}).',
                 'error_curl_init'            => 'Unable to initialize curl.',
                 'error_github_request'       => 'Codeberg request failed (HTTP {status}).',
@@ -514,10 +511,6 @@ return [
                 'error_choose_delete'        => 'Please choose a backup to delete.',
                 'error_release_metadata'     => 'Unable to fetch release info from Codeberg.',
                 'error_lang_download'        => 'Failed to download release zip.',
-                'error_lang_zip_open'        => 'Failed to open release zip.',
-                'error_lang_zip_extract'     => 'Failed to extract release zip.',
-                'error_lang_dir_missing'     => 'lang/ directory not found in the release package.',
-                'error_lang_repair'          => 'Language repair failed: {error}',
                 'error_build_plan'           => 'Unable to build package plan.',
                 'error_dir_create'           => 'Unable to create directory: {path}',
                 'error_file_copy'            => 'Unable to copy file: {path}',

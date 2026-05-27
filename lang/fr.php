@@ -225,8 +225,6 @@ return [
 
 
         'notices' => [
-            'lang_missing'        => 'Les fichiers de langue sont manquants — cela peut arriver après une mise à jour depuis 1.9.7.',
-            'lang_missing_repair' => 'Cliquez ici pour réparer automatiquement',
         ],
 
         'post_editor' => [
@@ -489,7 +487,6 @@ return [
                 'notice_update_applied'      => 'Mise à jour appliquée avec succès.',
                 'notice_backup_restored'     => 'Sauvegarde restaurée avec succès.',
                 'notice_backup_deleted'      => 'Sauvegarde supprimée avec succès.',
-                'notice_lang_restored'       => 'Fichiers de langue restaurés avec succès.',
                 'already_latest_version'     => 'Vous utilisez déjà la dernière version ({tag}).',
                 'error_curl_init'            => 'Impossible d\'initialiser curl.',
                 'error_github_request'       => 'Requête Codeberg échouée (HTTP {status}).',
@@ -518,10 +515,6 @@ return [
                 'error_choose_delete'        => 'Veuillez choisir une sauvegarde à supprimer.',
                 'error_release_metadata'     => 'Impossible de récupérer les informations de version depuis Codeberg.',
                 'error_lang_download'        => 'Échec du téléchargement du zip de version.',
-                'error_lang_zip_open'        => 'Échec de l\'ouverture du zip de version.',
-                'error_lang_zip_extract'     => 'Échec de l\'extraction du zip de version.',
-                'error_lang_dir_missing'     => 'Répertoire lang/ non trouvé dans le package de version.',
-                'error_lang_repair'          => 'Réparation de langue échouée: {error}',
                 'error_build_plan'           => 'Impossible de créer le plan de package.',
                 'error_dir_create'           => 'Impossible de créer le répertoire: {path}',
                 'error_file_copy'            => 'Impossible de copier le fichier: {path}',
