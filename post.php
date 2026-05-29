@@ -13,6 +13,7 @@ $fontStack = $fontStack ?? font_stack_css($config['theme']['font_stack'] ?? 'san
 $pageTitle = $pageTitle ?? ($post['title'] ?? t('frontend.post_not_found'));
 $metaDescription = $metaDescription ?? (!empty($post['description']) ? $post['description'] : '');
 start_admin_session();
+maybe_restore_admin_from_cookie();
 $isAdminLoggedIn = is_admin_logged_in();
 
 ?>

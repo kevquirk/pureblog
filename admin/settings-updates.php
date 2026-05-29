@@ -93,10 +93,6 @@ require __DIR__ . '/../includes/admin-head.php';
     <main class="mid">
         <h1><?= e(t('admin.settings.updates.heading')) ?></h1>
 
-        <?php $settingsSaveFormId = ''; ?>
-        <nav class="editor-actions settings-actions">
-            <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
-        </nav>
 
         <section class="section-divider">
             <span class="title"><?= e(t('admin.settings.updates.section_version')) ?></span>

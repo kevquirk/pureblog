@@ -67,7 +67,7 @@ function admin_action_buttons(): array
     return [
         [
             'id' => 'purge_cache',
-            'label' => 'Purge cache',
+            'label' => 'Purge Bunny Cache',
             'class' => 'delete',
             'confirm' => 'Purge CDN cache now?',
             'icon' => 'circle-x',

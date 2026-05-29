@@ -1,3 +1,98 @@
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/inter/regular.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/inter/bold.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/inter/italic.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/inter/bold-italic.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Iosevka";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/iosevka/subset-regular.woff2") format("woff2"),
+         url("../fonts/iosevka/subset-regular.woff") format("woff");
+}
+@font-face {
+    font-family: "Iosevka";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/iosevka/subset-bold.woff2") format("woff2"),
+         url("../fonts/iosevka/subset-bold.woff") format("woff");
+}
+@font-face {
+    font-family: "Iosevka";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/iosevka/subset-italic.woff2") format("woff2"),
+         url("../fonts/iosevka/subset-italic.woff") format("woff");
+}
+@font-face {
+    font-family: "Iosevka";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/iosevka/subset-bolditalic.woff2") format("woff2"),
+         url("../fonts/iosevka/subset-bolditalic.woff") format("woff");
+}
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/merriweather/regular.woff2") format("woff2"),
+         url("../fonts/merriweather/regular.woff") format("woff");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/merriweather/bold.woff2") format("woff2"),
+         url("../fonts/merriweather/bold.woff") format("woff");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/merriweather/italic.woff2") format("woff2"),
+         url("../fonts/merriweather/italic.woff") format("woff");
+}
+@font-face {
+    font-family: "Merriweather";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/merriweather/bold-italic.woff2") format("woff2"),
+         url("../fonts/merriweather/bold-italic.woff") format("woff");
+}
+
 :root {
     color-scheme: light;
 }

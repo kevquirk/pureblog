@@ -15,6 +15,7 @@ $metaDescription = $metaDescription ?? (!empty($page['description']) ? $page['de
 $blogFeedHidden = (($config['blog_page_slug'] ?? '') === '__hidden__');
 $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
 start_admin_session();
+maybe_restore_admin_from_cookie();
 $isAdminLoggedIn = is_admin_logged_in();
 
 ?>

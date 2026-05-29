@@ -107,10 +107,15 @@ function e(string $value): string
 function font_stack_css(string $fontStack): string
 {
     return match ($fontStack) {
-        'serif' => 'Georgia, Times, "Times New Roman", serif',
-        'mono' => 'ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace',
-        default => '-apple-system, BlinkMacSystemFont, "Avenir Next", Avenir, "Nimbus Sans L", Roboto, "Noto Sans", "Segoe UI", Arial, Helvetica, "Helvetica Neue", sans-serif',
+        'serif' => '"Merriweather", Georgia, Times, "Times New Roman", serif',
+        'mono'  => '"Iosevka", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace',
+        default => '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     };
+}
+
+function font_stack_url(string $fontStack): ?string
+{
+    return null;
 }
 
 /**

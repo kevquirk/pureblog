@@ -181,54 +181,16 @@ $adminTitle = t('admin.content.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <div class="content-toolbar">
-            <nav class="content-tabs" aria-label="<?= e(t('admin.content.tabs_label')) ?>">
-                <a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= $tab === 'posts' ? ' class="current" aria-current="page"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg> <?= e(t('admin.content.tab_posts')) ?></a>
-                <a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= $tab === 'pages' ? ' class="current" aria-current="page"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.content.tab_pages')) ?></a>
-            </nav>
-            <?php if ($tab === 'posts'): ?>
-                <?php if ($availableLayouts): ?>
-                    <button type="button" id="new-post-button" class="save">
-                        <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                        <?= e(t('admin.content.new_post')) ?>
-                    </button>
-                    <dialog id="layout-picker" aria-labelledby="layout-picker-title">
-                        <h2 id="layout-picker-title"><?= e(t('admin.content.choose_layout')) ?></h2>
-                        <ul class="layout-picker-list">
-                            <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new"><?= e(t('admin.content.default_post')) ?></a></li>
-                            <?php foreach ($availableLayouts as $layout): ?>
-                                <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new&amp;layout=<?= urlencode($layout['name']) ?>"><?= e($layout['label']) ?></a></li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <button type="button" id="layout-picker-close" class="delete">
-                            <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
-                            <?= e(t('admin.content.cancel')) ?>
-                        </button>
-                    </dialog>
-                    <script>
-                    (function () {
-                        const button = document.getElementById('new-post-button');
-                        const dialog = document.getElementById('layout-picker');
-                        const close = document.getElementById('layout-picker-close');
-                        button.addEventListener('click', () => dialog.showModal());
-                        close.addEventListener('click', () => dialog.close());
-                        dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
-                    })();
-                    </script>
-                <?php else: ?>
-                    <a class="save" href="<?= base_path() ?>/admin/edit-post.php?action=new">
-                        <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
-                        <?= e(t('admin.content.new_post')) ?>
-                    </a>
-                <?php endif; ?>
+        <h1><?= e($tab === 'pages' ? t('admin.content.tab_pages') : t('admin.content.tab_posts')) ?></h1>
+        <nav class="admin-actions">
+            <?php if ($tab === 'pages'): ?>
+                <a class="button save" href="<?= base_path() ?>/admin/edit-page.php?action=new"><svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg> <?= e(t('admin.content.new_page')) ?></a>
+            <?php elseif ($availableLayouts): ?>
+                <button type="button" class="button save js-open-layout-picker"><svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg> <?= e(t('admin.content.new_post')) ?></button>
             <?php else: ?>
-                <a class="save" href="<?= base_path() ?>/admin/edit-page.php?action=new">
-                    <svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg>
-                    <?= e(t('admin.content.new_page')) ?>
-                </a>
+                <a class="button save" href="<?= base_path() ?>/admin/edit-post.php?action=new"><svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg> <?= e(t('admin.content.new_post')) ?></a>
             <?php endif; ?>
-        </div>
-
+        </nav>
         <?php if ($tab === 'posts'): ?>
 
             <?php if (!empty($_GET['saved'])): ?>

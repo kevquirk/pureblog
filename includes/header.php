@@ -72,6 +72,11 @@ $isSquareOgImage = $ogImagePreferred === 'square';
     <style>
         body { background: <?= e($config['theme']['background_color']) ?>; }
     </style>
+    <?php $fontUrl = font_stack_url($config['theme']['font_stack'] ?? 'sans'); ?>
+    <?php if ($fontUrl !== null): ?>
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link rel="stylesheet" href="<?= e($fontUrl) ?>">
+    <?php endif; ?>
     <link rel="stylesheet" href="<?= rtrim(get_base_url(), '/') ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {

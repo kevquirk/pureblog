@@ -53,9 +53,11 @@ require __DIR__ . '/../includes/admin-head.php';
         <h1><?= e(t('admin.settings.css.heading')) ?></h1>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
-        <?php $settingsSaveFormId = 'settings-form'; ?>
-        <nav class="editor-actions settings-actions">
-            <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
+        <nav class="admin-actions">
+            <button class="save" type="submit" form="settings-form" aria-label="<?= e(t('admin.settings.nav.save')) ?>">
+                <svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg>
+                <?= e(t('admin.settings.nav.save')) ?>
+            </button>
         </nav>
 
         <form method="post" id="settings-form">

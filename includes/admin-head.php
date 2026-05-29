@@ -65,7 +65,13 @@ unset($_SESSION['admin_action_flash']);
     <?php if ($adminFavicon[0] === '/') { $adminFavicon = base_path() . $adminFavicon; } ?>
     <link rel="icon" href="<?= e($adminFavicon) ?>">
     <title><?= e($adminTitle) ?></title>
+    <?php $adminFontUrl = font_stack_url($config['theme']['admin_font_stack'] ?? 'sans'); ?>
+    <?php if ($adminFontUrl !== null): ?>
+        <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+        <link rel="stylesheet" href="<?= e($adminFontUrl) ?>">
+    <?php endif; ?>
     <link rel="stylesheet" href="<?= base_path() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
+    <script>try{if(localStorage.getItem('pb-sidebar')==='collapsed')document.documentElement.setAttribute('data-sidebar','collapsed');}catch(e){}</script>
     <style>
         :root {
             --font-stack: <?= $fontStack ?>;
@@ -93,6 +99,7 @@ unset($_SESSION['admin_action_flash']);
 <body>
     <!-- SVG sprite: add support for rendering admin icons via <use> -->
     <?php readfile(__DIR__ . '/../admin/icons/sprite.svg'); ?>
+    <div class="admin-shell">
     <?php if (!$hideAdminNav): ?>
         <?php
         $adminUriPath = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '';
@@ -108,26 +115,84 @@ unset($_SESSION['admin_action_flash']);
         $adminHideDashboard = !empty($config['admin_hide_dashboard']) && $adminHomepageSetting === 'content';
         ?>
         <nav class="admin-nav" aria-label="Admin">
+            <div class="sidebar-header">
+                <a href="<?= base_path() ?>/admin/dashboard.php" class="sidebar-logo">
+                    <span class="logo"><span class="pure">PURE</span><span class="service">BLOG</span></span>
+                </a>
+                <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-panel-left-close"></use></svg>
+                    <svg class="icon" aria-hidden="true"><use href="#icon-panel-left-open"></use></svg>
+                </button>
+            </div>
+            <?php $sidebarLayouts = get_layouts(); ?>
             <ul class="admin-nav-list">
+                <li>
+                    <?php if ($sidebarLayouts): ?>
+                        <button type="button" id="sidebar-new-post-button" class="save link-button js-open-layout-picker" title="<?= e(t('admin.dashboard.write_post')) ?>">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
+                            <span><?= e(t('admin.dashboard.write_post')) ?></span>
+                        </button>
+                    <?php else: ?>
+                        <a class="save link-button" href="<?= base_path() ?>/admin/edit-post.php?action=new" title="<?= e(t('admin.dashboard.write_post')) ?>">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
+                            <span><?= e(t('admin.dashboard.write_post')) ?></span>
+                        </a>
+                    <?php endif; ?>
+                </li>
                 <?php if ($adminHomepageSetting === 'content'): ?>
-                    <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
+                    <li>
+                        <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
+                        <?php if ($adminPath === 'admin/content.php'): ?>
+                        <ul class="admin-nav-list sidebar-subnav">
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? 'posts') === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? 'posts') === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
+                        </ul>
+                        <?php endif; ?>
+                    </li>
                     <?php if (!$adminHideDashboard): ?>
-                        <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
+                        <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
                     <?php endif; ?>
                 <?php else: ?>
-                    <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg> <?= e(t('admin.nav.dashboard')) ?></a></li>
-                    <li><a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg> <?= e(t('admin.nav.content')) ?></a></li>
+                    <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
+                    <li>
+                        <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
+                        <?php if ($adminPath === 'admin/content.php'): ?>
+                        <ul class="admin-nav-list sidebar-subnav">
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? 'posts') === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? 'posts') === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
+                        </ul>
+                        <?php endif; ?>
+                    </li>
                 <?php endif; ?>
-                <li><a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?>><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg> <?= e(t('admin.nav.settings')) ?></a></li>
-                <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.nav.view_site')) ?></a></li>
+                <li>
+                    <a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.settings')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg><span><?= e(t('admin.nav.settings')) ?></span></a>
+                    <?php if ($isSettings): ?>
+                    <?php
+                    $sidebarSettingsPath = $adminPath;
+                    $sidebarSettingsItems = [
+                        'admin/settings-site.php'    => ['label' => t('admin.settings.nav.site'),    'icon' => 'globe'],
+                        'admin/settings-theme.php'   => ['label' => t('admin.settings.nav.theme'),   'icon' => 'paintbrush'],
+                        'admin/settings-css.php'     => ['label' => t('admin.settings.nav.css'),     'icon' => 'braces'],
+                        'admin/settings-user.php'    => ['label' => t('admin.settings.nav.user'),    'icon' => 'user'],
+                        'admin/settings-updates.php' => ['label' => t('admin.settings.nav.updates'), 'icon' => 'upgrade'],
+                    ];
+                    ?>
+                    <ul class="admin-nav-list sidebar-subnav">
+                        <?php foreach ($sidebarSettingsItems as $sPath => $sItem): ?>
+                            <li><a href="<?= base_path() ?>/<?= e($sPath) ?>"<?= $sidebarSettingsPath === $sPath ? ' class="current"' : '' ?> title="<?= e($sItem['label']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-<?= e($sItem['icon']) ?>"></use></svg><span><?= e($sItem['label']) ?></span></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <?php endif; ?>
+                </li>
+                <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/" title="<?= e(t('admin.nav.view_site')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg><span><?= e(t('admin.nav.view_site')) ?></span></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
                     <li>
                         <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="clear_cache">
-                            <button class="delete" type="submit" class="link-button">
+                            <button class="delete link-button" type="submit" title="<?= e(t('admin.nav.clear_cache')) ?>">
                                 <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
-                                <?= e(t('admin.nav.clear_cache')) ?>
+                                <span><?= e(t('admin.nav.clear_cache')) ?></span>
                             </button>
                         </form>
                     </li>
@@ -141,11 +206,11 @@ unset($_SESSION['admin_action_flash']);
                         <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="<?= e($actionButton['id']) ?>">
-                            <button type="submit" class="<?= e($buttonClass) ?>"<?= $confirmAttr ?>>
+                            <button type="submit" class="<?= e($buttonClass) ?>"<?= $confirmAttr ?> title="<?= e($actionButton['label']) ?>">
                                 <?php if ($actionButton['icon'] !== ''): ?>
                                     <svg class="icon" aria-hidden="true"><use href="#icon-<?= e($actionButton['icon']) ?>"></use></svg>
                                 <?php endif; ?>
-                                <?= e($actionButton['label']) ?>
+                                <span><?= e($actionButton['label']) ?></span>
                             </button>
                         </form>
                     </li>
@@ -153,14 +218,41 @@ unset($_SESSION['admin_action_flash']);
                 <li>
                     <form method="post" action="<?= base_path() ?>/admin/logout.php" class="inline-form">
                         <?= csrf_field() ?>
-                        <button type="submit" class="link-button delete">
+                        <button type="submit" class="link-button delete logout-button" title="<?= e(t('admin.nav.log_out')) ?>">
                             <svg class="icon" aria-hidden="true"><use href="#icon-log-out"></use></svg>
-                            <?= e(t('admin.nav.log_out')) ?>
+                            <span><?= e(t('admin.nav.log_out')) ?></span>
                         </button>
                     </form>
                 </li>
             </ul>
+            <?php if ($sidebarLayouts): ?>
+                <dialog id="sidebar-layout-picker" aria-labelledby="sidebar-layout-picker-title">
+                    <h2 id="sidebar-layout-picker-title"><?= e(t('admin.content.choose_layout')) ?></h2>
+                    <ul class="layout-picker-list">
+                        <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new"><?= e(t('admin.content.default_post')) ?></a></li>
+                        <?php foreach ($sidebarLayouts as $layout): ?>
+                            <li><a href="<?= base_path() ?>/admin/edit-post.php?action=new&amp;layout=<?= urlencode($layout['name']) ?>"><?= e($layout['label']) ?></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <button type="button" id="layout-picker-close" class="delete">
+                        <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
+                        <?= e(t('admin.content.cancel')) ?>
+                    </button>
+                </dialog>
+            <?php endif; ?>
         </nav>
+    <?php endif; ?>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="admin-main">
+    <?php if (!$hideAdminNav): ?>
+        <div class="mobile-nav-header">
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Open navigation">
+                <svg class="icon" aria-hidden="true"><use href="#icon-menu"></use></svg>
+            </button>
+        </div>
+    <?php endif; ?>
+    <div class="admin-content">
+    <?php if (!$hideAdminNav): ?>
         <?php if (is_array($adminActionFlash) && isset($adminActionFlash['message'])): ?>
             <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
             <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
