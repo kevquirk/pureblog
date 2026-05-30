@@ -91,6 +91,7 @@ $isSquareOgImage = $ogImagePreferred === 'square';
             --border-dark: <?= e($config['theme']['border_color_dark']) ?>;
             --accent-bg-dark: <?= e($config['theme']['accent_bg_color_dark']) ?>;
             --font-stack: <?= $fontStack ?>;
+            --mono-font-stack: <?= font_stack_css('mono') ?>;
         }
     <?php if (is_file(__DIR__ . '/../content/css/custom.css')): ?>
 <?php readfile(__DIR__ . '/../content/css/custom.css'); ?>

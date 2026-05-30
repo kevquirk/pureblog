@@ -458,6 +458,7 @@ pre {
     margin: 2rem 0;
     padding: 1rem;
     overflow-x: auto;
+    font-family: var(--mono-font-stack, ui-monospace, monospace);
 }
 
 pre code {
@@ -473,6 +474,7 @@ code {
     background: var(--accent-bg-color);
     padding: 0.1rem 0.25rem;
     font-size: 1rem;
+    font-family: var(--mono-font-stack, ui-monospace, monospace);
 }
 
 h2 code, h3 code {
