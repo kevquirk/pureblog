@@ -546,6 +546,7 @@ function get_all_posts_meta(bool $includeDrafts = false, bool $bustCache = false
     if ($all === null) {
         if (!is_dir(PUREBLOG_POSTS_PATH)) {
             $all = [];
+            $published = [];
         } else {
             $files = glob(PUREBLOG_POSTS_PATH . '/*.md') ?: [];
             $posts = [];
@@ -589,6 +590,7 @@ function get_all_posts(bool $includeDrafts = false, bool $bustCache = false): ar
     if ($all === null) {
         if (!is_dir(PUREBLOG_POSTS_PATH)) {
             $all = [];
+            $published = [];
         } else {
             $files = glob(PUREBLOG_POSTS_PATH . '/*.md') ?: [];
             $posts = [];
