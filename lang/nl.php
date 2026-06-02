@@ -72,6 +72,7 @@ return [
             'log_out'       => 'Uitloggen',
             'cache_cleared' => 'Cache is geleegd.',
             'invalid_action'=> 'Ongeldige admin actie.',
+            'images'        => 'Images', // ENGLISH PLACEHOLDER
         ],
 
         'login' => [
@@ -221,9 +222,29 @@ return [
             'js_copy_failed'  => 'Kopiëren naar klembord mislukt. Kopieer handmatig.',
             'js_save_post_first'  => 'Sla de post eerst op zodat deze een slug en datum heeft.',
             'js_save_page_first'  => 'Sla de pagina eerst op zodat deze een slug heeft.',
-            'js_upload_failed'  => 'Afbeelding uploaden mislukt.',
+            'js_upload_failed'           => 'Afbeelding uploaden mislukt.',
+            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
+            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
+            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
         ],
 
+        'images' => [
+            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
+            'heading'            => 'Images', // ENGLISH PLACEHOLDER
+            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
+            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
+            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
+            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
+            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
+            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
+            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
+            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
+            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
+            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
+            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
+            'pagination_prev'    => '← Previous', // ENGLISH PLACEHOLDER
+            'pagination_next'    => 'Next →', // ENGLISH PLACEHOLDER
+        ],
 
         'notices' => [
         ],

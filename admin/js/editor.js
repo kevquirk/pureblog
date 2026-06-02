@@ -383,6 +383,79 @@
     });
   });
 
+  const featureImageInput = document.getElementById('feature-image-value');
+
+  document.querySelectorAll('.feature-image-check').forEach((checkbox) => {
+    checkbox.addEventListener('change', async () => {
+      const url      = checkbox.getAttribute('data-url') || '';
+      const filename = checkbox.getAttribute('data-filename') || '';
+      const slugValue = (slugField?.value ?? '').trim();
+
+      if (slugValue === '') {
+        checkbox.checked = !checkbox.checked;
+        alert(config.editorType === 'post'
+          ? config.strings.save_post_first
+          : config.strings.save_page_first);
+        return;
+      }
+
+      if (checkbox.checked) {
+        const currentUrl = featureImageInput?.value ?? '';
+        if (currentUrl !== '' && currentUrl !== url) {
+          const currentFilename = currentUrl.split('/').pop();
+          const confirmed = confirm(
+            (config.strings.feature_image_confirm || '')
+              .replace('{filename}', filename)
+              .replace('{current}', currentFilename)
+          );
+          if (!confirmed) {
+            checkbox.checked = false;
+            return;
+          }
+        }
+      }
+
+      const newFilename = checkbox.checked ? filename : '';
+
+      try {
+        const formData = new FormData();
+        formData.append('slug', slugValue);
+        formData.append('editor_type', config.editorType);
+        formData.append('filename', newFilename);
+        formData.append('csrf_token', config.csrfToken || '');
+
+        const response = await fetch((config.basePath || '') + '/admin/set-feature-image.php', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+          checkbox.checked = !checkbox.checked;
+          alert(config.strings.feature_image_failed || 'Failed to update feature image.');
+          return;
+        }
+
+        if (checkbox.checked) {
+          document.querySelectorAll('.feature-image-check').forEach((cb) => {
+            if (cb !== checkbox) {
+              cb.checked = false;
+              cb.closest('li')?.classList.remove('is-feature');
+            }
+          });
+          checkbox.closest('li')?.classList.add('is-feature');
+          if (featureImageInput) featureImageInput.value = url;
+        } else {
+          checkbox.closest('li')?.classList.remove('is-feature');
+          if (featureImageInput) featureImageInput.value = '';
+        }
+      } catch (e) {
+        checkbox.checked = !checkbox.checked;
+        alert(config.strings.feature_image_failed || 'Failed to update feature image.');
+      }
+    });
+  });
+
   cm.getWrapperElement().addEventListener('dragover', (event) => {
     event.preventDefault();
   });

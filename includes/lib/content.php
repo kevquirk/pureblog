@@ -674,6 +674,7 @@ function get_all_pages(bool $includeDrafts = false, bool $bustCache = false): ar
     if ($all === null) {
         if (!is_dir(PUREBLOG_PAGES_PATH)) {
             $all = [];
+            $published = [];
         } else {
             $files = glob(PUREBLOG_PAGES_PATH . '/*.md') ?: [];
             $pages = [];
@@ -683,15 +684,17 @@ function get_all_pages(bool $includeDrafts = false, bool $bustCache = false): ar
                 $front = $parsed['front_matter'];
                 $status = $front['status'] ?? 'draft';
 
-                $pages[] = [
-                    'title' => $front['title'] ?? 'Untitled',
-                    'slug' => $front['slug'] ?? '',
-                    'status' => $status,
-                    'description' => $front['description'] ?? '',
+                $knownPageKeys = ['title', 'slug', 'status', 'description', 'include_in_nav', 'categories'];
+                $extraFront = array_diff_key($front, array_flip($knownPageKeys));
+                $pages[] = array_merge($extraFront, [
+                    'title'          => $front['title'] ?? 'Untitled',
+                    'slug'           => $front['slug'] ?? '',
+                    'status'         => $status,
+                    'description'    => $front['description'] ?? '',
                     'include_in_nav' => $front['include_in_nav'] ?? true,
-                    'content' => $parsed['content'],
-                    'path' => $file,
-                ];
+                    'content'        => $parsed['content'],
+                    'path'           => $file,
+                ]);
             }
 
             usort($pages, fn($a, $b) => ($a['title'] <=> $b['title']));
@@ -742,6 +745,8 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
     $filename = $slug . '.md';
     $path = PUREBLOG_PAGES_PATH . '/' . $filename;
 
+    $featureImage = trim($page['feature_image'] ?? '');
+
     $frontMatter = [
         'title' => $title,
         'slug' => $slug,
@@ -749,6 +754,10 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         'description' => $description,
         'include_in_nav' => $includeInNav ? 'true' : 'false',
     ];
+
+    if ($featureImage !== '') {
+        $frontMatter['feature_image'] = $featureImage;
+    }
 
     $frontLines = ["---"];
     foreach ($frontMatter as $key => $value) {
@@ -831,6 +840,35 @@ function delete_page_by_slug(string $slug): bool
 
     cache_clear();
     return true;
+}
+
+function update_front_matter_field(string $filepath, string $field, string $value): bool
+{
+    $raw = file_get_contents($filepath);
+    if ($raw === false) {
+        return false;
+    }
+    $raw = str_replace("\r\n", "\n", $raw);
+
+    if (!preg_match('/\A(---\n.*?\n---\n)/s', $raw, $matches)) {
+        return false;
+    }
+    $frontBlock = $matches[1];
+    $body       = substr($raw, strlen($frontBlock));
+    $pattern    = '/^' . preg_quote($field, '/') . ':.*\n?/m';
+
+    if ($value !== '') {
+        $line = $field . ': ' . $value . "\n";
+        if (preg_match($pattern, $frontBlock)) {
+            $frontBlock = preg_replace($pattern, $line, $frontBlock);
+        } else {
+            $frontBlock = substr($frontBlock, 0, -4) . $line . "---\n";
+        }
+    } else {
+        $frontBlock = preg_replace($pattern, '', $frontBlock);
+    }
+
+    return file_put_contents($filepath, $frontBlock . $body) !== false;
 }
 
 function find_post_filepath_by_slug(string $slug): ?string
@@ -951,6 +989,11 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
 
     if ($layout !== '') {
         $frontMatter['layout'] = $layout;
+    }
+
+    $featureImage = trim($post['feature_image'] ?? '');
+    if ($featureImage !== '') {
+        $frontMatter['feature_image'] = $featureImage;
     }
 
     foreach ($layoutFields as $fieldName => $fieldValue) {

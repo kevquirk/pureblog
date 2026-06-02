@@ -63,6 +63,7 @@ return [
         'nav' => [
             'dashboard'     => 'Dashboard',
             'content'       => 'Content',
+            'images'        => 'Images',
             'settings'      => 'Settings',
             'view_site'     => 'View site',
             'clear_cache'   => 'Clear cache',
@@ -218,6 +219,27 @@ return [
             'js_save_post_first'         => 'Save the post first so it has a slug and date.',
             'js_save_page_first'         => 'Save the page first so it has a slug.',
             'js_upload_failed'           => 'Image upload failed.',
+            'feature_image'              => 'Feature image',
+            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?',
+            'js_feature_image_failed'    => 'Failed to update feature image.',
+        ],
+
+        'images' => [
+            'page_title'         => 'Images - Pure Blog Admin',
+            'heading'            => 'Images',
+            'no_images'          => 'No images uploaded yet.',
+            'search_label'       => 'Search images',
+            'search_placeholder' => 'Search by filename…',
+            'clear_search'       => 'Clear search',
+            'deleted'            => 'Image deleted.',
+            'delete_confirm'     => 'Delete this image?',
+            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.',
+            'delete_anyway'      => 'Delete anyway',
+            'cancel'             => 'Cancel',
+            'slug_label'         => 'Folder:',
+            'error_delete'       => 'Unable to delete image.',
+            'pagination_prev'    => '← Previous',
+            'pagination_next'    => 'Next →',
         ],
 
         'notices' => [
@@ -239,7 +261,7 @@ return [
         'page_editor' => [
             'page_title'          => 'Page editor',
             'settings_title'      => 'Page settings',
-            'nav_label'           => 'Include in navigation menu?',
+            'nav_label'           => 'Include in nav?',
             'nav_yes'             => 'Yes',
             'nav_no'              => 'No',
             'save'                => 'Save page',

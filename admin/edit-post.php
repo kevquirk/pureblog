@@ -29,14 +29,15 @@ if ($isEditing) {
     $existing = get_post_by_slug($slugParam, true);
     if ($existing !== null && $existing !== false) {
         $post = [
-            'title' => $existing['title'] ?? '',
-            'slug' => $existing['slug'] ?? '',
-            'date' => $existing['date'] ?? current_site_datetime_for_storage($config),
-            'status' => $existing['status'] ?? 'draft',
-            'tags' => $existing['tags'] ?? [],
-            'description' => $existing['description'] ?? '',
-            'content' => $existing['content'] ?? '',
-            'layout' => $existing['layout'] ?? '',
+            'title'         => $existing['title'] ?? '',
+            'slug'          => $existing['slug'] ?? '',
+            'date'          => $existing['date'] ?? current_site_datetime_for_storage($config),
+            'status'        => $existing['status'] ?? 'draft',
+            'tags'          => $existing['tags'] ?? [],
+            'description'   => $existing['description'] ?? '',
+            'content'       => $existing['content'] ?? '',
+            'layout'        => $existing['layout'] ?? '',
+            'feature_image' => $existing['feature_image'] ?? '',
         ];
         $originalSlug = $existing['slug'] ?? '';
         $originalExisting = $existing;
@@ -78,7 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $post['status'] = trim($_POST['status'] ?? 'draft');
     $post['content'] = trim($_POST['content'] ?? '');
     $post['description'] = trim($_POST['description'] ?? '');
-    $post['layout'] = trim($_POST['post_layout'] ?? '');
+    $post['layout']        = trim($_POST['post_layout'] ?? '');
+    $post['feature_image'] = trim($_POST['feature_image'] ?? '');
     $tagsInput = trim($_POST['tags'] ?? '');
     $post['tags'] = $tagsInput === '' ? [] : array_values(array_filter(array_map('trim', explode(',', $tagsInput))));
     $originalSlug = trim($_POST['original_slug'] ?? '');
@@ -192,6 +194,7 @@ require __DIR__ . '/../includes/admin-head.php';
                     <input type="hidden" name="original_status" value="<?= e($post['status']) ?>">
                     <input type="hidden" name="original_date" value="<?= e($post['date']) ?>">
                     <input type="hidden" name="post_layout" value="<?= e($currentLayout) ?>">
+                    <input type="hidden" id="feature-image-value" name="feature_image" value="<?= e($post['feature_image'] ?? '') ?>">
                     <?= csrf_field() ?>
 
                     <nav class="editor-actions">
@@ -311,18 +314,29 @@ require __DIR__ . '/../includes/admin-head.php';
                         <?php else: ?>
                             <p><?= e(t('admin.editor.attached_images')) ?></p>
                             <ul class="image-list">
-                            <?php foreach ($images as $image): ?>
-                                <li>
-                                    <img src="<?= e($image['url']) ?>" width="30" height="30" class="image-list-preview" alt="<?= e($image['filename']) ?>" loading="lazy"/>
-                                    <code><?= e($image['filename']) ?></code>
-                                    <button type="button" class="link-button copy-markdown" data-markdown="<?= e($image['markdown']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.editor.copy')) ?></button>
-                                <form method="post" action="<?= base_path() ?>/admin/delete-image.php" class="inline-form" onsubmit="return confirm('<?= e(t('admin.post_editor.delete_image_confirm')) ?>');">
-                                    <input type="hidden" name="slug" value="<?= e($post['slug']) ?>">
-                                    <input type="hidden" name="date" value="<?= e($post['date']) ?>">
-                                    <input type="hidden" name="filename" value="<?= e($image['filename']) ?>">
-                                    <?= csrf_field() ?>
-                                    <button type="submit" class="link-button delete"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></button>
-                                </form>
+                            <?php foreach ($images as $image):
+                                $imageRawPath = '/content/images/' . $post['slug'] . '/' . $image['filename'];
+                                $isFeature    = ($post['feature_image'] ?? '') === $imageRawPath;
+                            ?>
+                                <li<?= $isFeature ? ' class="is-feature"' : '' ?>>
+                                    <div class="image-list-top">
+                                        <img src="<?= e($image['url']) ?>" width="30" height="30" class="image-list-preview" alt="<?= e($image['filename']) ?>" loading="lazy"/>
+                                        <code><?= e($image['filename']) ?></code>
+                                    </div>
+                                    <div class="image-list-actions">
+                                        <label class="feature-image-label">
+                                            <input type="checkbox" class="feature-image-check" data-url="<?= e($imageRawPath) ?>" data-filename="<?= e($image['filename']) ?>"<?= $isFeature ? ' checked' : '' ?>>
+                                            <?= e(t('admin.editor.feature_image')) ?>
+                                        </label>
+                                        <button type="button" class="link-button copy-markdown" data-markdown="<?= e($image['markdown']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.editor.copy')) ?></button>
+                                        <form method="post" action="<?= base_path() ?>/admin/delete-image.php" class="inline-form" onsubmit="return confirm('<?= e(t('admin.post_editor.delete_image_confirm')) ?>');">
+                                            <input type="hidden" name="slug" value="<?= e($post['slug']) ?>">
+                                            <input type="hidden" name="date" value="<?= e($post['date']) ?>">
+                                            <input type="hidden" name="filename" value="<?= e($image['filename']) ?>">
+                                            <?= csrf_field() ?>
+                                            <button type="submit" class="link-button delete"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></button>
+                                        </form>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                             </ul>
@@ -354,9 +368,11 @@ require __DIR__ . '/../includes/admin-head.php';
                 'copied'            => t('admin.editor.js_copied'),
                 'copy'              => t('admin.editor.copy'),
                 'copy_failed'       => t('admin.editor.js_copy_failed'),
-                'save_post_first'   => t('admin.editor.js_save_post_first'),
-                'save_page_first'   => t('admin.editor.js_save_page_first'),
-                'upload_failed'     => t('admin.editor.js_upload_failed'),
+                'save_post_first'          => t('admin.editor.js_save_post_first'),
+                'save_page_first'          => t('admin.editor.js_save_page_first'),
+                'upload_failed'            => t('admin.editor.js_upload_failed'),
+                'feature_image_confirm'    => t('admin.editor.js_feature_image_confirm'),
+                'feature_image_failed'     => t('admin.editor.js_feature_image_failed'),
             ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>

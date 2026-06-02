@@ -165,6 +165,9 @@ unset($_SESSION['admin_action_flash']);
                     </li>
                 <?php endif; ?>
                 <li>
+                    <a href="<?= base_path() ?>/admin/images.php"<?= $adminPath === 'admin/images.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.images')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-image"></use></svg><span><?= e(t('admin.nav.images')) ?></span></a>
+                </li>
+                <li>
                     <a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.settings')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg><span><?= e(t('admin.nav.settings')) ?></span></a>
                     <?php if ($isSettings): ?>
                     <?php

@@ -12,11 +12,20 @@ $headInject = get_contextual_inject($config, 'head', [
 ]);
 $frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
 $ogImagePreferred = $config['assets']['og_image_preferred'] ?? 'banner';
-$ogImage = $config['assets']['og_image'] ?? '';
-if ($ogImage !== '' && $ogImage[0] === '/') {
-    $ogImage = rtrim(get_base_url(), '/') . $ogImage;
+$featureImageRaw  = (is_array($post ?? null) ? ($post['feature_image'] ?? '') : '')
+                 ?: (is_array($page ?? null) ? ($page['feature_image'] ?? '') : '');
+if ($featureImageRaw !== '') {
+    $ogImage = $featureImageRaw[0] === '/'
+        ? rtrim(get_base_url(), '/') . $featureImageRaw
+        : $featureImageRaw;
+    $isSquareOgImage = false;
+} else {
+    $ogImage = $config['assets']['og_image'] ?? '';
+    if ($ogImage !== '' && $ogImage[0] === '/') {
+        $ogImage = rtrim(get_base_url(), '/') . $ogImage;
+    }
+    $isSquareOgImage = $ogImagePreferred === 'square';
 }
-$isSquareOgImage = $ogImagePreferred === 'square';
 ?>
 <!DOCTYPE html>
 <html lang="<?= e($config['language'] ?? 'en') ?>" data-theme="<?= e($mode) ?>">
