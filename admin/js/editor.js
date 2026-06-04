@@ -29,6 +29,19 @@
     spellcheck: true,
   });
 
+  const editorKeyMap = {
+    'Ctrl-B': (editor) => wrapSelection(editor, '**'),
+    'Cmd-B': (editor) => wrapSelection(editor, '**'),
+    'Ctrl-I': (editor) => wrapSelection(editor, '*'),
+    'Cmd-I': (editor) => wrapSelection(editor, '*'),
+    'Ctrl-K': (editor) => insertLink(editor),
+    'Cmd-K': (editor) => insertLink(editor),
+    'Ctrl-S': () => { editorForm?.requestSubmit(); },
+    'Cmd-S': () => { editorForm?.requestSubmit(); },
+  };
+
+  cm.addKeyMap(editorKeyMap);
+
   document.querySelectorAll('textarea[data-layout-markdown]').forEach((textarea) => {
     const layoutCm = CodeMirror.fromTextArea(textarea, {
       mode: { name: 'markdown', highlightFormatting: true, html: true },
@@ -38,19 +51,13 @@
       inputStyle: 'contenteditable',
       spellcheck: true,
     });
+    layoutCm.addKeyMap(editorKeyMap);
     layoutCm.on('change', () => {
       try { layoutCm.setSize(null, 'auto'); } catch (e) {}
+      layoutCm.save();
+      scheduleAutosave();
     });
     try { layoutCm.setSize(null, 'auto'); } catch (e) {}
-  });
-
-  cm.addKeyMap({
-    'Ctrl-B': (editor) => wrapSelection(editor, '**'),
-    'Cmd-B': (editor) => wrapSelection(editor, '**'),
-    'Ctrl-I': (editor) => wrapSelection(editor, '*'),
-    'Cmd-I': (editor) => wrapSelection(editor, '*'),
-    'Ctrl-K': (editor) => insertLink(editor),
-    'Cmd-K': (editor) => insertLink(editor),
   });
 
   function wrapSelection(editor, wrapper) {
