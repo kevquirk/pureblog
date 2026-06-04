@@ -218,7 +218,7 @@ unset($_SESSION['admin_action_flash']);
                         </form>
                     </li>
                 <?php endforeach; ?>
-                <li>
+                <li class="logout-item">
                     <form method="post" action="<?= base_path() ?>/admin/logout.php" class="inline-form">
                         <?= csrf_field() ?>
                         <button type="submit" class="link-button delete logout-button" title="<?= e(t('admin.nav.log_out')) ?>">

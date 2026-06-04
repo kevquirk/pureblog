@@ -389,9 +389,9 @@ html[data-sidebar="collapsed"] .admin-nav .sidebar-subnav .link-button {
     opacity: 1;
 }
 
-ul.admin-nav-list .link-button.delete.logout-button {
-  position: absolute;
-  bottom: 1rem;
+ul.admin-nav-list .logout-item {
+    margin-top: auto;
+    margin-bottom: 1rem;
 }
 
 #sidebar-new-post-button:hover {
