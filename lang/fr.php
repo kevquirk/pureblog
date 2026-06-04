@@ -36,11 +36,11 @@ return [
     'frontend' => [
         'nav_home'              => 'Accueil',
         'site_title_fallback'   => 'Page',
-        'pagination_newer'      => '⬅ Articles plus récents',
-        'pagination_older'      => 'Articles plus anciens ➡',
+        'pagination_newer'      => '⬅ Articles plus récents',
+        'pagination_older'      => 'Articles plus anciens ➡',
         'no_posts'              => 'Aucun article pour l\'instant, commencez à écrire! 🙃',
-        'prev_post'             => '⬅ Article précédent',
-        'next_post'             => 'Article suivant ➡',
+        'prev_post'             => '⬅ Article précédent',
+        'next_post'             => 'Article suivant ➡',
         'post_not_found'        => 'Article introuvable',
         'post_not_found_detail' => 'L\'article que vous avez demandé est introuvable.',
         'search_label'          => 'Rechercher des articles',
@@ -48,15 +48,15 @@ return [
         'search_button'         => 'Rechercher',
         'search_empty'          => 'Entrez un terme de recherche pour trouver des articles.',
         'no_posts_found'        => 'Aucun article trouvé pour «{search}».',
-        'search_result'         => '{n} résultat trouvé.',
-        'search_results'        => '{n} résultats trouvés.',
+        'search_result'         => '{n} résultat trouvé.',
+        'search_results'        => '{n} résultats trouvés.',
         'page_not_found'        => 'Page introuvable',
         'page_not_found_detail' => 'La page que vous avez demandée est introuvable.',
         'no_tag_selected'       => 'Aucune étiquette sélectionnée.',
         'no_posts_for_tag'      => 'Aucun article trouvé pour cette étiquette.',
         'edit_post'             => 'Éditer l\'article',
         'edit_page'             => 'Éditer la page',
-        'reading_time'          => '{n} minutes de lecture',
+        'reading_time'          => '{n} minutes de lecture',
     ],
     // -------------------------------------------------------------------------
     // Admin
@@ -72,7 +72,7 @@ return [
             'log_out'        => 'Déconnexion',
             'cache_cleared'  => 'Cache vidé.',
             'invalid_action' => 'Action d\'administration invalide.',
-            'images'         => 'Images', // ENGLISH PLACEHOLDER
+            'images'         => 'Images',
         ],
 
         'login' => [
@@ -84,8 +84,8 @@ return [
             'remember_me'     => 'Se souvenir de moi',
             'submit'          => 'Se connecter',
             'error_invalid'   => 'Identifiants incorrects.',
-            'error_lockout'   => 'Trop de tentatives échouées. Réessayez dans {minutes} minutes.',
-            'error_lockout_5' => 'Trop de tentatives échouées. Réessayez dans 5 minutes.',
+            'error_lockout'   => 'Trop de tentatives échouées. Réessayez dans {minutes} minutes.',
+            'error_lockout_5' => 'Trop de tentatives échouées. Réessayez dans 5 minutes.',
         ],
 
         'dashboard' => [
@@ -112,12 +112,12 @@ return [
             'version_uptodate'     => 'À jour, bravo 👍🏻',
             'version_update_link'  => '{latest} disponible - mettre à jour maintenant!',
             'time_just_now'             => 'À l\'instant',
-            'time_minute_ago'           => 'Il y a {n} minute',
-            'time_minutes_ago'          => 'Il y a {n} minutes',
-            'time_hour_ago'             => 'Il y a {n} heure',
-            'time_hours_ago'            => 'Il y a {n} heures',
-            'time_day_ago'              => 'Il y a {n} jour',
-            'time_days_ago'             => 'Il y a {n} jours',
+            'time_minute_ago'           => 'Il y a {n} minute',
+            'time_minutes_ago'          => 'Il y a {n} minutes',
+            'time_hour_ago'             => 'Il y a {n} heure',
+            'time_hours_ago'            => 'Il y a {n} heures',
+            'time_day_ago'              => 'Il y a {n} jour',
+            'time_days_ago'             => 'Il y a {n} jours',
         ],
 
         'content' => [
@@ -148,13 +148,13 @@ return [
             'filter_apply'          => 'Appliquer',
             'filter_active'         => 'Filtré par: {label}.',
             'filter_clear'          => 'Effacer',
-            'filter_recent'         => '12 derniers mois',
+            'filter_recent'         => '12 derniers mois',
             'notice_post_saved'     => 'Article enregistré.',
             'notice_post_deleted'   => 'Article supprimé.',
             'notice_page_saved'     => 'Page enregistrée.',
             'notice_page_deleted'   => 'Page supprimée.',
-            'pagination_newer'      => '← Articles plus récents',
-            'pagination_older'      => 'Articles plus anciens →',
+            'pagination_newer'      => '⬅ Articles plus récents',
+            'pagination_older'      => 'Articles plus anciens ➡',
             'new_page'              => 'Nouvelle page',
             'no_pages'              => 'Aucune page pour l\'instant.',
         ],
@@ -222,34 +222,34 @@ return [
             'js_save_post_first'  => 'Enregistrez d\'abord l\'article pour qu\'il ait un slug et une date.',
             'js_save_page_first'  => 'Enregistrez d\'abord la page pour qu\'elle ait un slug.',
             'js_upload_failed'           => 'Échec du téléversement de l\'image.',
-            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
-            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
-            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'feature_image'              => 'Image mise en avant',
+            'js_feature_image_confirm'   => 'Remplacer l\'image mise en avant par «{filename}»?',
+            'js_feature_image_failed'    => 'Échec de la mise à jour de l\'image mise en avant.',
         ],
 
         'images' => [
-            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
-            'heading'            => 'Images', // ENGLISH PLACEHOLDER
-            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
-            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
-            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
-            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
-            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
-            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
-            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
-            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
-            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
-            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
-            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
-            'pagination_prev'    => '← Previous', // ENGLISH PLACEHOLDER
-            'pagination_next'    => 'Next →', // ENGLISH PLACEHOLDER
+            'page_title'         => 'Images - Pure Blog',
+            'heading'            => 'Images',
+            'no_images'          => 'Aucune image envoyée pour le moment.',
+            'search_label'       => 'Recherche d\'images',
+            'search_placeholder' => 'Recherche par nom de fichier…',
+            'clear_search'       => 'Effacer la recherche',
+            'deleted'            => 'Image effacée.',
+            'delete_confirm'     => 'Effacer cette image?',
+            'delete_used_warning'=> 'Cette image est utilisée dans le contenus suivants. Vous devriez la retirer des ces contenus pour éviter les liens cassés.',
+            'delete_anyway'      => 'Supprimer quand même',
+            'cancel'             => 'Annuler',
+            'slug_label'         => 'Répertoire:',
+            'error_delete'       => 'Écherc de suppression de cette image.',
+            'pagination_prev'    => '⬅ Précédentes',
+            'pagination_next'    => 'Suivantes ➡',
         ],
 
         'notices' => [
         ],
 
         'post_editor' => [
-            'page_title'           => 'Éditeur d\'article',
+            'page_title'           => 'Éditeur d\'article - Pure Blog',
             'settings_title'       => 'Paramètres de l\'article',
             'tags_label'           => 'Tags (séparés par des virgules)',
             'save'                 => 'Enregistrer l\'article',
@@ -262,7 +262,7 @@ return [
         ],
 
         'page_editor' => [
-            'page_title'           => 'Éditeur de page',
+            'page_title'           => 'Éditeur de page - Pure Blog',
             'settings_title'       => 'Paramètres de la page',
             'nav_label'            => 'Inclure dans le menu de navigation?',
             'nav_yes'              => 'Oui',
@@ -378,7 +378,7 @@ return [
                 'search_page'         => 'Page de recherche',
                 'search_page_none'    => 'Aucune (désactivée)',
                 'error_search_page'       => 'La page de recherche doit référencer une page existante.',
-                'notice_search_missing'   => 'La page de recherche par défaut ("{slug}") n\'existe pas encore.',
+                'notice_search_missing'   => 'La page de recherche par défaut («{slug}») n\'existe pas encore.',
                 'notice_search_created'   => 'Page de recherche par défaut créée.',
                 'create_search_page'      => 'Créer la page de recherche par défaut',
                 'dismiss_search_notice'   => 'Ignorer',
