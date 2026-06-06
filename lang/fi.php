@@ -359,6 +359,7 @@ return [
                 'admin_homepage_dashboard'  => 'Hallintapaneeli',
                 'admin_homepage_content'    => 'Sisältö',
                 'admin_hide_dashboard'      => 'Piilota hallintapaneeli navigaatiopalkista',
+                'enable_blog_posts'         => 'Ota blogiominaisuudet käyttöön (julkaisut, avainsanat, tilastot)',
                 'cache_section'      => 'Välimuisti',
                 'cache_enable'       => 'Salli sivuston välimuisti',
                 'rss_ttl'            => 'RSS-välimuistin kesto',

@@ -359,6 +359,7 @@ return [
                 'admin_homepage_dashboard'  => 'Panel de control',
                 'admin_homepage_content'    => 'Páginas',
                 'admin_hide_dashboard'      => 'Ocultar el Panel de control de la navegación',
+                'enable_blog_posts'         => 'Habilitar funciones de blog (entradas, etiquetas, estadísticas)',
                 'cache_section'       => 'Caché',
                 'cache_enable'        => 'Activar caché de páginas',
                 'rss_ttl'             => 'Duración de la caché RSS',

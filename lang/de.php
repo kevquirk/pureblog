@@ -375,6 +375,7 @@ return [
                 'admin_homepage_dashboard'  => 'Dashboard',
                 'admin_homepage_content'    => 'Inhalte',
                 'admin_hide_dashboard'      => 'Dashboard aus der Navigation ausblenden',
+                'enable_blog_posts'         => 'Blog-Funktionen aktivieren (Beiträge, Tags, Statistiken)',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Seiten-Cache aktivieren',
                 'rss_ttl'            => 'RSS-Cache-Dauer',

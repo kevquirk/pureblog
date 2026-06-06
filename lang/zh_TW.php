@@ -347,6 +347,7 @@ return [
                 'admin_homepage_dashboard'  => '儀表板',
                 'admin_homepage_content'    => '內容',
                 'admin_hide_dashboard'      => '在導覽中隱藏儀表板',
+                'enable_blog_posts'         => '啟用部落格功能 (文章、標籤、統計)',
                 'cache_section'      => '快取',
                 'cache_enable'       => '啟用頁面快取',
                 'rss_ttl'            => 'RSS 快取時間',

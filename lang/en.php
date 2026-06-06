@@ -355,6 +355,7 @@ return [
                 'admin_homepage_dashboard'  => 'Dashboard',
                 'admin_homepage_content'    => 'Content',
                 'admin_hide_dashboard'      => 'Hide Dashboard from navigation',
+                'enable_blog_posts'         => 'Enable blog features (posts, tags, stats)',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Enable page cache',
                 'rss_ttl'            => 'RSS cache duration',

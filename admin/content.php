@@ -6,9 +6,13 @@ require __DIR__ . '/bootstrap.php';
 
 $config = load_config();
 $availableLayouts = get_layouts();
+$blogPostsEnabled = $config['enable_blog_posts'] ?? true;
 
-$tab = (string) ($_GET['tab'] ?? 'posts');
-if (!in_array($tab, ['posts', 'pages'], true)) {
+$defaultTab = $blogPostsEnabled ? 'posts' : 'pages';
+$tab = (string) ($_GET['tab'] ?? $defaultTab);
+if (!$blogPostsEnabled) {
+    $tab = 'pages';
+} elseif (!in_array($tab, ['posts', 'pages'], true)) {
     $tab = 'posts';
 }
 

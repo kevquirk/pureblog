@@ -9,7 +9,9 @@ start_admin_session();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    header('Location: ' . base_path() . '/admin/dashboard.php');
+    $config = load_config();
+    $blogPostsEnabled = $config['enable_blog_posts'] ?? true;
+    header('Location: ' . base_path() . '/admin/' . ($blogPostsEnabled ? 'dashboard.php' : 'content.php'));
     exit;
 }
 

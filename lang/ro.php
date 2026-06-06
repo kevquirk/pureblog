@@ -359,6 +359,7 @@ return [
                 'admin_homepage_dashboard'  => 'Panou de bord',
                 'admin_homepage_content'    => 'Pagini',
                 'admin_hide_dashboard'      => 'Ascunde Panoul de bord din navigare',
+                'enable_blog_posts'         => 'Activați funcțiile de blog (articole, etichete, statistici)',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Activează cache-ul paginii',
                 'rss_ttl'            => 'Durata cache-ului RSS',

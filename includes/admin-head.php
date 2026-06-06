@@ -7,6 +7,7 @@ if (!function_exists('t')) {
     function t(string $key, array $replacements = []): string { return $key; }
 }
 $adminTitle = $adminTitle ?? 'Admin - Pureblog';
+$blogPostsEnabled = $config['enable_blog_posts'] ?? true;
 $fontStack = $fontStack ?? font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $adminColorMode = $adminColorMode ?? ($config['theme']['admin_color_mode'] ?? 'auto');
 $extraHead = $extraHead ?? '';
@@ -31,7 +32,8 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
     }
     $config['search_page_notified'] = true;
     save_config($config);
-    header('Location: ' . ($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php'));
+    $defaultAdminLanding = base_path() . '/admin/' . ($blogPostsEnabled ? 'dashboard.php' : 'content.php');
+    header('Location: ' . ($_SERVER['REQUEST_URI'] ?? $defaultAdminLanding));
     exit;
 }
 
@@ -47,7 +49,8 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
     } else {
         $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => t('admin.nav.invalid_action')];
     }
-    $redirectTo = (string) ($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php');
+    $defaultAdminLanding = base_path() . '/admin/' . ($blogPostsEnabled ? 'dashboard.php' : 'content.php');
+    $redirectTo = (string) ($_SERVER['REQUEST_URI'] ?? $defaultAdminLanding);
     header('Location: ' . $redirectTo);
     exit;
 }
@@ -111,8 +114,9 @@ unset($_SESSION['admin_action_flash']);
         $isSettings = str_starts_with($adminPath, 'admin/settings');
         ?>
         <?php
-        $adminHomepageSetting = $config['admin_homepage'] ?? 'dashboard';
-        $adminHideDashboard = !empty($config['admin_hide_dashboard']) && $adminHomepageSetting === 'content';
+        $adminHomepageSetting = $blogPostsEnabled ? ($config['admin_homepage'] ?? 'dashboard') : 'content';
+        $adminHideDashboard = !$blogPostsEnabled || (!empty($config['admin_hide_dashboard']) && $adminHomepageSetting === 'content');
+        $defaultTab = $blogPostsEnabled ? 'posts' : 'pages';
         ?>
         <nav class="admin-nav" aria-label="Admin">
             <div class="sidebar-header">
@@ -127,7 +131,12 @@ unset($_SESSION['admin_action_flash']);
             <?php $sidebarLayouts = get_layouts(); ?>
             <ul class="admin-nav-list">
                 <li>
-                    <?php if ($sidebarLayouts): ?>
+                    <?php if (!$blogPostsEnabled): ?>
+                        <a class="save link-button" href="<?= base_path() ?>/admin/edit-page.php?action=new" title="<?= e(t('admin.pages.new_page')) ?>">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
+                            <span><?= e(t('admin.pages.new_page')) ?></span>
+                        </a>
+                    <?php elseif ($sidebarLayouts): ?>
                         <button type="button" id="sidebar-new-post-button" class="save link-button js-open-layout-picker" title="<?= e(t('admin.dashboard.write_post')) ?>">
                             <svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg>
                             <span><?= e(t('admin.dashboard.write_post')) ?></span>
@@ -142,10 +151,10 @@ unset($_SESSION['admin_action_flash']);
                 <?php if ($adminHomepageSetting === 'content'): ?>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php'): ?>
+                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
                         <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? 'posts') === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? 'posts') === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
                         </ul>
                         <?php endif; ?>
                     </li>
@@ -156,10 +165,10 @@ unset($_SESSION['admin_action_flash']);
                     <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php'): ?>
+                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
                         <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? 'posts') === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? 'posts') === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
+                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
                         </ul>
                         <?php endif; ?>
                     </li>
@@ -190,7 +199,7 @@ unset($_SESSION['admin_action_flash']);
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/" title="<?= e(t('admin.nav.view_site')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg><span><?= e(t('admin.nav.view_site')) ?></span></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
                     <li>
-                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? (base_path() . '/admin/' . ($blogPostsEnabled ? 'dashboard.php' : 'content.php'))) ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="clear_cache">
                             <button class="delete link-button" type="submit" title="<?= e(t('admin.nav.clear_cache')) ?>">
@@ -206,7 +215,7 @@ unset($_SESSION['admin_action_flash']);
                     $confirmAttr = $actionButton['confirm'] !== '' ? ' onclick="return confirm(\'' . e($actionButton['confirm']) . '\');"' : '';
                     ?>
                     <li>
-                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? '/admin/dashboard.php') ?>" class="inline-form">
+                        <form method="post" action="<?= e($_SERVER['REQUEST_URI'] ?? (base_path() . '/admin/' . ($blogPostsEnabled ? 'dashboard.php' : 'content.php'))) ?>" class="inline-form">
                             <?= csrf_field() ?>
                             <input type="hidden" name="admin_action_id" value="<?= e($actionButton['id']) ?>">
                             <button type="submit" class="<?= e($buttonClass) ?>"<?= $confirmAttr ?> title="<?= e($actionButton['label']) ?>">

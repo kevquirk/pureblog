@@ -5,6 +5,11 @@ declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
 
 $config = load_config();
+$blogPostsEnabled = $config['enable_blog_posts'] ?? true;
+if (!$blogPostsEnabled) {
+    header('Location: ' . base_path() . '/admin/content.php');
+    exit;
+}
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
 $errors = [];

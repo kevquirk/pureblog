@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $rssttl = max(0, (int) ($_POST['rss_ttl'] ?? 3600));
     $adminHomepage = in_array($_POST['admin_homepage'] ?? '', ['dashboard', 'content'], true) ? $_POST['admin_homepage'] : 'dashboard';
     $adminHideDashboard = $adminHomepage === 'content' && !empty($_POST['admin_hide_dashboard']);
+    $enableBlogPosts = ($blogPageSlug === $hiddenBlogValue) ? !empty($_POST['enable_blog_posts']) : true;
 
     if ($siteTitle === '') {
         $errors[] = t('admin.settings.site.error_title');
@@ -95,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['cache']['rss_ttl'] = $rssttl;
         $config['admin_homepage'] = $adminHomepage;
         $config['admin_hide_dashboard'] = $adminHideDashboard;
+        $config['enable_blog_posts'] = $enableBlogPosts;
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
@@ -225,6 +227,12 @@ require __DIR__ . '/../includes/admin-head.php';
                         </option>
                     <?php endforeach; ?>
                 </select>
+                <div id="enable_blog_posts_container" style="<?= ($config['blog_page_slug'] ?? '') === $hiddenBlogValue ? '' : 'display: none;' ?> margin-top: -0.75rem; margin-bottom: 1.5rem;">
+                    <label class="inline-checkbox" for="enable_blog_posts">
+                        <input type="checkbox" id="enable_blog_posts" name="enable_blog_posts"<?= ($config['enable_blog_posts'] ?? true) ? ' checked' : '' ?>>
+                        <?= e(t('admin.settings.site.enable_blog_posts')) ?>
+                    </label>
+                </div>
 
                 <label for="search_page_slug"><?= e(t('admin.settings.site.search_page')) ?></label>
                 <select id="search_page_slug" name="search_page_slug">
@@ -313,6 +321,18 @@ require __DIR__ . '/../includes/admin-head.php';
     adminHomepageSelect.addEventListener('change', function () {
         hideDashboardCheckbox.disabled = this.value !== 'content';
         if (hideDashboardCheckbox.disabled) hideDashboardCheckbox.checked = false;
+    });
+
+    const blogPageSlugSelect = document.getElementById('blog_page_slug');
+    const enableBlogPostsContainer = document.getElementById('enable_blog_posts_container');
+    const enableBlogPostsCheckbox = document.getElementById('enable_blog_posts');
+    blogPageSlugSelect.addEventListener('change', function () {
+        if (this.value === '__hidden__') {
+            enableBlogPostsContainer.style.display = '';
+        } else {
+            enableBlogPostsContainer.style.display = 'none';
+            enableBlogPostsCheckbox.checked = true;
+        }
     });
 </script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

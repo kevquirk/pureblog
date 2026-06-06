@@ -6,6 +6,11 @@ require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/../includes/updater.php';
 
 $config = load_config();
+$blogPostsEnabled = $config['enable_blog_posts'] ?? true;
+if (!$blogPostsEnabled) {
+    header('Location: ' . base_path() . '/admin/content.php');
+    exit;
+}
 
 $publishedPosts = array_values(array_filter(get_all_posts(true), static fn(array $post): bool => ($post['status'] ?? 'draft') === 'published'));
 $publishedCount = count($publishedPosts);

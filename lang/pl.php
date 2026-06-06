@@ -358,6 +358,7 @@ return [
                 'admin_homepage_dashboard'  => 'Panel sterowania',
                 'admin_homepage_content'    => 'Zawartość',
                 'admin_hide_dashboard'      => 'Ukryj panel sterowania',
+                'enable_blog_posts'         => 'Włącz funkcje bloga (posty, tagi, statystyki)',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Włącz cache strony',
                 'rss_ttl'            => 'Czas przechowywania cache RSS',

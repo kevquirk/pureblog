@@ -359,6 +359,7 @@ return [
                 'admin_homepage_dashboard'  => 'Dashboard',
                 'admin_homepage_content'    => "Pagina's",
                 'admin_hide_dashboard'      => 'Dashboard verbergen in navigatie',
+                'enable_blog_posts'         => 'Blogfuncties inschakelen (berichten, tags, statistieken)',
                 'cache_section'      => 'Cache',
                 'cache_enable'       => 'Pagina-cache aanzetten',
                 'rss_ttl'            => 'RSS-cache tijdsduur',

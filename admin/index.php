@@ -20,7 +20,8 @@ $lockoutUntil = $failureState['lockout_until'];
 $isLockedOut = $lockoutUntil > $now;
 
 if (is_admin_logged_in()) {
-    $adminLanding = ($config['admin_homepage'] ?? 'dashboard') === 'content' ? 'content.php' : 'dashboard.php';
+    $blogPostsEnabled = $config['enable_blog_posts'] ?? true;
+    $adminLanding = (!$blogPostsEnabled || ($config['admin_homepage'] ?? 'dashboard') === 'content') ? 'content.php' : 'dashboard.php';
     header('Location: ' . base_path() . '/admin/' . $adminLanding);
     exit;
 }
@@ -44,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['remember_me'])) {
                 set_remember_me_cookie();
             }
-            $adminLanding = ($config['admin_homepage'] ?? 'dashboard') === 'content' ? 'content.php' : 'dashboard.php';
+            $blogPostsEnabled = $config['enable_blog_posts'] ?? true;
+            $adminLanding = (!$blogPostsEnabled || ($config['admin_homepage'] ?? 'dashboard') === 'content') ? 'content.php' : 'dashboard.php';
             header('Location: ' . base_path() . '/admin/' . $adminLanding);
             exit;
         }

@@ -358,6 +358,7 @@ return [
                 'admin_homepage_dashboard'  => 'Tableau de bord',
                 'admin_homepage_content'    => 'Pages',
                 'admin_hide_dashboard'      => 'Masquer le tableau de bord de la navigation',
+                'enable_blog_posts'         => 'Activer les fonctionnalités de blog (articles, tags, statistiques)',
                 'cache_section'       => 'Cache',
                 'cache_enable'        => 'Activer le cache de pages',
                 'rss_ttl'             => 'Durée du cache RSS',
