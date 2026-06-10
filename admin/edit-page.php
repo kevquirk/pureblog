@@ -131,9 +131,9 @@ $codeMirror = 'markdown';
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main>
-        <h1><?= e(t('admin.page_editor.page_title')) ?></h1>
         <div class="editor-grid">
             <section class="editor-main">
+                <h1><?= e(t('admin.page_editor.page_title')) ?></h1>
                 <?php if ($errors): ?>
                     <div class="notice delete">
                         <ul>
@@ -167,6 +167,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             <svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg>
                             <?= e(t('admin.page_editor.preview')) ?>
                         </button>
+
                         <?php if ($isEditing && $page['slug'] !== ''): ?>
                             <button type="submit" form="delete-page-form" class="link-button delete" aria-label="<?= e(t('admin.page_editor.delete')) ?>" onclick="return confirm('<?= e(t('admin.page_editor.delete_confirm')) ?>');">
                                 <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
@@ -191,14 +192,20 @@ require __DIR__ . '/../includes/admin-head.php';
                 <?php endif; ?>
             </section>
             <aside class="editor-sidebar">
+                <div class="sidebar-header">
+                    <button type="button" class="sidebar-toggle" id="sidebar-toggle-tab" aria-label="<?= e(t('admin.page_editor.settings_title')) ?>" title="<?= e(t('admin.page_editor.settings_title')) ?>">
+                        <svg class="icon close-icon" aria-hidden="true"><use href="#icon-panel-right-close"></use></svg>
+                        <svg class="icon open-icon" aria-hidden="true"><use href="#icon-settings"></use></svg>
+                    </button>
+                    <span class="sidebar-title"><?= e(t('admin.page_editor.settings_title')) ?></span>
+                </div>
                 <section class="sidebar-section">
                     <div class="section-divider">
-                        <span class="title"><?= e(t('admin.page_editor.settings_title')) ?></span>
                         <label for="slug"><?= e(t('admin.editor.slug_label')) ?></label>
                         <input type="text" id="slug" name="slug" form="page-form" value="<?= e($page['slug']) ?>" autocomplete="off">
 
                         <label for="description"><?= e(t('admin.editor.description_label')) ?></label>
-                        <input type="text" id="description" name="description" form="page-form" value="<?= e($page['description']) ?>" autocomplete="off">
+                        <textarea id="description" name="description" form="page-form" rows="3" autocomplete="off"><?= e($page['description']) ?></textarea>
 
                         <label for="status"><?= e(t('admin.editor.status_label')) ?></label>
                         <select id="status" name="status" form="page-form">
@@ -216,7 +223,7 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <section class="sidebar-section">
                     <div class="section-divider">
-                        <span class="title"><?= e(t('admin.editor.images_title')) ?></span>
+                    <span class="images-title"><?= e(t('admin.editor.images_title')) ?></span>
                     <form method="post" action="<?= base_path() ?>/admin/upload-image.php" enctype="multipart/form-data" class="upload-form">
                         <input type="hidden" name="slug" value="<?= e($page['slug']) ?>">
                         <input type="hidden" name="editor_type" value="page">

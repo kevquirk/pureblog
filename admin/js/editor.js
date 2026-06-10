@@ -520,4 +520,57 @@
       }
     }
   });
+
+  // Sidebar Pop-out Toggle Logic
+  const sidebarToggleTab = document.getElementById('sidebar-toggle-tab');
+  const sidebarElement = document.querySelector('.editor-sidebar');
+
+  if (sidebarToggleTab && sidebarElement) {
+    // Dynamically inject the mobile backdrop overlay if not present
+    let sidebarOverlay = document.getElementById('editor-sidebar-overlay');
+    if (!sidebarOverlay) {
+      sidebarOverlay = document.createElement('div');
+      sidebarOverlay.id = 'editor-sidebar-overlay';
+      sidebarOverlay.className = 'editor-sidebar-overlay';
+      document.body.appendChild(sidebarOverlay);
+    }
+
+    const isSidebarOpenKey = `${config.editorType || 'editor'}:sidebar-open`;
+
+    const setSidebarOpenState = (isOpen) => {
+      document.body.classList.toggle('editor-sidebar-open', isOpen);
+      localStorage.setItem(isSidebarOpenKey, isOpen ? 'true' : 'false');
+      
+      // Refresh CodeMirror layout so it resizes correctly as the grid space scales
+      setTimeout(() => {
+        try {
+          cm.refresh();
+          document.querySelectorAll('textarea[data-layout-markdown]').forEach(t => {
+            t.CodeMirror?.refresh();
+          });
+        } catch (e) {}
+      }, 260); // slightly longer than CSS transition (0.25s)
+    };
+
+    // Initialize sidebar state from localStorage (defaulting to true/open on desktop, closed on mobile/tablet)
+    const savedState = localStorage.getItem(isSidebarOpenKey);
+    const isSmallScreen = window.innerWidth < 1025;
+
+    if (isSmallScreen || savedState === 'false') {
+      setSidebarOpenState(false);
+    } else {
+      setSidebarOpenState(true);
+    }
+
+    sidebarToggleTab.addEventListener('click', () => {
+      document.body.classList.add('sidebar-ready');
+      const isOpen = document.body.classList.contains('editor-sidebar-open');
+      setSidebarOpenState(!isOpen);
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      document.body.classList.add('sidebar-ready');
+      setSidebarOpenState(false);
+    });
+  }
 })();
