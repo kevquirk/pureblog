@@ -117,6 +117,7 @@
     --orange: #a50;
     --code-selection-bg: rgba(13, 71, 161, 0.2);
     --code-active-line-bg: rgba(0, 0, 0, 0.04);
+    --sidebar-width: 20rem;
 }
 
 html[data-admin-theme="dark"] {
@@ -1305,10 +1306,6 @@ td {
     background: transparent;
 }
 
-:root {
-    --sidebar-width: 20rem;
-}
-
 @media (max-width: 400px) {
     :root {
         --sidebar-width: 100%;
@@ -1471,7 +1468,8 @@ body.sidebar-ready .editor-grid {
         display: none !important;
     }
 
-    body.editor-sidebar-open .editor-grid {
+    body.editor-sidebar-open .editor-grid,
+    body.editor-sidebar-open footer {
         padding-right: var(--sidebar-width);
     }
 }
