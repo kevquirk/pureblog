@@ -77,7 +77,7 @@ return [
             'log_out'       => 'Abmelden',
             'cache_cleared' => 'Cache geleert.',
             'invalid_action'=> 'Ungültige Admin-Aktion.',
-            'images'        => 'Images', // ENGLISH PLACEHOLDER
+            'images'        => 'Bilder',
         ],
 
 
@@ -232,27 +232,27 @@ return [
             'js_save_post_first'  => 'Beitrag zuerst speichern, damit er einen Slug und ein Datum hat.',
             'js_save_page_first'  => 'Seite zuerst speichern, damit sie einen Slug hat.',
             'js_upload_failed'           => 'Bild-Upload fehlgeschlagen.',
-            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
-            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
-            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'feature_image'              => 'Titelbild',
+            'js_feature_image_confirm'   => 'Das aktuelle Titelbild durch „{filename}“ ersetzen?',
+            'js_feature_image_failed'    => 'Aktualisieren des Titelbilds fehlgeschlagen.',
         ],
 
         'images' => [
-            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
-            'heading'            => 'Images', // ENGLISH PLACEHOLDER
-            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
-            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
-            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
-            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
-            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
-            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
-            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
-            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
-            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
-            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
-            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
-            'pagination_prev'    => '⬅ Previous', // ENGLISH PLACEHOLDER
-            'pagination_next'    => 'Next ➡', // ENGLISH PLACEHOLDER
+            'page_title'         => 'Bilder - Pure-Blog-Verwaltung',
+            'heading'            => 'Bilder',
+            'no_images'          => 'Noch keine Bilder hochgeladen.',
+            'search_label'       => 'Bilder suchen',
+            'search_placeholder' => 'Nach Dateiname suchen …',
+            'clear_search'       => 'Suche löschen',
+            'deleted'            => 'Bild gelöscht.',
+            'delete_confirm'     => 'Dieses Bild löschen?',
+            'delete_used_warning'=> 'Dieses Bild wird im folgenden Inhalt verwendet. Sie sollten es entfernen, um defekte Links zu vermeiden.',
+            'delete_anyway'      => 'Trotzdem löschen',
+            'cancel'             => 'Abbrechen',
+            'slug_label'         => 'Ordner:',
+            'error_delete'       => 'Konnte Bild nicht löschen.',
+            'pagination_prev'    => '⬅ Vorherige',
+            'pagination_next'    => 'Nächste ➡',
         ],
 
         'notices' => [
