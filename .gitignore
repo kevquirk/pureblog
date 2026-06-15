@@ -1,8 +1,5 @@
 /backup/
 /cache/
-.claude/
 /vendor/
-.phpunit.result.cache
-.phpunit.cache/
 .DS_Store
 content/posts/.scheduler.lock
