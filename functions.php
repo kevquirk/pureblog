@@ -100,6 +100,10 @@ function default_config(): array
             'og_image' => '/assets/images/og-image.png',
             'og_image_preferred' => 'banner',
         ],
+        'community' => [
+            'purecomments_enabled' => false,
+            'purecomments_url' => '',
+        ],
     ];
 }
 

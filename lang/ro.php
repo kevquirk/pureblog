@@ -394,6 +394,11 @@ return [
                 'tip_one_per_line'       => 'unul pe linie',
                 'tip_optional'           => 'opțional',
                 'tip_rss_ttl'            => 'secunde, 0 pentru dezactivare',
+                'community_section'      => 'Community',
+                'purecomments_enable'    => 'Enable Pure Comments',
+                'purecomments_url'       => 'Pure Comments URL',
+                'error_purecomments_url' => 'Pure Comments URL is required when Pure Comments is enabled.',
+                'error_purecomments_url_invalid' => 'Pure Comments URL must be a valid URL.',
             ],
 
             'user' => [

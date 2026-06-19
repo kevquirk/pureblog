@@ -8,6 +8,11 @@ $post = $post ?? [];
     <p class="tag-list"><svg class="icon" aria-hidden="true"><use href="#icon-tag"></use></svg> <?= render_tag_links($post['tags']) ?></p>
 <?php endif; ?>
 
+<?php if (!empty($config['community']['purecomments_enabled']) && !empty($config['community']['purecomments_url'])): ?>
+    <div id="comments" data-post-slug="<?= e((string) ($post['slug'] ?? '')) ?>"></div>
+    <script src="<?= e($config['community']['purecomments_url']) ?>/public/embed.js" defer></script>
+<?php endif; ?>
+
 <div class="post-nav">
   <div>
     <?php if (!empty($previous_post)): ?>

@@ -410,6 +410,11 @@ return [
                 'tip_one_per_line'       => 'eine pro Zeile',
                 'tip_optional'           => 'optional',
                 'tip_rss_ttl'            => 'Sekunden, 0 zum Deaktivieren',
+                'community_section'      => 'Community',
+                'purecomments_enable'    => 'Enable Pure Comments',
+                'purecomments_url'       => 'Pure Comments URL',
+                'error_purecomments_url' => 'Pure Comments URL is required when Pure Comments is enabled.',
+                'error_purecomments_url_invalid' => 'Pure Comments URL must be a valid URL.',
             ],
 
 

@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $adminHomepage = in_array($_POST['admin_homepage'] ?? '', ['dashboard', 'content'], true) ? $_POST['admin_homepage'] : 'dashboard';
     $adminHideDashboard = $adminHomepage === 'content' && !empty($_POST['admin_hide_dashboard']);
     $enableBlogPosts = ($blogPageSlug === $hiddenBlogValue) ? !empty($_POST['enable_blog_posts']) : true;
+    $purecommentsEnabled = !empty($_POST['purecomments_enabled']);
+    $purecommentsUrl = trim($_POST['purecomments_url'] ?? '');
 
     if ($siteTitle === '') {
         $errors[] = t('admin.settings.site.error_title');
@@ -71,6 +73,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $errors[] = t('admin.settings.site.error_og_format');
     }
 
+    if ($purecommentsEnabled) {
+        if ($purecommentsUrl === '') {
+            $errors[] = t('admin.settings.site.error_purecomments_url');
+        } elseif (!filter_var($purecommentsUrl, FILTER_VALIDATE_URL)) {
+            $errors[] = t('admin.settings.site.error_purecomments_url_invalid');
+        }
+    }
+
     if (!$errors) {
         $config['site_title'] = $siteTitle;
         $config['site_tagline'] = $siteTagline;
@@ -97,6 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['admin_homepage'] = $adminHomepage;
         $config['admin_hide_dashboard'] = $adminHideDashboard;
         $config['enable_blog_posts'] = $enableBlogPosts;
+        $config['community']['purecomments_enabled'] = $purecommentsEnabled;
+        $config['community']['purecomments_url'] = rtrim($purecommentsUrl, '/');
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
@@ -273,12 +285,25 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
 
             <section class="section-divider">
+                <span class="title"><?= e(t('admin.settings.site.community_section')) ?></span>
+                <label class="inline-checkbox" for="purecomments_enabled">
+                    <input type="checkbox" id="purecomments_enabled" name="purecomments_enabled"<?= !empty($config['community']['purecomments_enabled']) ? ' checked' : '' ?>>
+                    <?= e(t('admin.settings.site.purecomments_enable')) ?>
+                </label>
+
+                <div id="purecomments_url_container" style="<?= !empty($config['community']['purecomments_enabled']) ? '' : 'display: none;' ?> margin-top: -0.75rem; margin-bottom: 1.5rem;">
+                    <label for="purecomments_url"><?= e(t('admin.settings.site.purecomments_url')) ?></label>
+                    <input type="url" id="purecomments_url" name="purecomments_url" value="<?= e($config['community']['purecomments_url'] ?? '') ?>" placeholder="https://comments.example.com"<?= !empty($config['community']['purecomments_enabled']) ? ' required' : ' disabled' ?>>
+                </div>
+            </section>
+
+            <section class="section-divider">
                 <span class="title"><?= e(t('admin.settings.site.header_injects')) ?></span>
                 <label for="head_inject_page"><?= e(t('admin.settings.site.head_inject_page_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
-                <textarea id="head_inject_page" name="head_inject_page" rows="6" placeholder="&lt;link rel=&quot;stylesheet&quot; href=&quot;/content/css/comments.css&quot;&gt;"><?= e($config['head_inject_page'] ?? '') ?></textarea>
+                <textarea id="head_inject_page" name="head_inject_page" rows="6" placeholder="&lt;meta name=&quot;x-custom&quot; content=&quot;value&quot;&gt;"><?= e($config['head_inject_page'] ?? '') ?></textarea>
 
                 <label for="head_inject_post"><?= e(t('admin.settings.site.head_inject_post_label')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_optional')) ?>)</span></label>
-                <textarea id="head_inject_post" name="head_inject_post" rows="6" placeholder="&lt;meta name=&quot;x-custom&quot; content=&quot;value&quot;&gt;"><?= e($config['head_inject_post'] ?? '') ?></textarea>
+                <textarea id="head_inject_post" name="head_inject_post" rows="6" placeholder="&lt;link rel=&quot;stylesheet&quot; href=&quot;/content/css/comments.css&quot;&gt;"><?= e($config['head_inject_post'] ?? '') ?></textarea>
             </section>
 
             <section class="section-divider">
@@ -332,6 +357,21 @@ require __DIR__ . '/../includes/admin-head.php';
         } else {
             enableBlogPostsContainer.style.display = 'none';
             enableBlogPostsCheckbox.checked = true;
+        }
+    });
+
+    const pureCommentsEnabledCheckbox = document.getElementById('purecomments_enabled');
+    const pureCommentsUrlContainer = document.getElementById('purecomments_url_container');
+    const pureCommentsUrlInput = document.getElementById('purecomments_url');
+    pureCommentsEnabledCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            pureCommentsUrlContainer.style.display = '';
+            pureCommentsUrlInput.disabled = false;
+            pureCommentsUrlInput.required = true;
+        } else {
+            pureCommentsUrlContainer.style.display = 'none';
+            pureCommentsUrlInput.disabled = true;
+            pureCommentsUrlInput.required = false;
         }
     });
 </script>
