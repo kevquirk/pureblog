@@ -270,22 +270,96 @@
     });
   }
 
-  const getScrollKey = () => {
-    const slugValue = (slugField?.value ?? '').trim();
-    return `${scrollKeyBase}:${slugValue || 'new'}`;
-  };
+  // Handle editor scroll and cursor position restoration on form submit / reload
+  const scrollContainer = document.querySelector('.admin-main');
+  const pendingRestoreStr = sessionStorage.getItem('editor_pending_restore');
+  if (pendingRestoreStr) {
+    try {
+      const restoreData = JSON.parse(pendingRestoreStr);
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSlug = (urlParams.get('slug') || '').trim();
+      const currentSlug = (slugField?.value ?? urlSlug ?? '').trim();
 
-  const storedScroll = sessionStorage.getItem(getScrollKey());
-  if (storedScroll !== null) {
-    const scrollValue = parseInt(storedScroll, 10);
-    if (!Number.isNaN(scrollValue)) {
-      window.scrollTo(0, scrollValue);
+      const savedSlug = (restoreData.slug || '').trim();
+      const isSlugMatch = savedSlug === currentSlug;
+      const isNewPostMatch = savedSlug === '' && currentSlug !== '';
+      const isUrlSlugMatch = savedSlug === urlSlug;
+
+      console.log('[Pureblog Editor] Found pending restore data:', restoreData);
+      console.log('[Pureblog Editor] Slugs comparison:', { savedSlug, currentSlug, urlSlug, isSlugMatch, isNewPostMatch, isUrlSlugMatch });
+
+      if (restoreData &&
+          restoreData.editorType === config.editorType &&
+          (isSlugMatch || isNewPostMatch || isUrlSlugMatch) &&
+          Date.now() - restoreData.timestamp < 10000) {
+
+        console.log('[Pureblog Editor] Restoring state...');
+
+        // Tell browser not to automatically restore scroll, we will handle it
+        if ('scrollRestoration' in history) {
+          history.scrollRestoration = 'manual';
+        }
+
+        // Restore cursor/focus
+        const restoreCursor = () => {
+          if (restoreData.cursor) {
+            try {
+              editorContainer.focus({ preventScroll: true });
+              jar.restore(restoreData.cursor);
+              console.log('[Pureblog Editor] Cursor restored.');
+            } catch (e) {
+              console.warn('[Pureblog Editor] Failed to restore cursor:', e);
+            }
+          }
+        };
+
+        // Restore scroll position
+        const restoreScroll = () => {
+          const scrollValue = parseInt(restoreData.scroll, 10);
+          if (!Number.isNaN(scrollValue)) {
+            if (scrollContainer) {
+              scrollContainer.scrollTop = scrollValue;
+            } else {
+              window.scrollTo(0, scrollValue);
+            }
+            console.log('[Pureblog Editor] Scroll restored to:', scrollValue, 'Current scrollTop:', scrollContainer ? scrollContainer.scrollTop : window.scrollY);
+          }
+        };
+
+        // Run cursor restoration immediately and with a small delay
+        restoreCursor();
+        setTimeout(restoreCursor, 50);
+
+        // Run scroll restoration at progressive intervals to defeat layout shift cap
+        restoreScroll();
+        setTimeout(restoreScroll, 50);
+        setTimeout(restoreScroll, 150);
+        setTimeout(restoreScroll, 300);
+        setTimeout(restoreScroll, 600);
+      } else {
+        console.log('[Pureblog Editor] Restore conditions not met.');
+      }
+    } catch (e) {
+      console.error('[Pureblog Editor] Error during restore parsing:', e);
     }
-    sessionStorage.removeItem(getScrollKey());
+    sessionStorage.removeItem('editor_pending_restore');
   }
 
   editorForm?.addEventListener('submit', () => {
-    sessionStorage.setItem(getScrollKey(), String(window.scrollY));
+    try {
+      const pos = jar.save();
+      const state = {
+        scroll: scrollContainer ? scrollContainer.scrollTop : window.scrollY,
+        cursor: pos,
+        editorType: config.editorType,
+        slug: (slugField?.value ?? '').trim(),
+        timestamp: Date.now()
+      };
+      sessionStorage.setItem('editor_pending_restore', JSON.stringify(state));
+      console.log('[Pureblog Editor] Saved state:', state);
+    } catch (e) {
+      console.error('[Pureblog Editor] Error saving state:', e);
+    }
   });
 
   if (uploadInput && uploadButton) {
