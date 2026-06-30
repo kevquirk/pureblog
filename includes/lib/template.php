@@ -13,6 +13,7 @@ function render_markdown(string $markdown, array $context = []): string
 
     $html = $parsedown->text($markdown);
     $html = apply_filter('on_render_markdown', $html);
+    $html = add_lazy_loading_to_images($html);
 
     return restore_private_use_emoji($html);
 }
@@ -26,6 +27,17 @@ function restore_private_use_emoji(string $html): string
     return preg_replace_callback('/[\x{F000}-\x{F8FF}]/u', static function (array $match): string {
         $codepoint = mb_ord($match[0], 'UTF-8');
         return mb_chr($codepoint + 0x10000, 'UTF-8');
+    }, $html) ?? $html;
+}
+
+function add_lazy_loading_to_images(string $html): string
+{
+    return preg_replace_callback('/<img\s+([^>]+)>/i', function (array $matches): string {
+        $attributes = $matches[1];
+        if (preg_match('/\bloading\s*=/i', $attributes)) {
+            return $matches[0];
+        }
+        return '<img loading="lazy" ' . $attributes . '>';
     }, $html) ?? $html;
 }
 
