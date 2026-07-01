@@ -93,7 +93,22 @@ unset($_SESSION['admin_action_flash']);
         <?php endif; ?>
         <script type="module">
             import { CodeJar } from 'https://unpkg.com/codejar@3.7.0/codejar.js';
-            window.CodeJar = CodeJar;
+            window.CodeJar = (editor, highlight, opt) => {
+                const jar = CodeJar(editor, highlight, opt);
+                editor.addEventListener('paste', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const text = (event.originalEvent || event)
+                        .clipboardData
+                        .getData('text/plain')
+                        .replace(/\r/g, '');
+                    jar.recordHistory();
+                    document.execCommand('insertText', false, text);
+                    jar.recordHistory();
+                    editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+                }, true);
+                return jar;
+            };
         </script>
     <?php endif; ?>
     <?= $extraHead ?>
