@@ -1,4 +1,4 @@
-# Pure Blog License v1.1
+# Pure Blog License v1.2
 
 Copyright © 2026 [Kev Quirk](https://kevquirk.com)
 
@@ -6,7 +6,7 @@ Pure Blog is free to use, modify, and self-host.
 
 You are **NOT** allowed to:
 
-1. Offer Pure Blog as a hosted platform or service where you operate the infrastructure on behalf of third parties (paid or free).
+1. Offer Pure Blog as a commercial hosted platform or service where you operate the infrastructure on behalf of third parties for a fee (free hosting is permitted for friends and family).
 2. Sell Pure Blog itself, or build a product where access to Pure Blog is what customers are paying for.
 3. Remove attribution to the original author.
 
