@@ -95,6 +95,22 @@ unset($_SESSION['admin_action_flash']);
             import { CodeJar } from 'https://unpkg.com/codejar@3.7.0/codejar.js';
             window.CodeJar = (editor, highlight, opt) => {
                 const jar = CodeJar(editor, highlight, opt);
+                
+                // Helper to insert plain text at cursor using standard Selection/Range APIs.
+                const insertTextAtCursor = (text) => {
+                    const selection = window.getSelection();
+                    if (!selection.rangeCount) return;
+                    const range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    const textNode = document.createTextNode(text);
+                    range.insertNode(textNode);
+                    range.setStartAfter(textNode);
+                    range.setEndAfter(textNode);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                };
+
+                // Fix copy/paste formatting across all browsers (preserving tabs and newlines)
                 editor.addEventListener('paste', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
@@ -102,11 +118,36 @@ unset($_SESSION['admin_action_flash']);
                         .clipboardData
                         .getData('text/plain')
                         .replace(/\r/g, '');
+                    
                     jar.recordHistory();
-                    document.execCommand('insertText', false, text);
+                    
+                    const pos = jar.save();
+                    insertTextAtCursor(text);
+                    highlight(editor);
+                    
+                    const newPos = {
+                        start: Math.min(pos.start, pos.end) + text.length,
+                        end: Math.min(pos.start, pos.end) + text.length,
+                        dir: '<-'
+                    };
+                    jar.restore(newPos);
+                    
                     jar.recordHistory();
                     editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
                 }, true);
+
+                // Fix Tab key indentation across all browsers
+                editor.addEventListener('keydown', (event) => {
+                    if (event.key === 'Tab' && !event.shiftKey) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        jar.recordHistory();
+                        document.execCommand('insertText', false, '\t');
+                        jar.recordHistory();
+                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+                    }
+                }, true);
+
                 return jar;
             };
         </script>
