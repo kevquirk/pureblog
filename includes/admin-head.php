@@ -13,7 +13,7 @@ $adminColorMode = $adminColorMode ?? ($config['theme']['admin_color_mode'] ?? 'a
 $extraHead = $extraHead ?? '';
 $codeMirror = $codeMirror ?? null; // 'markdown' or 'css'
 $hideAdminNav = $hideAdminNav ?? false;
-$adminCssVersion = (string) @filemtime(__DIR__ . '/../admin/css/admin.css');
+$adminCssVersion = (string) @filemtime(PUREBLOG_BASE_PATH . '/admin/css/admin.css');
 
 if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset($_POST['search_page_action'])) {
     verify_csrf();
@@ -82,8 +82,8 @@ unset($_SESSION['admin_action_flash']);
         :root {
             --font-stack: <?= $fontStack ?>;
         }
-<?php if (is_file(__DIR__ . '/../content/css/admin-custom.css')): ?>
-<?php readfile(__DIR__ . '/../content/css/admin-custom.css'); ?>
+<?php if (is_file(PUREBLOG_BASE_PATH . '/content/css/admin-custom.css')): ?>
+<?php readfile(PUREBLOG_BASE_PATH . '/content/css/admin-custom.css'); ?>
 <?php endif; ?>
     </style>
     <?php if ($codeMirror !== null): ?>
@@ -115,7 +115,7 @@ unset($_SESSION['admin_action_flash']);
 </head>
 <body>
     <!-- SVG sprite: add support for rendering admin icons via <use> -->
-    <?php readfile(__DIR__ . '/../admin/icons/sprite.svg'); ?>
+    <?php readfile(PUREBLOG_BASE_PATH . '/admin/icons/sprite.svg'); ?>
     <div class="admin-shell">
     <?php if (!$hideAdminNav): ?>
         <?php

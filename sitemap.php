@@ -7,7 +7,7 @@ require_once __DIR__ . '/functions.php';
 require_setup_redirect();
 
 $config  = load_config();
-$baseUrl = rtrim(get_base_url(), '/');
+$baseUrl = get_base_url();
 
 header('Content-Type: application/xml; charset=UTF-8');
 

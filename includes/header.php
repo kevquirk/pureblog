@@ -10,19 +10,19 @@ $headInject = get_contextual_inject($config, 'head', [
     'post' => $post ?? null,
     'page' => $page ?? null,
 ]);
-$frontCssVersion = (string) @filemtime(__DIR__ . '/../assets/css/style.css');
+$frontCssVersion = (string) @filemtime(PUREBLOG_BASE_PATH . '/assets/css/style.css');
 $ogImagePreferred = $config['assets']['og_image_preferred'] ?? 'banner';
 $featureImageRaw  = (is_array($post ?? null) ? ($post['feature_image'] ?? '') : '')
                  ?: (is_array($page ?? null) ? ($page['feature_image'] ?? '') : '');
 if ($featureImageRaw !== '') {
     $ogImage = $featureImageRaw[0] === '/'
-        ? rtrim(get_base_url(), '/') . $featureImageRaw
+        ? get_base_url() . $featureImageRaw
         : $featureImageRaw;
     $isSquareOgImage = false;
 } else {
     $ogImage = $config['assets']['og_image'] ?? '';
     if ($ogImage !== '' && $ogImage[0] === '/') {
-        $ogImage = rtrim(get_base_url(), '/') . $ogImage;
+        $ogImage = get_base_url() . $ogImage;
     }
     $isSquareOgImage = $ogImagePreferred === 'square';
 }
@@ -46,7 +46,7 @@ if ($featureImageRaw !== '') {
     if ($requestPath === '/index.php') {
         $requestPath = '/';
     }
-    $canonicalUrl = rtrim(get_base_url(), '/') . $requestPath;
+    $canonicalUrl = get_base_url() . $requestPath;
     ?>
     <title><?= e($fullTitle) ?></title>
     <?php if ($metaDescription !== ''): ?>
@@ -55,7 +55,7 @@ if ($featureImageRaw !== '') {
     <link rel="canonical" href="<?= e($canonicalUrl) ?>">
     <?php if (!empty($config['assets']['favicon'])): ?>
         <?php $faviconHref = $config['assets']['favicon']; ?>
-        <?php if ($faviconHref[0] === '/') { $faviconHref = rtrim(get_base_url(), '/') . $faviconHref; } ?>
+        <?php if ($faviconHref[0] === '/') { $faviconHref = get_base_url() . $faviconHref; } ?>
         <link rel="icon" href="<?= e($faviconHref) ?>">
     <?php endif; ?>
     <meta property="og:type" content="<?= isset($post) ? 'article' : 'website' ?>">
@@ -77,7 +77,7 @@ if ($featureImageRaw !== '') {
             <meta property="og:image:height" content="600">
         <?php endif; ?>
     <?php endif; ?>
-    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= rtrim(get_base_url(), '/') ?>/feed">
+    <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= get_base_url() ?>/feed">
     <style>
         body { background: <?= e($config['theme']['background_color']) ?>; }
     </style>
@@ -86,7 +86,7 @@ if ($featureImageRaw !== '') {
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link rel="stylesheet" href="<?= e($fontUrl) ?>">
     <?php endif; ?>
-    <link rel="stylesheet" href="<?= rtrim(get_base_url(), '/') ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
+    <link rel="stylesheet" href="<?= get_base_url() ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {
             --bg-light: <?= e($config['theme']['background_color']) ?>;
@@ -102,8 +102,8 @@ if ($featureImageRaw !== '') {
             --font-stack: <?= $fontStack ?>;
             --mono-font-stack: <?= font_stack_css('mono') ?>;
         }
-    <?php if (is_file(__DIR__ . '/../content/css/custom.css')): ?>
-<?php readfile(__DIR__ . '/../content/css/custom.css'); ?>
+    <?php if (is_file(PUREBLOG_CONTENT_CSS_PATH . '/custom.css')): ?>
+<?php readfile(PUREBLOG_CONTENT_CSS_PATH . '/custom.css'); ?>
 <?php endif; ?>
     </style>
 <?php if (trim($headInject) !== ''): ?>
@@ -111,4 +111,4 @@ if ($featureImageRaw !== '') {
     <?php endif; ?>
 </head>
 <body>
-    <?php readfile(__DIR__ . '/../assets/icons/sprite.svg'); ?>
+    <?php readfile(PUREBLOG_BASE_PATH . '/assets/icons/sprite.svg'); ?>
