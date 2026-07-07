@@ -393,11 +393,11 @@ return [
                 'tip_one_per_line'       => 'un par ligne',
                 'tip_optional'           => 'optionnel',
                 'tip_rss_ttl'            => 'secondes, 0 pour désactiver',
-                'community_section'      => 'Community',
-                'purecomments_enable'    => 'Enable Pure Comments',
-                'purecomments_url'       => 'Pure Comments URL',
-                'error_purecomments_url' => 'Pure Comments URL is required when Pure Comments is enabled.',
-                'error_purecomments_url_invalid' => 'Pure Comments URL must be a valid URL.',
+                'community_section'      => 'Communauté',
+                'purecomments_enable'    => 'Activer Pure Comments',
+                'purecomments_url'       => 'URL de Pure Comments',
+                'error_purecomments_url' => 'L\'URL de Pure Comments URL est requise pour activer Pure Comments.',
+                'error_purecomments_url_invalid' => 'L\'URL de Pure Comments doit être une URL valide.',
             ],
 
             'user' => [
