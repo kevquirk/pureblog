@@ -1685,7 +1685,14 @@ section.sidebar-section:first-of-type {
     }
 
     .dashboard-chart {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         gap: 0.15rem;
+    }
+
+    .dashboard-chart-col {
+        min-width: 35px;
+        flex: 0 0 auto;
     }
 
     .dashboard-chart-count {
