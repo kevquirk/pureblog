@@ -53,9 +53,9 @@ return [
         'page_not_found_detail' => 'Pagina pe care ai solicitat-o nu a putut fi găsită.',
         'no_tag_selected'       => 'Nicio etichetă selectată.',
         'no_posts_for_tag'      => 'Nicio postare găsită pentru această etichetă.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Editează articolul',
+        'edit_page'             => 'Editează pagina',
+        'reading_time'          => '{n} min de citire',
     ],
 
     // -------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
             'log_out'       => 'Deconectare',
             'cache_cleared' => 'Cache-ul a fost curățat.',
             'invalid_action'=> 'Acțiune de administrare invalidă.',
-            'images'        => 'Images', // ENGLISH PLACEHOLDER
+            'images'        => 'Imagini',
         ],
 
         'login' => [
@@ -89,7 +89,7 @@ return [
         ],
 
         'dashboard' => [
-            'page_title'           => 'Dashboard - Pure Blog',
+            'page_title'           => 'Panou de bord - Pure Blog',
             'stat_published'       => 'Articole publicate',
             'stat_total_words'     => 'Total cuvinte',
             'stat_books'           => 'Cărți echivalente',
@@ -121,19 +121,19 @@ return [
         ],
 
         'content' => [
-            'page_title'            => 'Content - Pure Blog',
-            'tabs_label'            => 'Content tabs',
-            'tab_posts'             => 'Posts',
-            'tab_pages'             => 'Pages',
-            'new_post'              => 'New post',
-            'choose_layout'         => 'Choose a layout',
-            'default_post'          => 'Default post',
-            'cancel'                => 'Cancel',
-            'search_label'          => 'Search posts',
-            'search_placeholder'    => 'Search for a post...',
-            'no_posts_found'        => 'No posts found for "{search}".',
+            'page_title'            => 'Conținut - Pure Blog',
+            'tabs_label'            => 'Taburi de conținut',
+            'tab_posts'             => 'Articole',
+            'tab_pages'             => 'Pagini',
+            'new_post'              => 'Articol nou',
+            'choose_layout'         => 'Alege un aspect',
+            'default_post'          => 'Articol implicit',
+            'cancel'                => 'Anulează',
+            'search_label'          => 'Caută articole',
+            'search_placeholder'    => 'Caută un articol...',
+            'no_posts_found'        => 'Niciun articol găsit pentru "{search}".',
             'no_posts_filtered'     => 'Niciun articol găsit pentru {label}.',
-            'no_posts'              => 'No posts yet, get writing!',
+            'no_posts'              => 'Niciun articol încă, apucă-te de scris!',
             'filter_title'          => 'Caută și filtrează',
             'filter_year'           => 'An',
             'filter_month'          => 'Lună',
@@ -143,20 +143,20 @@ return [
             'filter_all_tags'       => 'Toate etichetele',
             'filter_status'         => 'Stare',
             'filter_all_statuses'   => 'Toate',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Aspect',
+            'filter_all_layouts'    => 'Toate aspectele',
             'filter_apply'          => 'Aplică',
             'filter_active'         => 'Filtrat după: {label}.',
             'filter_clear'          => 'Șterge',
             'filter_recent'         => 'ultimele 12 luni',
-            'notice_post_saved'     => 'Post saved.',
-            'notice_post_deleted'   => 'Post deleted.',
-            'notice_page_saved'     => 'Page saved.',
-            'notice_page_deleted'   => 'Page deleted.',
-            'pagination_newer'      => '⬅ Newer posts',
-            'pagination_older'      => 'Older posts ➡',
-            'new_page'              => 'New page',
-            'no_pages'              => 'No pages yet.',
+            'notice_post_saved'     => 'Articolul a fost salvat.',
+            'notice_post_deleted'   => 'Articolul a fost șters.',
+            'notice_page_saved'     => 'Pagina a fost salvată.',
+            'notice_page_deleted'   => 'Pagina a fost ștearsă.',
+            'pagination_newer'      => '⬅ Articole mai noi',
+            'pagination_older'      => 'Articole mai vechi ➡',
+            'new_page'              => 'Pagină nouă',
+            'no_pages'              => 'Nicio pagină încă.',
         ],
 
         'editor' => [
@@ -165,9 +165,9 @@ return [
             'slug_label'            => 'Slug (opțional)',
             'description_label'     => 'Descriere',
             'date_label'            => 'Dată',
-            'status_label'          => 'Status',
+            'status_label'          => 'Stare',
             'status_draft'          => 'Ciornă',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Programat',
             'status_published'      => 'Publicat',
             'images_title'          => 'Imagini',
             'no_images'             => 'Nicio imagine încă.',
@@ -182,7 +182,7 @@ return [
             'error_not_found_post'  => 'Articolul nu a fost găsit.',
             'error_not_found_page'  => 'Pagina nu a fost găsită.',
             'error_title_required'  => 'Titlul este obligatoriu.',
-            'error_invalid_status'  => 'Statusul trebuie să fie ciornă sau publicat.',
+            'error_invalid_status'  => 'Starea trebuie să fie ciornă, programat sau publicat.',
             'error_save_post'       => 'Imposibil de salvat articolul.',
             'error_save_page'       => 'Imposibil de salvat pagina.',
             'error_empty_slug'      => 'Titlul trebuie să conțină cel puțin o literă sau un număr pentru a genera un slug.',
@@ -223,27 +223,27 @@ return [
             'js_save_post_first'  => 'Salvează mai întâi articolul pentru a-i genera un slug și o dată.',
             'js_save_page_first'  => 'Salvează mai întâi pagina pentru a-i genera un slug.',
             'js_upload_failed'           => 'Încărcarea imaginii a eșuat.',
-            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
-            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
-            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'feature_image'              => 'Imagine reprezentativă',
+            'js_feature_image_confirm'   => 'Înlocuiești imaginea reprezentativă curentă cu „{filename}”?',
+            'js_feature_image_failed'    => 'Actualizarea imaginii reprezentative a eșuat.',
         ],
 
         'images' => [
-            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
-            'heading'            => 'Images', // ENGLISH PLACEHOLDER
-            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
-            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
-            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
-            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
-            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
-            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
-            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
-            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
-            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
-            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
-            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
-            'pagination_prev'    => '⬅ Previous', // ENGLISH PLACEHOLDER
-            'pagination_next'    => 'Next ➡', // ENGLISH PLACEHOLDER
+            'page_title'         => 'Imagini - Pure Blog Admin',
+            'heading'            => 'Imagini',
+            'no_images'          => 'Nicio imagine încărcată încă.',
+            'search_label'       => 'Caută imagini',
+            'search_placeholder' => 'Caută după numele fișierului…',
+            'clear_search'       => 'Șterge căutarea',
+            'deleted'            => 'Imaginea a fost ștearsă.',
+            'delete_confirm'     => 'Ștergi această imagine?',
+            'delete_used_warning'=> 'Această imagine este folosită în conținutul de mai jos. Ar trebui să o elimini pentru a evita linkuri întrerupte.',
+            'delete_anyway'      => 'Șterge oricum',
+            'cancel'             => 'Anulează',
+            'slug_label'         => 'Dosar:',
+            'error_delete'       => 'Imposibil de șters imaginea.',
+            'pagination_prev'    => '⬅ Anterior',
+            'pagination_next'    => 'Următor ➡',
         ],
 
         'notices' => [
@@ -340,7 +340,7 @@ return [
                 'language'           => 'Limbă',
                 'timezone'           => 'Fus orar',
                 'date_format'        => 'Format dată',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Afișează timpul de citire la articole',
                 'homepage'           => 'Pagina principală',
                 'blog_page'          => 'Pagina blogului',
                 'base_url'           => 'URL de bază',
@@ -394,11 +394,11 @@ return [
                 'tip_one_per_line'       => 'unul pe linie',
                 'tip_optional'           => 'opțional',
                 'tip_rss_ttl'            => 'secunde, 0 pentru dezactivare',
-                'community_section'      => 'Community',
-                'purecomments_enable'    => 'Enable Pure Comments',
-                'purecomments_url'       => 'Pure Comments URL',
-                'error_purecomments_url' => 'Pure Comments URL is required when Pure Comments is enabled.',
-                'error_purecomments_url_invalid' => 'Pure Comments URL must be a valid URL.',
+                'community_section'      => 'Comunitate',
+                'purecomments_enable'    => 'Activează Pure Comments',
+                'purecomments_url'       => 'Adresă URL Pure Comments',
+                'error_purecomments_url' => 'Adresa URL Pure Comments este obligatorie când Pure Comments este activat.',
+                'error_purecomments_url_invalid' => 'Adresa URL Pure Comments trebuie să fie o adresă URL validă.',
             ],
 
             'user' => [
@@ -448,9 +448,9 @@ return [
                 'color_border'        => 'Culoare chenar',
                 'color_accent_bg'     => 'Fundal accent',
                 'reset_light'         => 'Resetează culori luminoase',
-                'reset_light_confirm' => 'Resetați culorile modului luminos la valorile implicite?',
+                'reset_light_confirm' => 'Resetezi culorile modului luminos la valorile implicite?',
                 'reset_dark'          => 'Resetează culori întunecate',
-                'reset_dark_confirm'  => 'Resetați culorile modului întunecat la valorile implicite?',
+                'reset_dark_confirm'  => 'Resetezi culorile modului întunecat la valorile implicite?',
                 'section_post_layout' => 'Aspect listă articole',
                 'layout_excerpt'      => 'Extras articol',
                 'layout_full'         => 'Articol complet',
@@ -514,38 +514,38 @@ return [
                 'update_failed'         => 'Actualizarea a eșuat.',
                 'notice_update_applied'      => 'Actualizare aplicată cu succes.',
                 'notice_backup_restored'     => 'Copie de rezervă restaurată cu succes.',
-                'notice_backup_deleted'      => 'Copie de rezervă ştearsă cu succes.',
+                'notice_backup_deleted'      => 'Copie de rezervă ștearsă cu succes.',
                 'already_latest_version'     => 'Folosiți deja cea mai recentă versiune ({tag}).',
                 'error_curl_init'            => 'Imposibil de inițializat curl.',
-                'error_github_request'       => 'Cererea Codeberg a eşuat (HTTP {status}).',
-                'error_github_network'       => 'Verificarea Codeberg a eşuat (rețea indisponibilă sau allow_url_fopen dezactivat).',
+                'error_github_request'       => 'Cererea Codeberg a eșuat (HTTP {status}).',
+                'error_github_network'       => 'Verificarea Codeberg a eșuat (rețea indisponibilă sau allow_url_fopen dezactivat).',
                 'error_github_json'          => 'Codeberg a returnat JSON invalid.',
-                'error_download_tmp'         => 'Imposibil de creat fişierul temporar de descărcare.',
-                'error_download_failed'      => 'Descărcarea a eşuat (HTTP {status}).',
-                'error_download_network'     => 'Descărcarea a eşuat (rețea indisponibilă sau allow_url_fopen dezactivat).',
-                'error_download_write'       => 'Imposibil de scris fişierul temporar de descărcare.',
+                'error_download_tmp'         => 'Imposibil de creat fișierul temporar de descărcare.',
+                'error_download_failed'      => 'Descărcarea a eșuat (HTTP {status}).',
+                'error_download_network'     => 'Descărcarea a eșuat (rețea indisponibilă sau allow_url_fopen dezactivat).',
+                'error_download_write'       => 'Imposibil de scris fișierul temporar de descărcare.',
                 'error_zip_url'              => 'Nu s-a găsit nicio adresă URL zipball pentru această versiune.',
                 'error_ziparchive'           => 'Extensia ZipArchive nu este disponibilă pe acest server.',
-                'error_zip_open'             => 'Imposibil de deschis fişierul zip al versiunii descărcate.',
-                'error_zip_extract'          => 'Imposibil de extras fişierul zip al versiunii.',
-                'error_zip_empty'            => 'Arhiva versiunii nu conținea fişiere lizibile.',
+                'error_zip_open'             => 'Imposibil de deschis fișierul zip al versiunii descărcate.',
+                'error_zip_extract'          => 'Imposibil de extras fișierul zip al versiunii.',
+                'error_zip_empty'            => 'Arhiva versiunii nu conținea fișiere lizibile.',
                 'error_package_invalid'      => 'Arhiva versiunii nu pare a fi un pachet Pure Blog valid.',
                 'error_backup_dir'           => 'Imposibil de creat directorul local de copii de rezervă în /backup.',
-                'error_update_rolled_back'   => 'Actualizarea a eşuat şi a fost anulată: {error}',
-                'error_update_rollback_fail' => 'Actualizarea a eşuat şi anularea a eşuat de asemenea: {error}',
+                'error_update_rolled_back'   => 'Actualizarea a eșuat și a fost anulată: {error}',
+                'error_update_rollback_fail' => 'Actualizarea a eșuat și anularea a eșuat de asemenea: {error}',
                 'error_backup_invalid_name'  => 'Nume de copie de rezervă invalid.',
                 'error_backup_dir_missing'   => 'Directorul de copii de rezervă nu există.',
                 'error_backup_not_found'     => 'Copia de rezervă selectată nu a fost găsită.',
                 'error_backup_invalid_path'  => 'Cale de copie de rezervă invalidă.',
-                'error_restore_failed'       => 'Restaurarea a eşuat: {error}',
-                'error_delete_backup_failed' => 'Ștergerea a eşuat: {error}',
-                'error_choose_restore'       => 'Vă rugăm să alețeți o copie de rezervă de restaurat.',
-                'error_choose_delete'        => 'Vă rugăm să alețeți o copie de rezervă de şters.',
+                'error_restore_failed'       => 'Restaurarea a eșuat: {error}',
+                'error_delete_backup_failed' => 'Ștergerea a eșuat: {error}',
+                'error_choose_restore'       => 'Vă rugăm să alegeți o copie de rezervă de restaurat.',
+                'error_choose_delete'        => 'Vă rugăm să alegeți o copie de rezervă de șters.',
                 'error_release_metadata'     => 'Imposibil de obținut informații despre versiune de la Codeberg.',
-                'error_lang_download'        => 'Descărcarea fişierului zip al versiunii a eşuat.',
+                'error_lang_download'        => 'Descărcarea fișierului zip al versiunii a eșuat.',
                 'error_build_plan'           => 'Imposibil de creat planul pachetului.',
                 'error_dir_create'           => 'Imposibil de creat directorul: {path}',
-                'error_file_copy'            => 'Imposibil de copiat fişierul: {path}',
+                'error_file_copy'            => 'Imposibil de copiat fișierul: {path}',
                 'error_dir_read'             => 'Imposibil de citit directorul: {path}',
                 'error_htaccess_dir'         => 'Imposibil de creat directorul pentru .htaccess-ul păstrat: {path}',
                 'error_htaccess_restore'     => 'Imposibil de restaurat .htaccess-ul păstrat: {path}',
