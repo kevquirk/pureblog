@@ -418,18 +418,65 @@ function maybe_publish_scheduled_posts(): void
 // Post and page I/O
 // ---------------------------------------------------------------------------
 
+function _build_front_matter_lines(array $frontMatter): array
+{
+    $frontLines = ["---"];
+    foreach ($frontMatter as $key => $value) {
+        if ($key === 'tags') {
+            $value = '[' . implode(', ', $value) . ']';
+            $frontLines[] = $key . ': ' . $value;
+        } elseif (is_string($value) && strpos($value, "\n") !== false) {
+            $frontLines[] = $key . ': |';
+            $value = str_replace("\r", '', $value);
+            $lines = explode("\n", $value);
+            foreach ($lines as $line) {
+                $frontLines[] = '  ' . $line;
+            }
+        } else {
+            $frontLines[] = $key . ': ' . (string) $value;
+        }
+    }
+    $frontLines[] = "---";
+    return $frontLines;
+}
+
 function _parse_front_matter_lines(array $lines): array
 {
     $frontMatter = [];
     $listKey = null;
+    $blockKey = null;
+    $blockLines = [];
+    $blockIndent = 0;
+
     foreach ($lines as $line) {
-        $line = rtrim($line);
-        if ($line === '') {
+        if ($blockKey !== null) {
+            if ($line === '' || rtrim($line) === '') {
+                $blockLines[] = '';
+                continue;
+            }
+            if (preg_match('/^(\s+)(.*)$/', $line, $matches)) {
+                $indent = strlen($matches[1]);
+                if ($blockIndent === 0) {
+                    $blockIndent = $indent;
+                }
+                if ($indent >= $blockIndent) {
+                    $blockLines[] = substr($line, $blockIndent);
+                    continue;
+                }
+            }
+            $frontMatter[$blockKey] = implode("\n", $blockLines);
+            $blockKey = null;
+            $blockLines = [];
+            $blockIndent = 0;
+        }
+
+        $trimmedLine = rtrim($line);
+        if ($trimmedLine === '') {
             continue;
         }
 
         if ($listKey !== null) {
-            if (preg_match('/^\s*-\s*(.+)$/', $line, $matches)) {
+            if (preg_match('/^\s*-\s*(.+)$/', $trimmedLine, $matches)) {
                 $item = trim($matches[1], " \t\"'");
                 if ($item !== '') {
                     $frontMatter[$listKey][] = $item;
@@ -439,12 +486,19 @@ function _parse_front_matter_lines(array $lines): array
             $listKey = null;
         }
 
-        if (strpos($line, ':') === false) {
+        if (strpos($trimmedLine, ':') === false) {
             continue;
         }
 
-        [$key, $value] = array_map('trim', explode(':', $line, 2));
+        [$key, $value] = array_map('trim', explode(':', $trimmedLine, 2));
         if ($key === '') {
+            continue;
+        }
+
+        if ($value === '|') {
+            $blockKey = $key;
+            $blockLines = [];
+            $blockIndent = 0;
             continue;
         }
 
@@ -473,6 +527,10 @@ function _parse_front_matter_lines(array $lines): array
         } else {
             $frontMatter[$key] = $value;
         }
+    }
+
+    if ($blockKey !== null) {
+        $frontMatter[$blockKey] = implode("\n", $blockLines);
     }
 
     if (!empty($frontMatter['categories'])) {
@@ -759,11 +817,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
         $frontMatter['feature_image'] = $featureImage;
     }
 
-    $frontLines = ["---"];
-    foreach ($frontMatter as $key => $value) {
-        $frontLines[] = $key . ': ' . $value;
-    }
-    $frontLines[] = "---";
+    $frontLines = _build_front_matter_lines($frontMatter);
 
     $body = implode("\n", $frontLines) . "\n\n" . ltrim($content) . "\n";
 
@@ -1003,14 +1057,7 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
         }
     }
 
-    $frontLines = ["---"];
-    foreach ($frontMatter as $key => $value) {
-        if ($key === 'tags') {
-            $value = '[' . implode(', ', $value) . ']';
-        }
-        $frontLines[] = $key . ': ' . $value;
-    }
-    $frontLines[] = "---";
+    $frontLines = _build_front_matter_lines($frontMatter);
 
     $body = implode("\n", $frontLines) . "\n\n" . ltrim($content) . "\n";
 
