@@ -13,7 +13,7 @@ function start_admin_session(): void
             || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
         session_set_cookie_params([
             'lifetime' => 0,
-            'path' => '/',
+            'path' => base_path() ?: '/',
             'secure' => $isHttps,
             'httponly' => true,
             'samesite' => 'Lax',
@@ -121,6 +121,12 @@ function clear_login_failures(string $ip): void
     file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT), LOCK_EX);
 }
 
+// Derive unique remember-me cookie name based on site URL to prevent collisions.
+function get_remember_me_cookie_name(): string
+{
+    return 'pb_remember_' . substr(hash('sha256', get_base_url()), 0, 8);
+}
+
 function set_remember_me_cookie(): void
 {
     $selector  = bin2hex(random_bytes(16));
@@ -157,9 +163,9 @@ function set_remember_me_cookie(): void
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
-    setcookie('pb_remember', $selector . ':' . $validator, [
+    setcookie(get_remember_me_cookie_name(), $selector . ':' . $validator, [
         'expires'  => $expires,
-        'path'     => '/',
+        'path'     => base_path() ?: '/',
         'secure'   => $isHttps,
         'httponly' => true,
         'samesite' => 'Lax',
@@ -168,7 +174,8 @@ function set_remember_me_cookie(): void
 
 function clear_remember_me_cookie(): void
 {
-    $cookie = $_COOKIE['pb_remember'] ?? '';
+    $cookieName = get_remember_me_cookie_name();
+    $cookie = $_COOKIE[$cookieName] ?? '';
     if ($cookie !== '') {
         $parts = explode(':', $cookie, 2);
         if (count($parts) === 2) {
@@ -185,9 +192,9 @@ function clear_remember_me_cookie(): void
 
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
-    setcookie('pb_remember', '', [
+    setcookie($cookieName, '', [
         'expires'  => time() - 3600,
-        'path'     => '/',
+        'path'     => base_path() ?: '/',
         'secure'   => $isHttps,
         'httponly' => true,
         'samesite' => 'Lax',
@@ -207,7 +214,8 @@ function maybe_restore_admin_from_cookie(): void
     if (is_admin_logged_in()) {
         return;
     }
-    $cookie = $_COOKIE['pb_remember'] ?? '';
+    $cookieName = get_remember_me_cookie_name();
+    $cookie = $_COOKIE[$cookieName] ?? '';
     if ($cookie === '') {
         return;
     }
@@ -248,4 +256,9 @@ function require_admin_login(): void
         header('Location: ' . base_path() . '/admin/index.php');
         exit;
     }
+}
+
+// Set site-specific session name to prevent collisions across multiple pureblog installations.
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_name('pb_session_' . substr(hash('sha256', get_base_url()), 0, 8));
 }

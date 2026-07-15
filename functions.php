@@ -134,10 +134,11 @@ function load_hooks(): void
 }
 
 require __DIR__ . '/includes/lib/i18n.php';
-require __DIR__ . '/includes/lib/auth.php';
 require __DIR__ . '/includes/lib/content.php';
+require __DIR__ . '/includes/lib/auth.php';
 require __DIR__ . '/includes/lib/template.php';
 require __DIR__ . '/includes/lib/cache.php';
+
 
 $_userFunctions = PUREBLOG_BASE_PATH . '/content/functions.php';
 if (is_file($_userFunctions)) {

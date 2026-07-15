@@ -17,8 +17,12 @@ function cache_should_bypass(array $config): bool
     if (isset($_GET['q'])) {
         return true;
     }
-    if (!empty($_COOKIE[session_name()])) {
+    $hasSession = !empty($_COOKIE[session_name()]);
+    $hasRememberMe = !empty($_COOKIE[get_remember_me_cookie_name()]);
+
+    if ($hasSession || $hasRememberMe) {
         start_admin_session();
+        maybe_restore_admin_from_cookie();
         if (is_admin_logged_in()) {
             return true;
         }
