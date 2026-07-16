@@ -117,4 +117,99 @@ class ParsedownPureblog extends ParsedownExtra
 
         return $Data;
     }
+
+    protected function buildFootnoteElement()
+    {
+        $Element = array(
+            'name' => 'div',
+            'attributes' => array('class' => 'footnotes'),
+            'elements' => array(
+                array('name' => 'hr'),
+                array(
+                    'name' => 'ol',
+                    'elements' => array(),
+                ),
+            ),
+        );
+
+        uasort($this->DefinitionData['Footnote'], array($this, 'sortFootnotes'));
+
+        foreach ($this->DefinitionData['Footnote'] as $definitionId => $DefinitionData) {
+            if (!isset($DefinitionData['number'])) {
+                continue;
+            }
+
+            $text = $DefinitionData['text'];
+
+            // Backup DefinitionData so it is not permanently cleared by parsing
+            $backup = $this->DefinitionData;
+
+            // Instead of calling parent::textElements($text) which clears Definitions,
+            // we parse lines ourselves using the existing DefinitionData!
+            $text = str_replace(array("\r\n", "\r"), "\n", $text);
+            $text = trim($text, "\n");
+            $lines = explode("\n", $text);
+            $textElements = $this->linesElements($lines);
+
+            $this->DefinitionData = $backup;
+
+            $numbers = range(1, $DefinitionData['count']);
+
+            $backLinkElements = array();
+
+            foreach ($numbers as $number) {
+                $backLinkElements[] = array('text' => ' ');
+                $backLinkElements[] = array(
+                    'name' => 'a',
+                    'attributes' => array(
+                        'href' => "#fnref$number:$definitionId",
+                        'rev' => 'footnote',
+                        'class' => 'footnote-backref',
+                    ),
+                    'rawHtml' => '&#8617;',
+                    'allowRawHtmlInSafeMode' => true,
+                    'autobreak' => false,
+                );
+            }
+
+            unset($backLinkElements[0]);
+
+            $n = count($textElements) - 1;
+
+            if ($textElements[$n]['name'] === 'p') {
+                $backLinkElements = array_merge(
+                    array(
+                        array(
+                            'rawHtml' => '&#160;',
+                            'allowRawHtmlInSafeMode' => true,
+                        ),
+                    ),
+                    $backLinkElements
+                );
+
+                unset($textElements[$n]['name']);
+
+                $textElements[$n] = array(
+                    'name' => 'p',
+                    'elements' => array_merge(
+                        array($textElements[$n]),
+                        $backLinkElements
+                    ),
+                );
+            } else {
+                $textElements[] = array(
+                    'name' => 'p',
+                    'elements' => $backLinkElements,
+                );
+            }
+
+            $Element['elements'][1]['elements'][] = array(
+                'name' => 'li',
+                'attributes' => array('id' => 'fn:' . $definitionId),
+                'elements' => $textElements,
+            );
+        }
+
+        return $Element;
+    }
 }

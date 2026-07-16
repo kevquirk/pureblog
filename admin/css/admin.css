@@ -451,6 +451,10 @@ a:hover {
     color: var(--accent-color);
 }
 
+abbr {
+    cursor: help;
+}
+
 .notice {
     padding: 1rem;
     border: 2px solid var(--green);

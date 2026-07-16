@@ -270,6 +270,10 @@ a:hover {
     text-decoration: none;
 }
 
+abbr {
+    cursor: help;
+}
+
 .site-nav ul {
     list-style: none;
     padding: 0;
