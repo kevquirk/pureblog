@@ -800,6 +800,31 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
     }
     $page['slug'] = $slug;
 
+    if ($originalSlug !== null && $originalSlug !== '' && $originalSlug !== $slug) {
+        $oldImageFolder = PUREBLOG_BASE_PATH . '/content/images/' . $originalSlug;
+        $newImageFolder = PUREBLOG_BASE_PATH . '/content/images/' . $slug;
+        if (is_dir($oldImageFolder)) {
+            @rename($oldImageFolder, $newImageFolder);
+        }
+
+        if (isset($page['content'])) {
+            $page['content'] = str_replace(
+                '/content/images/' . $originalSlug . '/',
+                '/content/images/' . $slug . '/',
+                $page['content']
+            );
+            $content = str_replace("\r", '', $page['content']);
+        }
+
+        if (isset($page['feature_image']) && $page['feature_image'] !== '') {
+            $page['feature_image'] = str_replace(
+                '/content/images/' . $originalSlug . '/',
+                '/content/images/' . $slug . '/',
+                $page['feature_image']
+            );
+        }
+    }
+
     $filename = $slug . '.md';
     $path = PUREBLOG_PAGES_PATH . '/' . $filename;
 
@@ -1015,6 +1040,31 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
         }
     }
     $post['slug'] = $slug;
+
+    if ($originalSlug !== null && $originalSlug !== '' && $originalSlug !== $slug) {
+        $oldImageFolder = PUREBLOG_BASE_PATH . '/content/images/' . $originalSlug;
+        $newImageFolder = PUREBLOG_BASE_PATH . '/content/images/' . $slug;
+        if (is_dir($oldImageFolder)) {
+            @rename($oldImageFolder, $newImageFolder);
+        }
+
+        if (isset($post['content'])) {
+            $post['content'] = str_replace(
+                '/content/images/' . $originalSlug . '/',
+                '/content/images/' . $slug . '/',
+                $post['content']
+            );
+            $content = str_replace("\r", '', $post['content']);
+        }
+
+        if (isset($post['feature_image']) && $post['feature_image'] !== '') {
+            $post['feature_image'] = str_replace(
+                '/content/images/' . $originalSlug . '/',
+                '/content/images/' . $slug . '/',
+                $post['feature_image']
+            );
+        }
+    }
 
     $config = load_config();
 
