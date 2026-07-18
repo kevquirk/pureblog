@@ -53,9 +53,9 @@ return [
         'page_not_found_detail' => 'La pagina richiesta non è stata trovata.',
         'no_tag_selected'       => 'Nessun tag selezionato.',
         'no_posts_for_tag'      => 'Nessun articolo trovato per questo tag.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Modifica l\'articolo',
+        'edit_page'             => 'Modifica la pagina',
+        'reading_time'          => '{n} min di lettura',
     ],
 
     // -------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
             'log_out'        => 'Esci',
             'cache_cleared'  => 'Cache svuotata.',
             'invalid_action' => 'Azione amministrativa non valida.',
-            'images'         => 'Images', // ENGLISH PLACEHOLDER
+            'images'         => 'Immagini',
         ],
 
         'login' => [
@@ -126,7 +126,7 @@ return [
             'tab_posts'             => 'Articoli',
             'tab_pages'             => 'Pagine',
             'new_post'              => 'Nuovo articolo',
-            'choose_layout'         => 'Scegli un layout',
+            'choose_layout'         => 'Scegli un\'impaginazione',
             'default_post'          => 'Articolo predefinito',
             'cancel'                => 'Annulla',
             'search_label'          => 'Cerca articoli',
@@ -143,8 +143,8 @@ return [
             'filter_all_tags'       => 'Tutti i tag',
             'filter_status'         => 'Stato',
             'filter_all_statuses'   => 'Tutti',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Impaginazione',
+            'filter_all_layouts'    => 'Tutte le impaginazioni',
             'filter_apply'          => 'Applica',
             'filter_active'         => 'Filtrato per: {label}.',
             'filter_clear'          => 'Cancella',
@@ -167,7 +167,7 @@ return [
             'date_label'            => 'Data',
             'status_label'          => 'Stato',
             'status_draft'          => 'Bozza',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Programmato',
             'status_published'      => 'Pubblicato',
             'images_title'          => 'Immagini',
             'no_images'             => 'Ancora nessuna immagine.',
@@ -223,27 +223,27 @@ return [
             'js_save_post_first'  => 'Salva prima il post affinché abbia uno slug e una data.',
             'js_save_page_first'  => 'Salva prima la pagina affinché abbia uno slug.',
             'js_upload_failed'           => 'Caricamento immagine fallito.',
-            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
-            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
-            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'feature_image'              => 'Immagine di copertina',
+            'js_feature_image_confirm'   => 'Sostituire l\'immagine di copertina attuale con "{filename}"?',
+            'js_feature_image_failed'    => 'Impossibile aggiornare l\'immagine di copertina.',
         ],
 
         'images' => [
-            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
-            'heading'            => 'Images', // ENGLISH PLACEHOLDER
-            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
-            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
-            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
-            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
-            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
-            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
-            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
-            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
-            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
-            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
-            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
-            'pagination_prev'    => '⬅ Previous', // ENGLISH PLACEHOLDER
-            'pagination_next'    => 'Next ➡', // ENGLISH PLACEHOLDER
+            'page_title'         => 'Immagini - Pure Blog',
+            'heading'            => 'Immagini',
+            'no_images'          => 'Non sono state ancora caricate immagini.',
+            'search_label'       => 'Cerca immagini',
+            'search_placeholder' => 'Ricerca per nome del file…',
+            'clear_search'       => 'Cancella ricerca',
+            'deleted'            => 'Immagine cancellata.',
+            'delete_confirm'     => 'Vuoi cancellare questa immagine?',
+            'delete_used_warning'=> 'Questa immagine è in uso nel contenuto qui sotto. Dovresti rimuoverla per evitare che i link non funzionino più.',
+            'delete_anyway'      => 'Cancella comunque',
+            'cancel'             => 'Annulla',
+            'slug_label'         => 'Cartella:',
+            'error_delete'       => 'Impossibile cancellare l\'immagine.',
+            'pagination_prev'    => '⬅ Precedente',
+            'pagination_next'    => 'Seguente ➡',
         ],
 
         'notices' => [
@@ -340,7 +340,7 @@ return [
                 'language'            => 'Lingua',
                 'timezone'            => 'Fuso orario',
                 'date_format'         => 'Formato data',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Mostrare il tempo di lettura degli articoli',
                 'homepage'            => 'Homepage',
                 'blog_page'           => 'Pagina del blog',
                 'base_url'            => 'URL base',
