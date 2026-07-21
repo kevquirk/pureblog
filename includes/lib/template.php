@@ -12,7 +12,7 @@ function render_markdown(string $markdown, array $context = []): string
     $parsedown = get_markdown_parser();
 
     $html = $parsedown->text($markdown);
-    $html = apply_filter('on_render_markdown', $html);
+    $html = apply_filter('on_render_markdown', $html, $context);
     $html = add_lazy_loading_to_images($html);
 
     return restore_private_use_emoji($html);

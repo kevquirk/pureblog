@@ -171,11 +171,11 @@ function call_hook(string $name, array $args = []): void
     }
 }
 
-function apply_filter(string $name, mixed $value): mixed
+function apply_filter(string $name, mixed $value, mixed ...$args): mixed
 {
     load_hooks();
     if (function_exists($name)) {
-        return $name($value);
+        return $name($value, ...$args);
     }
     return $value;
 }
