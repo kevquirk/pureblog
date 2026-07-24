@@ -65,8 +65,9 @@ unset($_SESSION['admin_action_flash']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php $adminFavicon = $config['assets']['favicon'] ?? '/assets/images/favicon.png'; ?>
-    <?php if ($adminFavicon[0] === '/') { $adminFavicon = base_path() . $adminFavicon; } ?>
+    <?php if ($adminFavicon[0] === '/') { $adminFavicon = get_base_url() . $adminFavicon; } ?>
     <link rel="icon" href="<?= e($adminFavicon) ?>">
+    <link rel="apple-touch-icon" href="<?= e($adminFavicon) ?>">
     <title><?= e($adminTitle) ?></title>
     <?php $adminFontUrl = font_stack_url($config['theme']['admin_font_stack'] ?? 'sans'); ?>
     <?php if ($adminFontUrl !== null): ?>
@@ -76,7 +77,7 @@ unset($_SESSION['admin_action_flash']);
     <?php if ($codeMirror !== null): ?>
         <link rel="stylesheet" href="https://unpkg.com/prismjs@1.29.0/themes/prism.min.css">
     <?php endif; ?>
-    <link rel="stylesheet" href="<?= base_path() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
+    <link rel="stylesheet" href="<?= get_base_url() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
     <script>try{if(localStorage.getItem('pb-sidebar')==='collapsed')document.documentElement.setAttribute('data-sidebar','collapsed');}catch(e){}</script>
     <style>
         :root {
