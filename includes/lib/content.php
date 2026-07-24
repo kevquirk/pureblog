@@ -170,6 +170,11 @@ function strip_image_metadata(string $path, string $mimeType): void
         return;
     }
 
+    if ($mimeType === 'image/png' || $mimeType === 'image/webp') {
+        imagealphablending($img, false);
+        imagesavealpha($img, true);
+    }
+
     $saver($img);
     imagedestroy($img);
 }
