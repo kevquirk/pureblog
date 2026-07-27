@@ -5,24 +5,23 @@ declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
 ob_start();
 
-require __DIR__ . '/../includes/updater.php';
+require_once __DIR__ . '/../includes/updater.php';
 
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
 $latest = null;
-if (isset($_GET['check'])) {
+if (isset($_GET['check']) || isset($_GET['package_plan'])) {
     $latest = fetch_latest_pureblog_release();
 }
 $currentVersionDisplay = detect_current_pureblog_version();
 $packagePlan = null;
 $packagePlanError = '';
 if (isset($_GET['package_plan'])) {
-    $latestForPackage = fetch_latest_pureblog_release();
-    if (!($latestForPackage['ok'] ?? false)) {
-        $packagePlanError = (string) ($latestForPackage['error'] ?? t('admin.settings.updates.error_release_metadata'));
+    if ($latest === null || !($latest['ok'] ?? false)) {
+        $packagePlanError = (string) (($latest['error'] ?? '') !== '' ? $latest['error'] : t('admin.settings.updates.error_release_metadata'));
     } else {
-        $latestTag = (string) ($latestForPackage['tag'] ?? '');
+        $latestTag = (string) ($latest['tag'] ?? '');
         $currentVersion = detect_current_pureblog_version();
 
         if ($latestTag !== '' && versions_match($currentVersion, $latestTag)) {
@@ -32,7 +31,7 @@ if (isset($_GET['package_plan'])) {
                 'message' => t('admin.settings.updates.already_latest_version', ['tag' => $latestTag]),
             ];
         } else {
-            $packagePlan = build_package_upgrade_plan((string) ($latestForPackage['zipball_url'] ?? ''));
+            $packagePlan = build_package_upgrade_plan((string) ($latest['zipball_url'] ?? ''));
             if (!($packagePlan['ok'] ?? false)) {
                 $packagePlanError = (string) ($packagePlan['error'] ?? t('admin.settings.updates.error_build_plan'));
             }
@@ -124,6 +123,15 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php endif; ?>
 
             <?php if ($latest !== null && ($latest['ok'] ?? false)): ?>
+                <?php
+                $latestTag = (string) ($latest['tag'] ?? '');
+                $currentVersion = detect_current_pureblog_version();
+                $updateAvailable = ($latestTag !== '' && $currentVersion !== 'unknown' && !versions_match($currentVersion, $latestTag));
+                $displayLatestVersion = ltrim($latestTag, 'v');
+                ?>
+                <?php if ($updateAvailable): ?>
+                    <h3 class="no-top-margin">🎉 New Version Available (v<?= e($displayLatestVersion) ?>)</h3>
+                <?php endif; ?>
                 <p><strong><?= e(t('admin.settings.updates.latest_release')) ?></strong> <?= e($latest['tag'] !== '' ? $latest['tag'] : ($latest['name'] ?? 'Unknown')) ?></p>
                 <?php if (($latest['published_at'] ?? '') !== ''): ?>
                     <p><strong><?= e(t('admin.settings.updates.published')) ?></strong> <?= e(format_datetime_for_display((string) $latest['published_at'], $config, 'Y-m-d')) ?></p>

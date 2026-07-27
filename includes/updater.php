@@ -730,7 +730,7 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 function fetch_latest_pureblog_release(): array
 {
     $result = pureblog_http_get(
-        'https://api.github.com/repos/kevquirk/pureblog/releases/latest',
+        'https://packages.purecommons.org/blog/latest.json',
         5,
         ['User-Agent: Pureblog-Updates-Check', 'Accept: application/json']
     );

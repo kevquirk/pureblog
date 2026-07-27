@@ -441,6 +441,10 @@ h3 {
     margin: 3rem 0 1rem 0;
 }
 
+.no-top-margin {
+    margin-top: 0;
+}
+
 a {
     color: var(--text-color);
     text-decoration-color: var(--accent-color);
@@ -523,6 +527,7 @@ html[data-admin-theme="dark"] .notice.delete {
         opacity: 0;
         transform: translateX(40px) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translateX(0) scale(1);
@@ -1341,6 +1346,7 @@ td {
 .editor * {
     text-shadow: none !important;
 }
+
 .editor .token,
 .editor span {
     background: transparent !important;
@@ -1352,6 +1358,7 @@ td {
 .editor *::selection {
     background: var(--code-selection-bg) !important;
 }
+
 .editor::-moz-selection,
 .editor *::-moz-selection {
     background: var(--code-selection-bg) !important;
@@ -1365,48 +1372,61 @@ td {
     color: var(--blue) !important;
     font-weight: bold !important;
 }
+
 .editor.language-markdown .token.bold {
     font-weight: bold !important;
 }
+
 .editor.language-markdown .token.italic {
     font-style: italic !important;
 }
+
 .editor.language-markdown .token.code {
     color: var(--blue) !important;
 }
+
 .editor.language-markdown .token.code-block {
     color: var(--text-color) !important;
     opacity: 0.7 !important;
 }
+
 /* The outer link wrapper is .token.url - colored red (for brackets and URL) */
 .editor.language-markdown .token.url {
     color: var(--red) !important;
 }
+
 /* The inner link text is .token.content - colored with the blue color */
 .editor.language-markdown .token.url .token.content,
 .editor.language-markdown .token.link .token.content {
     color: var(--blue) !important;
 }
+
 .editor.language-markdown .token.string {
     color: var(--green) !important;
 }
+
 .editor.language-markdown .token.comment,
 .editor.language-markdown .token.blockquote {
     color: var(--orange) !important;
 }
+
 .editor.language-markdown .token.list {
     color: var(--green) !important;
 }
+
 .editor.language-markdown .token.punctuation {
     color: color-mix(in srgb, var(--text-color) 50%, transparent) !important;
 }
+
 .editor.language-markdown .token.tag,
 .editor.language-markdown .token.tag .token.punctuation {
     color: var(--red) !important;
 }
+
 .editor.language-markdown .token.attr-name {
     color: var(--green) !important;
 }
+
 .editor.language-markdown .token.attr-value {
     color: var(--blue) !important;
 }
@@ -1415,25 +1435,32 @@ td {
 .editor.language-css .token.selector {
     color: #555555 !important;
 }
+
 .editor.language-css .token.tag {
     color: #117700 !important;
 }
+
 .editor.language-css .token.property {
     color: #0000ff !important;
 }
+
 .editor.language-css .token.keyword,
 .editor.language-css .token.atrule {
     color: #770088 !important;
 }
+
 .editor.language-css .token.number {
     color: #111199 !important;
 }
+
 .editor.language-css .token.string {
     color: #aa1111 !important;
 }
+
 .editor.language-css .token.comment {
     color: #aa5500 !important;
 }
+
 .editor.language-css .token.punctuation {
     color: #555555 !important;
 }
@@ -1729,35 +1756,44 @@ html[data-admin-theme="dark"] .editor.language-markdown .token.blockquote {
 html[data-admin-theme="dark"] .editor.language-css .token.tag {
     color: #f47067 !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.punctuation {
     color: #f47067 !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.property {
     color: #89ddff !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.string {
     color: #a3be8c !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.keyword,
 html[data-admin-theme="dark"] .editor.language-css .token.atrule {
     color: #c792ea !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.function,
 html[data-admin-theme="dark"] .editor.language-css .token.builtin,
 html[data-admin-theme="dark"] .editor.language-css .token.class-name {
     color: #82aaff !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.selector {
     color: #a3be8c !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.number {
     color: #ffb380 !important;
 }
+
 html[data-admin-theme="dark"] .editor.language-css .token.comment {
     color: #888888 !important;
 }
 
 @media (prefers-color-scheme: dark) {
+
     /* Prism auto dark mode overrides - matching original CodeMirror colors */
     html[data-admin-theme="auto"] .editor.language-markdown .token.comment,
     html[data-admin-theme="auto"] .editor.language-markdown .token.blockquote {
@@ -1768,30 +1804,38 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
     html[data-admin-theme="auto"] .editor.language-css .token.tag {
         color: #f47067 !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.punctuation {
         color: #f47067 !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.property {
         color: #89ddff !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.string {
         color: #a3be8c !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.keyword,
     html[data-admin-theme="auto"] .editor.language-css .token.atrule {
         color: #c792ea !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.function,
     html[data-admin-theme="auto"] .editor.language-css .token.builtin,
     html[data-admin-theme="auto"] .editor.language-css .token.class-name {
         color: #82aaff !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.selector {
         color: #a3be8c !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.number {
         color: #ffb380 !important;
     }
+
     html[data-admin-theme="auto"] .editor.language-css .token.comment {
         color: #888888 !important;
     }

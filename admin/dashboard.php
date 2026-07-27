@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
-require __DIR__ . '/../includes/updater.php';
+require_once __DIR__ . '/../includes/updater.php';
 
 $config = load_config();
 $blogPostsEnabled = $config['enable_blog_posts'] ?? true;
