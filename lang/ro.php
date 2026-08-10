@@ -391,6 +391,8 @@ return [
                 'tip_date_format_link'   => 'documentație format dată PHP',
                 'tip_favicon'            => 'Cel mai bine funcționează 512px pătrat',
                 'tip_og_image'           => '1360x712 pentru banner sau 1200x1200 pentru pătrat',
+                'tip_og_image_dynamic'   => 'Lăsați necompletat pentru a utiliza bannere Open Graph generate dinamic.',
+                'tip_og_image_doc_link'  => 'Citiți documentația',
                 'tip_one_per_line'       => 'unul pe linie',
                 'tip_optional'           => 'opțional',
                 'tip_rss_ttl'            => 'secunde, 0 pentru dezactivare',

@@ -267,6 +267,7 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="og_image"><?= e(t('admin.settings.site.og_image')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_og_image')) ?>)</span></label>
                 <input type="file" id="og_image" name="og_image" accept="image/*">
+                <p class="tip"><?= e(t('admin.settings.site.tip_og_image_dynamic')) ?> <a href="https://docs.pureblog.org/open-graph-images/" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_og_image_doc_link')) ?></a>.</p>
                 <?php if (!empty($config['assets']['og_image'])): ?>
                     <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
                 <?php endif; ?>

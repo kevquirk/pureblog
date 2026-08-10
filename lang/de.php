@@ -407,6 +407,8 @@ return [
                 'tip_date_format_link'   => 'PHP-Datumsformat-Dokumentation',
                 'tip_favicon'            => '512 Pixel quadratisch funktioniert am besten',
                 'tip_og_image'           => '1.360 × 712 für Banner oder 1.200 × 1.200 für quadratisch',
+                'tip_og_image_dynamic'   => 'Freilassen, um dynamisch generierte Open-Graph-Banner zu verwenden.',
+                'tip_og_image_doc_link'  => 'Dokumentation lesen',
                 'tip_one_per_line'       => 'eine pro Zeile',
                 'tip_optional'           => 'optional',
                 'tip_rss_ttl'            => 'Sekunden, 0 zum Deaktivieren',

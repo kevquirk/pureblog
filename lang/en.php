@@ -387,6 +387,8 @@ return [
                 'tip_date_format_link'   => 'PHP date format docs',
                 'tip_favicon'            => '512px square works best',
                 'tip_og_image'           => '1360x712 for banner, or 1200x1200 for square',
+                'tip_og_image_dynamic'   => 'Leave blank to use dynamically generated Open Graph preview banners.',
+                'tip_og_image_doc_link'  => 'Read the docs',
                 'tip_one_per_line'       => 'one per line',
                 'tip_optional'           => 'optional',
                 'tip_rss_ttl'            => 'seconds, 0 to disable',

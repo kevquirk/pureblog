@@ -74,6 +74,15 @@ function cache_clear(): void
             @unlink($file);
         }
     }
+    $ogDir = PUREBLOG_CACHE_PATH . '/og';
+    if (is_dir($ogDir)) {
+        $ogFiles = glob($ogDir . '/*') ?: [];
+        foreach ($ogFiles as $file) {
+            if (is_file($file)) {
+                @unlink($file);
+            }
+        }
+    }
 }
 
 // ---------------------------------------------------------------------------

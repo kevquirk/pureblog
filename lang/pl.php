@@ -390,6 +390,8 @@ return [
                 'tip_date_format_link'   => 'dokumentacja formatu daty PHP',
                 'tip_favicon'            => 'kwadrat o boku 512px sprawdza się najlepiej',
                 'tip_og_image'           => '1360x712 na baner, lub 1200x1200 na kwadrat',
+                'tip_og_image_dynamic'   => 'Pozostaw puste, aby używać dynamicznie generowanych banerów Open Graph.',
+                'tip_og_image_doc_link'  => 'Przeczytaj dokumentację',
                 'tip_one_per_line'       => 'jeden na wiersz',
                 'tip_optional'           => 'opcjonalnie',
                 'tip_rss_ttl'            => 'sekundy, ustaw 0, aby wyłączyć',

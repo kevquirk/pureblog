@@ -388,6 +388,8 @@ return [
                 'tip_date_format_link'=> 'documentação do formato de data em  PHP',
                 'tip_favicon'         => 'quadrado 512px é o ideal',
                 'tip_og_image'        => '1360x712 para faixas, ou 1200x1200 para quadrados',
+                'tip_og_image_dynamic' => 'Deixe em branco para usar banners Open Graph gerados dinamicamente.',
+                'tip_og_image_doc_link'=> 'Ler a documentação',
                 'tip_one_per_line'    => 'um por linha',
                 'tip_optional'        => 'opcional',
                 'tip_rss_ttl'         => 'segundos, 0 para desativar',

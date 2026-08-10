@@ -96,8 +96,8 @@ function default_config(): array
             'post_list_layout' => 'excerpt',
         ],
         'assets' => [
-            'favicon' => '/assets/images/favicon.png',
-            'og_image' => '/assets/images/og-image.png',
+            'favicon' => '',
+            'og_image' => '',
             'og_image_preferred' => 'banner',
         ],
         'community' => [

@@ -379,6 +379,8 @@ return [
                 'tip_date_format_link'   => 'PHP 日期格式文件',
                 'tip_favicon'            => '建議使用 512px 正方形',
                 'tip_og_image'           => '橫幅請用 1360x712，正方形請用 1200x1200',
+                'tip_og_image_dynamic'   => '留空以使用動態產生的 Open Graph 預覽橫幅。',
+                'tip_og_image_doc_link'  => '閱讀說明文件',
                 'tip_one_per_line'       => '每行一項',
                 'tip_optional'           => '選填',
                 'tip_rss_ttl'            => '秒數，0 為停用',

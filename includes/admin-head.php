@@ -64,8 +64,7 @@ unset($_SESSION['admin_action_flash']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php $adminFavicon = $config['assets']['favicon'] ?? '/assets/images/favicon.png'; ?>
-    <?php if ($adminFavicon[0] === '/') { $adminFavicon = get_base_url() . $adminFavicon; } ?>
+    <?php $adminFavicon = get_base_url() . '/assets/images/favicon.png'; ?>
     <link rel="icon" href="<?= e($adminFavicon) ?>">
     <link rel="apple-touch-icon" href="<?= e($adminFavicon) ?>">
     <title><?= e($adminTitle) ?></title>

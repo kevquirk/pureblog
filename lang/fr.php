@@ -390,6 +390,8 @@ return [
                 'tip_date_format_link'   => 'documentation du format de date PHP',
                 'tip_favicon'            => '512px carré de préférence',
                 'tip_og_image'           => '1360x712 pour bannière, ou 1200x1200 pour carré',
+                'tip_og_image_dynamic'   => 'Laissez vide pour utiliser des bannières Open Graph générées dynamiquement.',
+                'tip_og_image_doc_link'  => 'Lire la documentation',
                 'tip_one_per_line'       => 'un par ligne',
                 'tip_optional'           => 'optionnel',
                 'tip_rss_ttl'            => 'secondes, 0 pour désactiver',

@@ -391,6 +391,8 @@ return [
                 'tip_date_format_link'   => 'PHP-datumformaat documentatie',
                 'tip_favicon'            => '512px vierkant werkt het best',
                 'tip_og_image'           => '1360x712 voor rechthoek, of 1200x1200 voor vierkant',
+                'tip_og_image_dynamic'   => 'Laat leeg om dynamisch gegenereerde Open Graph-banners te gebruiken.',
+                'tip_og_image_doc_link'  => 'Lees de documentatie',
                 'tip_one_per_line'       => 'één per regel',
                 'tip_optional'           => 'optioneel',
                 'tip_rss_ttl'            => 'seconden, 0 om uit te schakelen',

@@ -20,11 +20,17 @@ if ($featureImageRaw !== '') {
         : $featureImageRaw;
     $isSquareOgImage = false;
 } else {
-    $ogImage = $config['assets']['og_image'] ?? '';
-    if ($ogImage !== '' && $ogImage[0] === '/') {
-        $ogImage = get_base_url() . $ogImage;
+    $customOgImage = trim((string) ($config['assets']['og_image'] ?? ''));
+    if ($customOgImage !== '' && $customOgImage !== '/assets/images/og-image.png') {
+        $ogImage = $customOgImage[0] === '/' ? get_base_url() . $customOgImage : $customOgImage;
+        $isSquareOgImage = $ogImagePreferred === 'square';
+    } elseif ($ogImagePreferred === 'banner') {
+        $ogImage = get_dynamic_og_image_url($post ?? null, $page ?? null);
+        $isSquareOgImage = false;
+    } else {
+        $ogImage = $customOgImage !== '' ? ($customOgImage[0] === '/' ? get_base_url() . $customOgImage : $customOgImage) : '';
+        $isSquareOgImage = $ogImagePreferred === 'square';
     }
-    $isSquareOgImage = $ogImagePreferred === 'square';
 }
 ?>
 <!DOCTYPE html>
@@ -76,6 +82,9 @@ if ($featureImageRaw !== '') {
         <?php if ($isSquareOgImage): ?>
             <meta property="og:image:width" content="600">
             <meta property="og:image:height" content="600">
+        <?php else: ?>
+            <meta property="og:image:width" content="1360">
+            <meta property="og:image:height" content="712">
         <?php endif; ?>
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= get_base_url() ?>/feed">

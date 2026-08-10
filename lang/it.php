@@ -391,6 +391,8 @@ return [
                 'tip_date_format_link'   => 'documentazione formato data PHP',
                 'tip_favicon'            => '512px quadrato è l\'ideale',
                 'tip_og_image'           => '1360x712 per banner, o 1200x1200 per quadrato',
+                'tip_og_image_dynamic'   => 'Lascia vuoto per utilizzare i banner Open Graph generati dinamicamente.',
+                'tip_og_image_doc_link'  => 'Leggi la documentazione',
                 'tip_one_per_line'       => 'uno per riga',
                 'tip_optional'           => 'opzionale',
                 'tip_rss_ttl'            => 'secondi, 0 per disabilitare',

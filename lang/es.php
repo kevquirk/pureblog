@@ -391,6 +391,8 @@ return [
                 'tip_date_format_link'=> 'documentación del formato de fecha PHP',
                 'tip_favicon'         => '512px funciona mejor para cuadrado',
                 'tip_og_image'        => '1360x712 para banner, o 1200x1200 para cuadrado',
+                'tip_og_image_dynamic' => 'Dejar en blanco para usar banners generados dinámicamente.',
+                'tip_og_image_doc_link'=> 'Leer la documentación',
                 'tip_one_per_line'    => 'uno por línea',
                 'tip_optional'        => 'opcional',
                 'tip_rss_ttl'         => 'segundos, 0 para desactivar',

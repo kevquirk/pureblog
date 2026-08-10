@@ -119,6 +119,44 @@ function font_stack_url(string $fontStack): ?string
 }
 
 /**
+ * Resolve the TrueType font path for dynamic OG image generation with hook override support.
+ *
+ * @param array<string, mixed> $context
+ */
+function get_og_image_font_path(string $fontStack, array $context = []): ?string
+{
+    $defaultFile = match ($fontStack) {
+        'mono'  => PUREBLOG_BASE_PATH . '/assets/fonts/iosevka/Iosevka-Bold.ttf',
+        'serif' => PUREBLOG_BASE_PATH . '/assets/fonts/merriweather/Merriweather-Bold.ttf',
+        default => PUREBLOG_BASE_PATH . '/assets/fonts/inter/Inter-Bold.ttf',
+    };
+
+    $resolved = apply_filter('on_og_image_font', $defaultFile, $context);
+    if (is_string($resolved) && is_file($resolved) && is_readable($resolved)) {
+        return $resolved;
+    }
+
+    return is_file($defaultFile) && is_readable($defaultFile) ? $defaultFile : null;
+}
+
+/**
+ * Get the dynamic Open Graph banner image URL for a post, page, or homepage.
+ *
+ * @param array<string, mixed>|null $post
+ * @param array<string, mixed>|null $page
+ */
+function get_dynamic_og_image_url(?array $post = null, ?array $page = null): string
+{
+    if (is_array($post) && !empty($post['slug'])) {
+        return get_base_url() . '/og-image.php?type=post&slug=' . urlencode((string) $post['slug']);
+    }
+    if (is_array($page) && !empty($page['slug'])) {
+        return get_base_url() . '/og-image.php?type=page&slug=' . urlencode((string) $page['slug']);
+    }
+    return get_base_url() . '/og-image.php?type=home';
+}
+
+/**
  * Validate that a resolved path is within the allowed base directory.
  */
 function validate_image_path(string $baseDir, string $targetPath): bool

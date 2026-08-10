@@ -391,6 +391,8 @@ return [
                 'tip_date_format_link'   => 'PHP-aikamuodon dokumentaatio.',
                 'tip_favicon'            => '512px nelikulmio toimii parhaiten',
                 'tip_og_image'           => 'Banneri: 1360x712 tai neliö: 1200x1200',
+                'tip_og_image_dynamic'   => 'Jätä tyhjäksi käyttääksesi dynaamisesti luotuja Open Graph -bannereita.',
+                'tip_og_image_doc_link'  => 'Lue ohjeet',
                 'tip_one_per_line'       => 'yksi per rivi',
                 'tip_optional'           => 'vapaaehtoinen',
                 'tip_rss_ttl'            => 'sekuntia, 0 poistaaksesi käytöstä',
