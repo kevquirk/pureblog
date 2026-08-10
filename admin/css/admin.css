@@ -316,8 +316,8 @@ html[data-sidebar="collapsed"] .sidebar-logo {
 }
 
 .sidebar-toggle:hover {
-    background: var(--bg-color);
-    color: var(--text-color);
+    background: var(--text-color);
+    color: var(--bg-color);
 }
 
 html[data-sidebar="collapsed"] .admin-nav .sidebar-toggle {
@@ -2140,6 +2140,7 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
         padding: 0.25rem;
         display: flex;
         align-items: center;
+        font-size: 1.3rem;
     }
 
     /* On mobile always show full sidebar (not collapsed icon-only) */
@@ -2173,6 +2174,7 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 
     .editor-sidebar .sidebar-header {
         height: 2.55rem;
+        border: none;
     }
 
     body.editor-sidebar-open .editor-sidebar .sidebar-header {
@@ -2187,6 +2189,7 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
     .editor-sidebar .sidebar-toggle {
         padding: 0.4rem;
         border: none;
+        font-size: 1.3rem;
     }
 
     body.editor-sidebar-open .editor-sidebar .sidebar-toggle {
