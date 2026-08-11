@@ -490,8 +490,13 @@ function render_masthead_layout(array $config, array $context = []): void
         $uriPath = substr($uriPath, strlen($bp));
     }
     $currentPath = trim($uriPath, '/');
-    $navPages = get_all_pages(false);
-    $navPages = array_values(array_filter($navPages, fn($page) => ($page['include_in_nav'] ?? true)));
+    $customNavOnly = !empty($config['custom_nav_only']);
+    if ($customNavOnly) {
+        $navPages = [];
+    } else {
+        $navPages = get_all_pages(false);
+        $navPages = array_values(array_filter($navPages, fn($page) => ($page['include_in_nav'] ?? true)));
+    }
     $customNavItems = array_values(array_filter(parse_custom_nav($config['custom_nav'] ?? ''), function (array $item): bool {
         $url = $item['url'] ?? '';
         if ($url === '' || $url[0] === '/') {

@@ -350,6 +350,7 @@ return [
                 'og_banner'          => 'Rechthoek (standaard)',
                 'og_square'          => 'Vierkant',
                 'custom_nav'         => 'Speciale navigatie-items',
+                'custom_nav_only'    => 'Vervang de volledige navigatie door speciale navigatie-items',
                 'custom_routes'      => 'Speciale routes',
                 'homepage_default'   => 'Blogposts (standaard)',
                 'blog_use_homepage'  => 'Gebruik homepagina',

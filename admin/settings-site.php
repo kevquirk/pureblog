@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $siteDescription = trim($_POST['site_description'] ?? '');
     $siteEmail = trim($_POST['site_email'] ?? '');
     $customNav = trim($_POST['custom_nav'] ?? '');
+    $customNavOnly = !empty($_POST['custom_nav_only']);
     $customRoutes = trim($_POST['custom_routes'] ?? '');
     $headInjectPage = trim($_POST['head_inject_page'] ?? '');
     $headInjectPost = trim($_POST['head_inject_post'] ?? '');
@@ -87,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['site_description'] = $siteDescription;
         $config['site_email'] = $siteEmail;
         $config['custom_nav'] = $customNav;
+        $config['custom_nav_only'] = $customNavOnly;
         $config['custom_routes'] = $customRoutes;
         $config['head_inject_page'] = $headInjectPage;
         $config['head_inject_post'] = $headInjectPost;
@@ -280,6 +282,11 @@ require __DIR__ . '/../includes/admin-head.php';
 
                 <label for="custom_nav"><?= e(t('admin.settings.site.custom_nav')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_one_per_line')) ?>)</span></label>
                 <textarea id="custom_nav" name="custom_nav" rows="4" placeholder="GitHub | https://github.com/you&#10;Projects | /projects"><?= e($config['custom_nav'] ?? '') ?></textarea>
+
+                <label class="inline-checkbox" for="custom_nav_only" style="margin-top: -0.5rem; margin-bottom: 1.25rem;">
+                    <input type="checkbox" id="custom_nav_only" name="custom_nav_only"<?= !empty($config['custom_nav_only']) ? ' checked' : '' ?>>
+                    <?= e(t('admin.settings.site.custom_nav_only')) ?>
+                </label>
 
                 <label for="custom_routes"><?= e(t('admin.settings.site.custom_routes')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_one_per_line')) ?>)</span></label>
                 <textarea id="custom_routes" name="custom_routes" rows="4" placeholder="/archive | /content/includes/archive.php&#10;/reading | reading.php"><?= e($config['custom_routes'] ?? '') ?></textarea>

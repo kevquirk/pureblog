@@ -350,6 +350,7 @@ return [
                 'og_banner'           => 'Banner (predeterminado)',
                 'og_square'           => 'Cuadrado',
                 'custom_nav'          => 'Elementos de navegación personalizados',
+                'custom_nav_only'     => 'Reemplazar toda la navegación con elementos personalizados',
                 'custom_routes'       => 'Rutas personalizadas',
                 'homepage_default'    => 'Entradas del blog (predeterminado)',
                 'blog_use_homepage'   => 'Usar página de inicio',

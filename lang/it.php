@@ -350,6 +350,7 @@ return [
                 'og_banner'           => 'Banner (predefinito)',
                 'og_square'           => 'Quadrato',
                 'custom_nav'          => 'Voci di navigazione personalizzate',
+                'custom_nav_only'     => 'Sostituisci l\'intera navigazione con voci personalizzate',
                 'custom_routes'       => 'Route personalizzate',
                 'homepage_default'    => 'Articoli del blog (predefinito)',
                 'blog_use_homepage'   => 'Usa homepage',

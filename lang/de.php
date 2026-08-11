@@ -366,6 +366,7 @@ return [
                 'og_banner'          => 'Banner (Standard)',
                 'og_square'          => 'Quadratisch',
                 'custom_nav'         => 'Benutzerdefinierte Navigationseinträge',
+                'custom_nav_only'    => 'Gesamte Navigation durch benutzerdefinierte Einträge ersetzen',
                 'custom_routes'      => 'Benutzerdefinierte Routen',
                 'homepage_default'   => 'Blog-Beiträge (Standard)',
                 'blog_use_homepage'  => 'Startseite verwenden',

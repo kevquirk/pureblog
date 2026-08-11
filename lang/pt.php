@@ -347,6 +347,7 @@ return [
                 'og_banner'           => 'Faixa (predefinição)',
                 'og_square'           => 'Quadrado',
                 'custom_nav'          => 'Itens de navegação personalizados',
+                'custom_nav_only'     => 'Substituir toda a navegação por itens personalizados',
                 'custom_routes'       => 'Rotas personalizadas',
                 'homepage_default'    => 'Publicações do blog (predefinida)',
                 'blog_use_homepage'   => 'Usar página inicial',

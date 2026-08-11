@@ -349,6 +349,7 @@ return [
                 'og_banner'           => 'Bannière (défaut)',
                 'og_square'           => 'Carré',
                 'custom_nav'          => 'Éléments de navigation personnalisés',
+                'custom_nav_only'     => 'Remplacer toute la navigation par les éléments personnalisés',
                 'custom_routes'       => 'Routes personnalisées',
                 'homepage_default'    => 'Articles du blog (défaut)',
                 'blog_use_homepage'   => 'Utiliser la page d\'accueil',

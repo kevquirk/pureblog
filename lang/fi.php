@@ -350,6 +350,7 @@ return [
                 'og_banner'          => 'Banneri (oletus)',
                 'og_square'          => 'Nelikulmio',
                 'custom_nav'         => 'Kustomoidut navigaatiosisällöt',
+                'custom_nav_only'    => 'Korvaa koko navigaatio kustomoiduilla kohteilla',
                 'custom_routes'      => 'Kustomoidut reitit',
                 'homepage_default'   => 'Blogijulkaisut (oletus)',
                 'blog_use_homepage'  => 'Käytä kotisivua',

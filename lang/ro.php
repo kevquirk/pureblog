@@ -350,6 +350,7 @@ return [
                 'og_banner'          => 'Banner (implicit)',
                 'og_square'          => 'Pătrat',
                 'custom_nav'         => 'Elemente de navigare personalizate',
+                'custom_nav_only'    => 'Înlocuiește întreaga navigare cu elemente personalizate',
                 'custom_routes'      => 'Rute personalizate',
                 'homepage_default'   => 'Articole blog (implicit)',
                 'blog_use_homepage'  => 'Folosește pagina principală',

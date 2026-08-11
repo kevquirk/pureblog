@@ -338,6 +338,7 @@ return [
                 'og_banner'          => '橫幅（預設）',
                 'og_square'          => '正方形',
                 'custom_nav'         => '自訂導覽項目',
+                'custom_nav_only'    => '以自訂導覽項目取代整個導覽列',
                 'custom_routes'      => '自訂路徑',
                 'homepage_default'   => '部落格文章（預設）',
                 'blog_use_homepage'  => '使用首頁',

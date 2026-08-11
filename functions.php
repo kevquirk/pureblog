@@ -56,6 +56,7 @@ function default_config(): array
         'site_description' => '',
         'site_email' => '',
         'custom_nav' => '',
+        'custom_nav_only' => false,
         'custom_routes' => '',
         'head_inject_page' => '',
         'head_inject_post' => '',

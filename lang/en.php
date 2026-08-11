@@ -346,6 +346,7 @@ return [
                 'og_banner'          => 'Banner (default)',
                 'og_square'          => 'Square',
                 'custom_nav'         => 'Custom nav items',
+                'custom_nav_only'    => 'Replace entire navigation with custom nav items',
                 'custom_routes'      => 'Custom routes',
                 'homepage_default'   => 'Blog posts (default)',
                 'blog_use_homepage'  => 'Use homepage',

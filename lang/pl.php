@@ -349,6 +349,7 @@ return [
                 'og_banner'          => 'Baner (domyślnie)',
                 'og_square'          => 'Kwadrat',
                 'custom_nav'         => 'Własne elementy nawigacji',
+                'custom_nav_only'    => 'Zastąp całą nawigację własnymi elementami',
                 'custom_routes'      => 'Niestandardowe trasy',
                 'homepage_default'   => 'Posty na blogu (domyślnie)',
                 'blog_use_homepage'  => 'Używaj strony głównej',
