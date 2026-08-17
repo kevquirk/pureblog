@@ -64,37 +64,7 @@ if ($feedCacheEnabled) {
     ob_start();
 }
 
-function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = ''): string
-{
-    if (trim($html) === '') {
-        return $html;
-    }
 
-    // Temporarily replace <pre>/<code> blocks so their contents are not modified.
-    $placeholders = [];
-    $html = preg_replace_callback(
-        '/<(pre|code)[^>]*>.*?<\/\1>/si',
-        function ($match) use (&$placeholders): string {
-            $key = "\x00PH_" . count($placeholders) . "\x00";
-            $placeholders[$key] = $match[0];
-            return $key;
-        },
-        $html
-    ) ?? $html;
-
-    $html = preg_replace('/href="\//', 'href="' . $baseUrl . '/', $html) ?? $html;
-    $html = preg_replace('/src="\//', 'src="' . $baseUrl . '/', $html) ?? $html;
-    if ($postUrl !== '') {
-        $html = preg_replace('/href="#/', 'href="' . $postUrl . '#', $html) ?? $html;
-    }
-
-    // Restore <pre>/<code> blocks.
-    if ($placeholders !== []) {
-        $html = str_replace(array_keys($placeholders), array_values($placeholders), $html);
-    }
-
-    return $html;
-}
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>

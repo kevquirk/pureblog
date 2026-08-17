@@ -1200,3 +1200,62 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     }
     return true;
 }
+
+/**
+ * Convert relative URLs in feed content to absolute URLs.
+ * Correctly handles installations in a sub-folder to prevent duplication.
+ */
+function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = ''): string
+{
+    if (trim($html) === '') {
+        return $html;
+    }
+
+    // Temporarily replace <pre>/<code> blocks so their contents are not modified.
+    $placeholders = [];
+    $html = preg_replace_callback(
+        '/<(pre|code)[^>]*>.*?<\/\1>/si',
+        function ($match) use (&$placeholders): string {
+            $key = "\x00PH_" . count($placeholders) . "\x00";
+            $placeholders[$key] = $match[0];
+            return $key;
+        },
+        $html
+    ) ?? $html;
+
+    $parsed = parse_url($baseUrl);
+    $basePath = rtrim((string) ($parsed['path'] ?? ''), '/');
+    $scheme = $parsed['scheme'] ?? 'http';
+    $host = $parsed['host'] ?? '';
+    $port = isset($parsed['port']) ? ':' . $parsed['port'] : '';
+    $domainUrl = $scheme . '://' . $host . $port;
+
+    $html = preg_replace_callback(
+        '/(href|src)="\/(?P<path>[^"]*)"/i',
+        function ($matches) use ($baseUrl, $domainUrl, $basePath): string {
+            $attribute = $matches[1];
+            $path = $matches['path'];
+
+            // If the path starts with the sub-folder/base path, prepend domainUrl.
+            // Otherwise, prepend baseUrl.
+            if ($basePath !== '' && (str_starts_with('/' . $path, $basePath . '/') || '/' . $path === $basePath)) {
+                return $attribute . '="' . $domainUrl . '/' . $path . '"';
+            }
+
+            return $attribute . '="' . $baseUrl . '/' . $path . '"';
+        },
+        $html
+    ) ?? $html;
+
+    if ($postUrl !== '') {
+        $html = preg_replace('/href="#/', 'href="' . $postUrl . '#', $html) ?? $html;
+    }
+
+    // Restore <pre>/<code> blocks.
+    if ($placeholders !== []) {
+        $html = str_replace(array_keys($placeholders), array_values($placeholders), $html);
+    }
+
+    return $html;
+}
+
