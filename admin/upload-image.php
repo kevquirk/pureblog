@@ -60,14 +60,15 @@ if ($error === '') {
 }
 
 if ($error === '') {
-    $filename = basename($_FILES['image']['name']);
-    $filename = preg_replace('/[^a-zA-Z0-9._-]/', '-', $filename) ?? $filename;
-    $filename = preg_replace('/-+/', '-', $filename) ?? $filename;
-    $filename = trim($filename, '-');
-    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-    if ($ext === '') {
-        $filename .= '.' . $allowedTypes[$mimeType];
-    }
+    $uploadedFilename = basename($_FILES['image']['name']);
+    $uploadedFilename = preg_replace('/[^a-zA-Z0-9._-]/', '-', $uploadedFilename) ?? $uploadedFilename;
+    $uploadedFilename = preg_replace('/-+/', '-', $uploadedFilename) ?? $uploadedFilename;
+    $uploadedFilename = trim($uploadedFilename, '-');
+
+    $expectedExt = $allowedTypes[$mimeType];
+    $baseName = pathinfo($uploadedFilename, PATHINFO_FILENAME);
+    $baseName = str_replace('.', '-', $baseName);
+    $filename = $baseName . '.' . $expectedExt;
 
     if ($filename === '') {
         $error = t('admin.editor.error_upload_invalid_name');

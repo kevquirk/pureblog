@@ -829,9 +829,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
     $includeInNav = (bool) ($page['include_in_nav'] ?? true);
     $content = str_replace("\r", '', $page['content'] ?? '');
 
-    if ($slug === '') {
-        $slug = slugify($title);
-    }
+    $slug = slugify($slug === '' ? $title : $slug);
 
     if ($slug !== '') {
         $baseSlug = $slug;
@@ -1070,9 +1068,7 @@ function save_post(array &$post, ?string $originalSlug = null, ?string $original
     $content = str_replace("\r", '', $post['content'] ?? '');
     $description = trim($post['description'] ?? '');
 
-    if ($slug === '') {
-        $slug = slugify($title);
-    }
+    $slug = slugify($slug === '' ? $title : $slug);
 
     if ($slug !== '') {
         $baseSlug = $slug;
