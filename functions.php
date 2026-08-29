@@ -29,7 +29,7 @@ const PUREBLOG_CONTENT_CSS_PATH = PUREBLOG_BASE_PATH . '/content/css';
 const PUREBLOG_HOOKS_PATH = PUREBLOG_BASE_PATH . '/config/hooks.php';
 const PUREBLOG_CACHE_PATH = PUREBLOG_BASE_PATH . '/cache';
 const PUREBLOG_THEMES_PATH = PUREBLOG_BASE_PATH . '/content/themes';
-const PUREBLOG_CORE_THEMES_PATH = PUREBLOG_BASE_PATH . '/data/themes';
+const PUREBLOG_CORE_THEMES_PATH = PUREBLOG_BASE_PATH . '/includes/themes';
 
 function detect_pureblog_version(): string
 {
