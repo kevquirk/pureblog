@@ -365,6 +365,7 @@ return [
                 'og_image_format'    => 'Open-Graph-Bildformat',
                 'og_banner'          => 'Banner (Standard)',
                 'og_square'          => 'Quadratisch',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => 'Benutzerdefinierte Navigationseinträge',
                 'custom_nav_only'    => 'Gesamte Navigation durch benutzerdefinierte Einträge ersetzen',
                 'custom_routes'      => 'Benutzerdefinierte Routen',
@@ -407,6 +408,7 @@ return [
                 'tip_timezone_link'      => 'PHP-Zeitzonenliste',
                 'tip_date_format_link'   => 'PHP-Datumsformat-Dokumentation',
                 'tip_favicon'            => '512 Pixel quadratisch funktioniert am besten',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => '1.360 × 712 für Banner oder 1.200 × 1.200 für quadratisch',
                 'tip_og_image_dynamic'   => 'Freilassen, um dynamisch generierte Open-Graph-Banner zu verwenden.',
                 'tip_og_image_doc_link'  => 'Dokumentation lesen',

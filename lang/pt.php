@@ -346,6 +346,7 @@ return [
                 'og_image_format'     => 'Formato da imagem Open Graph',
                 'og_banner'           => 'Faixa (predefinição)',
                 'og_square'           => 'Quadrado',
+                'sidebar_logo'        => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'          => 'Itens de navegação personalizados',
                 'custom_nav_only'     => 'Substituir toda a navegação por itens personalizados',
                 'custom_routes'       => 'Rotas personalizadas',
@@ -388,6 +389,7 @@ return [
                 'tip_timezone_link'   => 'lista de fusos horários em PHP',
                 'tip_date_format_link'=> 'documentação do formato de data em  PHP',
                 'tip_favicon'         => 'quadrado 512px é o ideal',
+                'tip_sidebar_logo'    => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'        => '1360x712 para faixas, ou 1200x1200 para quadrados',
                 'tip_og_image_dynamic' => 'Deixe em branco para usar banners Open Graph gerados dinamicamente.',
                 'tip_og_image_doc_link'=> 'Ler a documentação',

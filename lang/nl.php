@@ -349,6 +349,7 @@ return [
                 'og_image_format'    => 'Open Graph afbeeldingsformaat',
                 'og_banner'          => 'Rechthoek (standaard)',
                 'og_square'          => 'Vierkant',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => 'Speciale navigatie-items',
                 'custom_nav_only'    => 'Vervang de volledige navigatie door speciale navigatie-items',
                 'custom_routes'      => 'Speciale routes',
@@ -391,6 +392,7 @@ return [
                 'tip_timezone_link'      => 'PHP-tijdzoneslijst',
                 'tip_date_format_link'   => 'PHP-datumformaat documentatie',
                 'tip_favicon'            => '512px vierkant werkt het best',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => '1360x712 voor rechthoek, of 1200x1200 voor vierkant',
                 'tip_og_image_dynamic'   => 'Laat leeg om dynamisch gegenereerde Open Graph-banners te gebruiken.',
                 'tip_og_image_doc_link'  => 'Lees de documentatie',

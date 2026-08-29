@@ -273,6 +273,13 @@ html[data-sidebar="collapsed"] .admin-nav {
     flex-shrink: 0;
 }
 
+.sidebar-logo img {
+    max-height: 34px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
 .sidebar-logo .logo {
     color: var(--accent-color);
     border: 2px solid currentColor;

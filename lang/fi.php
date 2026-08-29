@@ -349,6 +349,7 @@ return [
                 'og_image_format'    => 'Open Graph -kuvan formaatti',
                 'og_banner'          => 'Banneri (oletus)',
                 'og_square'          => 'Nelikulmio',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => 'Kustomoidut navigaatiosisällöt',
                 'custom_nav_only'    => 'Korvaa koko navigaatio kustomoiduilla kohteilla',
                 'custom_routes'      => 'Kustomoidut reitit',
@@ -391,6 +392,7 @@ return [
                 'tip_timezone_link'      => 'PHP-aikavyöhykelista.',
                 'tip_date_format_link'   => 'PHP-aikamuodon dokumentaatio.',
                 'tip_favicon'            => '512px nelikulmio toimii parhaiten',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => 'Banneri: 1360x712 tai neliö: 1200x1200',
                 'tip_og_image_dynamic'   => 'Jätä tyhjäksi käyttääksesi dynaamisesti luotuja Open Graph -bannereita.',
                 'tip_og_image_doc_link'  => 'Lue ohjeet',

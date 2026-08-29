@@ -176,7 +176,11 @@ unset($_SESSION['admin_action_flash']);
         <nav class="admin-nav" aria-label="Admin">
             <div class="sidebar-header">
                 <a href="<?= base_path() ?>/admin/<?= $adminHomepageSetting === 'content' ? 'content.php' : 'dashboard.php' ?>" class="sidebar-logo">
-                    <span class="logo"><span class="pure">PURE</span><span class="service">BLOG</span></span>
+                    <?php if (!empty($config['assets']['sidebar_logo'])): ?>
+                        <img src="<?= e($config['assets']['sidebar_logo']) ?>" alt="<?= e($config['site_title']) ?>">
+                    <?php else: ?>
+                        <span class="logo"><span class="pure">PURE</span><span class="service">BLOG</span></span>
+                    <?php endif; ?>
                 </a>
                 <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
                     <svg class="icon" aria-hidden="true"><use href="#icon-panel-left-close"></use></svg>

@@ -349,6 +349,7 @@ return [
                 'og_image_format'    => 'Format imagine Open Graph',
                 'og_banner'          => 'Banner (implicit)',
                 'og_square'          => 'Pătrat',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => 'Elemente de navigare personalizate',
                 'custom_nav_only'    => 'Înlocuiește întreaga navigare cu elemente personalizate',
                 'custom_routes'      => 'Rute personalizate',
@@ -391,6 +392,7 @@ return [
                 'tip_timezone_link'      => 'lista fusurilor orare PHP',
                 'tip_date_format_link'   => 'documentație format dată PHP',
                 'tip_favicon'            => 'Cel mai bine funcționează 512px pătrat',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => '1360x712 pentru banner sau 1200x1200 pentru pătrat',
                 'tip_og_image_dynamic'   => 'Lăsați necompletat pentru a utiliza bannere Open Graph generate dinamic.',
                 'tip_og_image_doc_link'  => 'Citiți documentația',

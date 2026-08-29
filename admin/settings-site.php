@@ -7,7 +7,7 @@ require __DIR__ . '/bootstrap.php';
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
-if (isset($_GET['delete_asset']) && in_array($_GET['delete_asset'], ['favicon', 'og_image'], true)) {
+if (isset($_GET['delete_asset']) && in_array($_GET['delete_asset'], ['favicon', 'og_image', 'sidebar_logo'], true)) {
     $token = $_GET['csrf_token'] ?? '';
     $sessionToken = $_SESSION['csrf_token'] ?? '';
     if ($token === '' || !is_string($sessionToken) || !hash_equals($sessionToken, $token)) {
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['community']['purecomments_url'] = rtrim($purecommentsUrl, '/');
 
         if (!isset($config['assets'])) {
-            $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner'];
+            $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner', 'sidebar_logo' => ''];
         }
         $config['assets']['og_image_preferred'] = $ogImagePreferred;
 
@@ -186,6 +186,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
                     $dest = $assetDir . '/' . $name;
                     if (move_uploaded_file($_FILES['og_image']['tmp_name'], $dest)) {
                         $config['assets']['og_image'] = '/content/images/' . $name;
+                    }
+                }
+            } else {
+                $errors[] = t('admin.editor.error_upload_type');
+            }
+        }
+
+        if (!empty($_FILES['sidebar_logo']['name']) && $_FILES['sidebar_logo']['error'] === UPLOAD_ERR_OK) {
+            $mimeType = $finfo->file($_FILES['sidebar_logo']['tmp_name']) ?: '';
+            if (in_array($mimeType, $allowedImageTypes, true)) {
+                $name = basename($_FILES['sidebar_logo']['name']);
+                $name = strtolower($name);
+                $name = preg_replace('/[^a-z0-9._-]/', '-', $name) ?? $name;
+                $name = preg_replace('/-+/', '-', $name) ?? $name;
+                $name = trim($name, '-');
+                if ($name !== '') {
+                    $dest = $assetDir . '/' . $name;
+                    if (move_uploaded_file($_FILES['sidebar_logo']['tmp_name'], $dest)) {
+                        $config['assets']['sidebar_logo'] = '/content/images/' . $name;
                     }
                 }
             } else {
@@ -309,6 +328,12 @@ require __DIR__ . '/../includes/admin-head.php';
                     <option value="banner"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'banner' ? ' selected' : '' ?>><?= e(t('admin.settings.site.og_banner')) ?></option>
                     <option value="square"<?= ($config['assets']['og_image_preferred'] ?? 'banner') === 'square' ? ' selected' : '' ?>><?= e(t('admin.settings.site.og_square')) ?></option>
                 </select>
+
+                <label for="sidebar_logo"><?= e(t('admin.settings.site.sidebar_logo')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_sidebar_logo')) ?>)</span></label>
+                <input type="file" id="sidebar_logo" name="sidebar_logo" accept="image/*">
+                <?php if (!empty($config['assets']['sidebar_logo'])): ?>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['sidebar_logo']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['sidebar_logo']) ?></a> <a href="?delete_asset=sidebar_logo&csrf_token=<?= urlencode(csrf_token()) ?>" class="link-button delete" onclick="return confirm('<?= e(t('admin.images.delete_confirm')) ?>');"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></a></p>
+                <?php endif; ?>
 
                 <label for="custom_nav"><?= e(t('admin.settings.site.custom_nav')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_one_per_line')) ?>)</span></label>
                 <textarea id="custom_nav" name="custom_nav" rows="4" placeholder="GitHub | https://github.com/you&#10;Projects | /projects"><?= e($config['custom_nav'] ?? '') ?></textarea>

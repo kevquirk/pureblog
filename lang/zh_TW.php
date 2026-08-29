@@ -337,6 +337,7 @@ return [
                 'og_image_format'    => 'Open Graph 圖片格式',
                 'og_banner'          => '橫幅（預設）',
                 'og_square'          => '正方形',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => '自訂導覽項目',
                 'custom_nav_only'    => '以自訂導覽項目取代整個導覽列',
                 'custom_routes'      => '自訂路徑',
@@ -379,6 +380,7 @@ return [
                 'tip_timezone_link'      => 'PHP 時區清單',
                 'tip_date_format_link'   => 'PHP 日期格式文件',
                 'tip_favicon'            => '建議使用 512px 正方形',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => '橫幅請用 1360x712，正方形請用 1200x1200',
                 'tip_og_image_dynamic'   => '留空以使用動態產生的 Open Graph 預覽橫幅。',
                 'tip_og_image_doc_link'  => '閱讀說明文件',

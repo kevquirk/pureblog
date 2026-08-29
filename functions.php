@@ -100,6 +100,7 @@ function default_config(): array
             'favicon' => '',
             'og_image' => '',
             'og_image_preferred' => 'banner',
+            'sidebar_logo' => '',
         ],
         'community' => [
             'purecomments_enabled' => false,

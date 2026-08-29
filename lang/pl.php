@@ -348,6 +348,7 @@ return [
                 'og_image_format'    => 'Format obrazu grafiki podglądu (Open Graph)',
                 'og_banner'          => 'Baner (domyślnie)',
                 'og_square'          => 'Kwadrat',
+                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
                 'custom_nav'         => 'Własne elementy nawigacji',
                 'custom_nav_only'    => 'Zastąp całą nawigację własnymi elementami',
                 'custom_routes'      => 'Niestandardowe trasy',
@@ -390,6 +391,7 @@ return [
                 'tip_timezone_link'      => 'lista stref czasowych PHP',
                 'tip_date_format_link'   => 'dokumentacja formatu daty PHP',
                 'tip_favicon'            => 'kwadrat o boku 512px sprawdza się najlepiej',
+                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
                 'tip_og_image'           => '1360x712 na baner, lub 1200x1200 na kwadrat',
                 'tip_og_image_dynamic'   => 'Pozostaw puste, aby używać dynamicznie generowanych banerów Open Graph.',
                 'tip_og_image_doc_link'  => 'Przeczytaj dokumentację',
