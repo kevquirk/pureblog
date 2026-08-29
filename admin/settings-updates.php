@@ -66,7 +66,11 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
     } elseif (isset($_POST['restore_backup'])) {
         $backupName = trim((string) ($_POST['backup_name'] ?? ''));
         $applyResult = restore_named_backup($backupName);
-        if (!($applyResult['ok'] ?? false) && $backupName === '') {
+        if ($applyResult['ok'] ?? false) {
+            $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.updates.notice_backup_restored')];
+            header('Location: ' . base_path() . '/admin/settings-updates.php?restored=1');
+            exit;
+        } elseif ($backupName === '') {
             $applyResult = ['ok' => false, 'error' => t('admin.settings.updates.error_choose_restore')];
         }
     } elseif (isset($_POST['delete_backup'])) {

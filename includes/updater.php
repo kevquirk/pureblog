@@ -445,6 +445,10 @@ function backup_core_paths(string $backupRoot, array $items): void
         }
         copy_path_recursive($src, $backupRoot . '/' . $item);
     }
+    $versionFile = PUREBLOG_BASE_PATH . '/VERSION';
+    if (file_exists($versionFile)) {
+        @copy($versionFile, $backupRoot . '/VERSION');
+    }
 }
 
 function restore_core_paths_from_backup(string $backupRoot): void
@@ -463,6 +467,22 @@ function restore_core_paths_from_backup(string $backupRoot): void
             copy_path_recursive($backup, $target);
         }
     }
+
+    // If the backup folder does not contain a VERSION file (e.g. created by earlier releases),
+    // extract and restore the previous version from the backup directory name if available.
+    $versionTarget = PUREBLOG_BASE_PATH . '/VERSION';
+    if (!file_exists($backupRoot . '/VERSION')) {
+        $backupDirName = basename($backupRoot);
+        if (preg_match('/^pureblog-backup-\d{8}-\d{6}-([a-zA-Z0-9._-]+)-[a-f0-9]+$/', $backupDirName, $m)) {
+            $recoveredVersion = str_replace('-', '.', $m[1]);
+            @file_put_contents($versionTarget, $recoveredVersion . PHP_EOL);
+        }
+    }
+
+    if (function_exists('opcache_reset')) {
+        @opcache_reset();
+    }
+    @unlink(PUREBLOG_BASE_PATH . '/content/.version-cache');
 }
 
 /**
