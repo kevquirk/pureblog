@@ -63,7 +63,11 @@ if ($featureImageRaw !== '') {
         <?php $faviconHref = $config['assets']['favicon']; ?>
         <?php if ($faviconHref[0] === '/') { $faviconHref = get_base_url() . $faviconHref; } ?>
         <link rel="icon" href="<?= e($faviconHref) ?>">
-        <link rel="apple-touch-icon" href="<?= e($faviconHref) ?>">
+    <?php endif; ?>
+    <?php if (!empty($config['assets']['apple_touch_icon'])): ?>
+        <?php $appleTouchHref = $config['assets']['apple_touch_icon']; ?>
+        <?php if ($appleTouchHref[0] === '/') { $appleTouchHref = get_base_url() . $appleTouchHref; } ?>
+        <link rel="apple-touch-icon" href="<?= e($appleTouchHref) ?>">
     <?php endif; ?>
     <meta property="og:type" content="<?= isset($post) ? 'article' : 'website' ?>">
     <meta property="og:url" content="<?= e($canonicalUrl) ?>">

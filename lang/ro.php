@@ -345,6 +345,7 @@ return [
                 'blog_page'          => 'Pagina blogului',
                 'base_url'           => 'URL de bază',
                 'favicon'            => 'Favicon',
+                'apple_touch_icon'   => 'Apple touch icon', // ENGLISH PLACEHOLDER
                 'og_image'           => 'Imagine Open Graph',
                 'og_image_format'    => 'Format imagine Open Graph',
                 'og_banner'          => 'Banner (implicit)',
@@ -387,13 +388,15 @@ return [
                 'create_search_page'      => 'Creează pagina de căutare implicită',
                 'dismiss_search_notice'   => 'Ignoră',
                 'error_og_format'        => 'Formatul imaginii Open Graph trebuie să fie banner sau pătrat.',
+                'error_apple_touch_icon_type' => 'Apple touch icon must be a PNG image.', // ENGLISH PLACEHOLDER
                 'current'                => 'Curent',
                 'tip_language_link'      => 'cod limbă',
                 'tip_timezone_link'      => 'lista fusurilor orare PHP',
                 'tip_date_format_link'   => 'documentație format dată PHP',
                 'tip_favicon'            => 'Cel mai bine funcționează 512px pătrat',
+                'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712 pentru banner sau 1200x1200 pentru pătrat',
+                'tip_og_image'           => '1360x712px pentru banner sau 1200x1200px pentru pătrat',
                 'tip_og_image_dynamic'   => 'Lăsați necompletat pentru a utiliza bannere Open Graph generate dinamic.',
                 'tip_og_image_doc_link'  => 'Citiți documentația',
                 'tip_one_per_line'       => 'unul pe linie',

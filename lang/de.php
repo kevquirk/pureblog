@@ -361,6 +361,7 @@ return [
                 'blog_page'          => 'Blog-Seite',
                 'base_url'           => 'Basis-URL',
                 'favicon'            => 'Favicon',
+                'apple_touch_icon'   => 'Apple touch icon', // ENGLISH PLACEHOLDER
                 'og_image'           => 'Open-Graph-Bild',
                 'og_image_format'    => 'Open-Graph-Bildformat',
                 'og_banner'          => 'Banner (Standard)',
@@ -403,13 +404,15 @@ return [
                 'create_search_page'      => 'Standard-Suchseite erstellen',
                 'dismiss_search_notice'   => 'Schließen',
                 'error_og_format'        => 'Das Open-Graph-Bildformat muss „Banner“ oder „Quadratisch“ sein.',
+                'error_apple_touch_icon_type' => 'Apple touch icon must be a PNG image.', // ENGLISH PLACEHOLDER
                 'current'                => 'Aktuell',
                 'tip_language_link'      => 'Sprachcode',
                 'tip_timezone_link'      => 'PHP-Zeitzonenliste',
                 'tip_date_format_link'   => 'PHP-Datumsformat-Dokumentation',
                 'tip_favicon'            => '512 Pixel quadratisch funktioniert am besten',
+                'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1.360 × 712 für Banner oder 1.200 × 1.200 für quadratisch',
+                'tip_og_image'           => '1.360 × 712 px für Banner oder 1.200 × 1.200 px für quadratisch',
                 'tip_og_image_dynamic'   => 'Freilassen, um dynamisch generierte Open-Graph-Banner zu verwenden.',
                 'tip_og_image_doc_link'  => 'Dokumentation lesen',
                 'tip_one_per_line'       => 'eine pro Zeile',

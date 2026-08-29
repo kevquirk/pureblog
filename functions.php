@@ -100,6 +100,7 @@ function default_config(): array
         ],
         'assets' => [
             'favicon' => '',
+            'apple_touch_icon' => '',
             'og_image' => '',
             'og_image_preferred' => 'banner',
             'sidebar_logo' => '',

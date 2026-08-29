@@ -345,6 +345,7 @@ return [
                 'blog_page'          => 'Blogpagina',
                 'base_url'           => 'Basis URL',
                 'favicon'            => 'Favicon',
+                'apple_touch_icon'   => 'Apple touch icon', // ENGLISH PLACEHOLDER
                 'og_image'           => 'Open Graph afbeelding',
                 'og_image_format'    => 'Open Graph afbeeldingsformaat',
                 'og_banner'          => 'Rechthoek (standaard)',
@@ -387,13 +388,15 @@ return [
                 'create_search_page'      => 'Standaard zoekpagina aanmaken',
                 'dismiss_search_notice'   => 'Sluiten',
                 'error_og_format'        => 'Formaat van Open Graph afbeelding moet rechthoek of vierkant zijn.',
+                'error_apple_touch_icon_type' => 'Apple touch icon must be a PNG image.', // ENGLISH PLACEHOLDER
                 'current'                => 'Huidig',
                 'tip_language_link'      => 'taalcode',
                 'tip_timezone_link'      => 'PHP-tijdzoneslijst',
                 'tip_date_format_link'   => 'PHP-datumformaat documentatie',
                 'tip_favicon'            => '512px vierkant werkt het best',
+                'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712 voor rechthoek, of 1200x1200 voor vierkant',
+                'tip_og_image'           => '1360x712px voor rechthoek, of 1200x1200px voor vierkant',
                 'tip_og_image_dynamic'   => 'Laat leeg om dynamisch gegenereerde Open Graph-banners te gebruiken.',
                 'tip_og_image_doc_link'  => 'Lees de documentatie',
                 'tip_one_per_line'       => 'één per regel',

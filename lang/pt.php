@@ -342,6 +342,7 @@ return [
                 'blog_page'           => 'Página do blog',
                 'base_url'            => 'URL base',
                 'favicon'             => 'Favicon',
+                'apple_touch_icon'    => 'Apple touch icon', // ENGLISH PLACEHOLDER
                 'og_image'            => 'Imagem Open Graph',
                 'og_image_format'     => 'Formato da imagem Open Graph',
                 'og_banner'           => 'Faixa (predefinição)',
@@ -384,13 +385,15 @@ return [
                 'create_search_page'      => 'Criar página de pesquisa padrão',
                 'dismiss_search_notice'   => 'Ignorar',
                 'error_og_format'     => 'O formato de imagem Open Graph deve ser uma faixa ou quadrado.',
+                'error_apple_touch_icon_type' => 'Apple touch icon must be a PNG image.', // ENGLISH PLACEHOLDER
                 'current'             => 'Atual',
                 'tip_language_link'   => 'código de idioma',
                 'tip_timezone_link'   => 'lista de fusos horários em PHP',
                 'tip_date_format_link'=> 'documentação do formato de data em  PHP',
                 'tip_favicon'         => 'quadrado 512px é o ideal',
+                'tip_apple_touch_icon'=> 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'    => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'        => '1360x712 para faixas, ou 1200x1200 para quadrados',
+                'tip_og_image'        => '1360x712px para faixas, ou 1200x1200px para quadrados',
                 'tip_og_image_dynamic' => 'Deixe em branco para usar banners Open Graph gerados dinamicamente.',
                 'tip_og_image_doc_link'=> 'Ler a documentação',
                 'tip_one_per_line'    => 'um por linha',

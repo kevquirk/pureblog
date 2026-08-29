@@ -7,7 +7,7 @@ require __DIR__ . '/bootstrap.php';
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
-if (isset($_GET['delete_asset']) && in_array($_GET['delete_asset'], ['favicon', 'og_image', 'sidebar_logo'], true)) {
+if (isset($_GET['delete_asset']) && in_array($_GET['delete_asset'], ['favicon', 'apple_touch_icon', 'og_image', 'sidebar_logo'], true)) {
     $token = $_GET['csrf_token'] ?? '';
     $sessionToken = $_SESSION['csrf_token'] ?? '';
     if ($token === '' || !is_string($sessionToken) || !hash_equals($sessionToken, $token)) {
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['community']['purecomments_url'] = rtrim($purecommentsUrl, '/');
 
         if (!isset($config['assets'])) {
-            $config['assets'] = ['favicon' => '', 'og_image' => '', 'og_image_preferred' => 'banner', 'sidebar_logo' => ''];
+            $config['assets'] = ['favicon' => '', 'apple_touch_icon' => '', 'og_image' => '', 'og_image_preferred' => 'banner', 'sidebar_logo' => ''];
         }
         $config['assets']['og_image_preferred'] = $ogImagePreferred;
 
@@ -171,6 +171,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
                 }
             } else {
                 $errors[] = t('admin.editor.error_upload_type');
+            }
+        }
+
+        if (!empty($_FILES['apple_touch_icon']['name']) && $_FILES['apple_touch_icon']['error'] === UPLOAD_ERR_OK) {
+            $mimeType = $finfo->file($_FILES['apple_touch_icon']['tmp_name']) ?: '';
+            if ($mimeType === 'image/png') {
+                $name = basename($_FILES['apple_touch_icon']['name']);
+                $name = strtolower($name);
+                $name = preg_replace('/[^a-z0-9._-]/', '-', $name) ?? $name;
+                $name = preg_replace('/-+/', '-', $name) ?? $name;
+                $name = trim($name, '-');
+                if ($name !== '') {
+                    $dest = $assetDir . '/' . $name;
+                    if (move_uploaded_file($_FILES['apple_touch_icon']['tmp_name'], $dest)) {
+                        $config['assets']['apple_touch_icon'] = '/content/images/' . $name;
+                    }
+                }
+            } else {
+                $errors[] = t('admin.settings.site.error_apple_touch_icon_type');
             }
         }
 
@@ -314,6 +333,12 @@ require __DIR__ . '/../includes/admin-head.php';
                 <input type="file" id="favicon" name="favicon" accept="image/*">
                 <?php if (!empty($config['assets']['favicon'])): ?>
                     <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a> <a href="?delete_asset=favicon&csrf_token=<?= urlencode(csrf_token()) ?>" class="link-button delete" onclick="return confirm('<?= e(t('admin.images.delete_confirm')) ?>');"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></a></p>
+                <?php endif; ?>
+
+                <label for="apple_touch_icon"><?= e(t('admin.settings.site.apple_touch_icon')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_apple_touch_icon')) ?>)</span></label>
+                <input type="file" id="apple_touch_icon" name="apple_touch_icon" accept="image/png,.png">
+                <?php if (!empty($config['assets']['apple_touch_icon'])): ?>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['apple_touch_icon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['apple_touch_icon']) ?></a> <a href="?delete_asset=apple_touch_icon&csrf_token=<?= urlencode(csrf_token()) ?>" class="link-button delete" onclick="return confirm('<?= e(t('admin.images.delete_confirm')) ?>');"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></a></p>
                 <?php endif; ?>
 
                 <label for="og_image"><?= e(t('admin.settings.site.og_image')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_og_image')) ?>)</span></label>
