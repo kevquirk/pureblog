@@ -7,6 +7,36 @@ require __DIR__ . '/bootstrap.php';
 $config = load_config();
 $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 
+if (isset($_GET['delete_asset']) && in_array($_GET['delete_asset'], ['favicon', 'og_image'], true)) {
+    $token = $_GET['csrf_token'] ?? '';
+    $sessionToken = $_SESSION['csrf_token'] ?? '';
+    if ($token === '' || !is_string($sessionToken) || !hash_equals($sessionToken, $token)) {
+        http_response_code(403);
+        exit('Invalid CSRF token.');
+    }
+
+    $asset = $_GET['delete_asset'];
+    if (isset($config['assets'][$asset])) {
+        $assetPath = $config['assets'][$asset];
+        if ($assetPath !== '') {
+            $filePath = PUREBLOG_BASE_PATH . $assetPath;
+            if (file_exists($filePath)) {
+                if (validate_image_path(PUREBLOG_CONTENT_IMAGES_PATH, $filePath)) {
+                    @unlink($filePath);
+                }
+            }
+        }
+        unset($config['assets'][$asset]);
+        if (save_config($config)) {
+            $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.site.notice_updated')];
+        } else {
+            $_SESSION['admin_action_flash'] = ['ok' => false, 'message' => t('admin.settings.site.error_save')];
+        }
+    }
+    header('Location: ' . base_path() . '/admin/settings-site.php');
+    exit;
+}
+
 $errors = [];
 $notice = '';
 $hiddenBlogValue = '__hidden__';
@@ -264,14 +294,14 @@ require __DIR__ . '/../includes/admin-head.php';
                 <label for="favicon"><?= e(t('admin.settings.site.favicon')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_favicon')) ?>)</span></label>
                 <input type="file" id="favicon" name="favicon" accept="image/*">
                 <?php if (!empty($config['assets']['favicon'])): ?>
-                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a></p>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['favicon']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['favicon']) ?></a> <a href="?delete_asset=favicon&csrf_token=<?= urlencode(csrf_token()) ?>" class="link-button delete" onclick="return confirm('<?= e(t('admin.images.delete_confirm')) ?>');"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></a></p>
                 <?php endif; ?>
 
                 <label for="og_image"><?= e(t('admin.settings.site.og_image')) ?> <span class="tip">(<?= e(t('admin.settings.site.tip_og_image')) ?>)</span></label>
                 <input type="file" id="og_image" name="og_image" accept="image/*">
                 <p class="tip"><?= e(t('admin.settings.site.tip_og_image_dynamic')) ?> <a href="https://docs.pureblog.org/open-graph-images/" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_og_image_doc_link')) ?></a>.</p>
                 <?php if (!empty($config['assets']['og_image'])): ?>
-                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a></p>
+                    <p class="current-image"><?= e(t('admin.settings.site.current')) ?>: <a href="<?= e($config['assets']['og_image']) ?>" target="_blank" rel="noopener noreferrer"><?= e($config['assets']['og_image']) ?></a> <a href="?delete_asset=og_image&csrf_token=<?= urlencode(csrf_token()) ?>" class="link-button delete" onclick="return confirm('<?= e(t('admin.images.delete_confirm')) ?>');"><svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg> <?= e(t('admin.editor.delete')) ?></a></p>
                 <?php endif; ?>
 
                 <label for="og_image_preferred"><?= e(t('admin.settings.site.og_image_format')) ?></label>

@@ -108,10 +108,10 @@ function default_config(): array
     ];
 }
 
-function load_config(): array
+function load_config(bool $reload = false): array
 {
     static $cfg = null;
-    if ($cfg !== null) {
+    if ($cfg !== null && !$reload) {
         return $cfg;
     }
 

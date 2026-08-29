@@ -15,7 +15,17 @@ function save_config(array $config): bool
         return false;
     }
 
-    return rename($tmpPath, PUREBLOG_CONFIG_PATH);
+    $saved = rename($tmpPath, PUREBLOG_CONFIG_PATH);
+    if ($saved) {
+        clearstatcache(true, PUREBLOG_CONFIG_PATH);
+        if (function_exists('opcache_invalidate')) {
+            @opcache_invalidate(PUREBLOG_CONFIG_PATH, true);
+        }
+        if (function_exists('load_config')) {
+            load_config(true);
+        }
+    }
+    return $saved;
 }
 
 function is_installed(): bool

@@ -574,6 +574,10 @@ html[data-admin-theme="dark"] .toast-close-btn:hover {
 p.current-image {
     margin: -1.5rem 0 1.5rem 0;
     font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 form label {
@@ -852,7 +856,8 @@ button.save:hover {
 }
 
 .image-list button,
-.image-list .link-button {
+.image-list .link-button,
+.current-image .link-button {
     font-size: 0.75rem;
     padding: 0.3rem 0.5rem;
     border-width: 1px;
