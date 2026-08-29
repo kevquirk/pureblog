@@ -1265,3 +1265,293 @@ function absolutize_feed_html(string $html, string $baseUrl, string $postUrl = '
     return $html;
 }
 
+// ---------------------------------------------------------------------------
+// Theme Management helpers
+// ---------------------------------------------------------------------------
+
+function normalize_theme_item(array $raw, string $source, string $filename = '', int $index = 0): ?array
+{
+    $name = trim((string) ($raw['name'] ?? ''));
+    if ($name === '') {
+        return null;
+    }
+
+    $id = $source === 'core'
+        ? 'core:' . ($filename !== '' ? basename($filename, '.json') . ':' : '') . ($index > 0 ? $index . ':' : '') . slugify($name)
+        : 'user:' . ($filename !== '' ? basename($filename, '.json') : slugify($name));
+
+    $defaults = default_config()['theme'];
+
+    $hasLight = isset($raw['light']) && is_array($raw['light']);
+    $hasDark = isset($raw['dark']) && is_array($raw['dark']);
+
+    if ($hasLight || $hasDark) {
+        $light = [
+            'bg'        => trim((string) ($raw['light']['bg'] ?? $raw['light']['background_color'] ?? $defaults['background_color'])),
+            'text'      => trim((string) ($raw['light']['text'] ?? $raw['light']['text_color'] ?? $defaults['text_color'])),
+            'accent'    => trim((string) ($raw['light']['accent'] ?? $raw['light']['accent_color'] ?? $defaults['accent_color'])),
+            'border'    => trim((string) ($raw['light']['border'] ?? $raw['light']['border_color'] ?? $defaults['border_color'])),
+            'accent_bg' => trim((string) ($raw['light']['accent_bg'] ?? $raw['light']['accent_bg_color'] ?? $defaults['accent_bg_color'])),
+        ];
+        $dark = [
+            'bg'        => trim((string) ($raw['dark']['bg'] ?? $raw['dark']['background_color'] ?? $raw['dark']['background_color_dark'] ?? $defaults['background_color_dark'])),
+            'text'      => trim((string) ($raw['dark']['text'] ?? $raw['dark']['text_color'] ?? $raw['dark']['text_color_dark'] ?? $defaults['text_color_dark'])),
+            'accent'    => trim((string) ($raw['dark']['accent'] ?? $raw['dark']['accent_color'] ?? $raw['dark']['accent_color_dark'] ?? $defaults['accent_color_dark'])),
+            'border'    => trim((string) ($raw['dark']['border'] ?? $raw['dark']['border_color'] ?? $raw['dark']['border_color_dark'] ?? $defaults['border_color_dark'])),
+            'accent_bg' => trim((string) ($raw['dark']['accent_bg'] ?? $raw['dark']['accent_bg_color'] ?? $raw['dark']['accent_bg_color_dark'] ?? $defaults['accent_bg_color_dark'])),
+        ];
+    } else {
+        $isDark = (isset($raw['mode']) && $raw['mode'] === 'dark') || str_contains(strtolower($name), 'dark');
+        $palette = [
+            'bg'        => trim((string) ($raw['bg'] ?? $raw['background_color'] ?? ($isDark ? $defaults['background_color_dark'] : $defaults['background_color']))),
+            'text'      => trim((string) ($raw['text'] ?? $raw['text_color'] ?? ($isDark ? $defaults['text_color_dark'] : $defaults['text_color']))),
+            'accent'    => trim((string) ($raw['accent'] ?? $raw['accent_color'] ?? ($isDark ? $defaults['accent_color_dark'] : $defaults['accent_color']))),
+            'border'    => trim((string) ($raw['border'] ?? $raw['border_color'] ?? ($isDark ? $defaults['border_color_dark'] : $defaults['border_color']))),
+            'accent_bg' => trim((string) ($raw['accent_bg'] ?? $raw['accent_bg_color'] ?? ($isDark ? $defaults['accent_bg_color_dark'] : $defaults['accent_bg_color']))),
+        ];
+
+        if ($isDark) {
+            $hasLight = false;
+            $hasDark = true;
+            $light = [
+                'bg'        => $defaults['background_color'],
+                'text'      => $defaults['text_color'],
+                'accent'    => $defaults['accent_color'],
+                'border'    => $defaults['border_color'],
+                'accent_bg' => $defaults['accent_bg_color'],
+            ];
+            $dark = $palette;
+        } else {
+            $hasLight = true;
+            $hasDark = false;
+            $light = $palette;
+            $dark = [
+                'bg'        => $defaults['background_color_dark'],
+                'text'      => $defaults['text_color_dark'],
+                'accent'    => $defaults['accent_color_dark'],
+                'border'    => $defaults['border_color_dark'],
+                'accent_bg' => $defaults['accent_bg_color_dark'],
+            ];
+        }
+    }
+
+    return [
+        'id'        => $id,
+        'name'      => $name,
+        'source'    => $source,
+        'filename'  => $filename,
+        'is_custom' => $source === 'user',
+        'has_light' => $hasLight,
+        'has_dark'  => $hasDark,
+        'light'     => $light,
+        'dark'      => $dark,
+    ];
+}
+
+function get_available_themes(): array
+{
+    $themes = [];
+
+    if (is_dir(PUREBLOG_CORE_THEMES_PATH)) {
+        $coreFiles = glob(PUREBLOG_CORE_THEMES_PATH . '/*.json') ?: [];
+        sort($coreFiles);
+        foreach ($coreFiles as $file) {
+            $content = @file_get_contents($file);
+            if (!$content) continue;
+            $data = json_decode($content, true);
+            if (!is_array($data)) continue;
+
+            $filename = basename($file);
+            if (isset($data['name'])) {
+                $item = normalize_theme_item($data, 'core', $filename);
+                if ($item) $themes[$item['id']] = $item;
+            } else {
+                foreach ($data as $idx => $rawItem) {
+                    if (is_array($rawItem)) {
+                        $item = normalize_theme_item($rawItem, 'core', $filename, $idx + 1);
+                        if ($item) $themes[$item['id']] = $item;
+                    }
+                }
+            }
+        }
+    }
+
+    if (is_dir(PUREBLOG_THEMES_PATH)) {
+        $userFiles = glob(PUREBLOG_THEMES_PATH . '/*.json') ?: [];
+        sort($userFiles);
+        foreach ($userFiles as $file) {
+            $content = @file_get_contents($file);
+            if (!$content) continue;
+            $data = json_decode($content, true);
+            if (!is_array($data)) continue;
+
+            $filename = basename($file);
+            if (isset($data['name'])) {
+                $item = normalize_theme_item($data, 'user', $filename);
+                if ($item) $themes[$item['id']] = $item;
+            } else {
+                foreach ($data as $idx => $rawItem) {
+                    if (is_array($rawItem)) {
+                        $item = normalize_theme_item($rawItem, 'user', $filename, $idx + 1);
+                        if ($item) $themes[$item['id']] = $item;
+                    }
+                }
+            }
+        }
+    }
+
+    return array_values($themes);
+}
+
+function get_theme_by_id(string $id): ?array
+{
+    foreach (get_available_themes() as $theme) {
+        if ($theme['id'] === $id) {
+            return $theme;
+        }
+    }
+    return null;
+}
+
+function apply_theme_to_config(array $themeData): bool
+{
+    $config = load_config();
+    $hasLight = !empty($themeData['has_light']) || (!isset($themeData['has_light']) && !empty($themeData['light']));
+    $hasDark  = !empty($themeData['has_dark'])  || (!isset($themeData['has_dark'])  && !empty($themeData['dark']));
+
+    if ($hasLight) {
+        $config['theme']['background_color'] = $themeData['light']['bg'] ?? '#FAFAFA';
+        $config['theme']['text_color'] = $themeData['light']['text'] ?? '#212121';
+        $config['theme']['accent_color'] = $themeData['light']['accent'] ?? '#0D47A1';
+        $config['theme']['border_color'] = $themeData['light']['border'] ?? '#898EA4';
+        $config['theme']['accent_bg_color'] = $themeData['light']['accent_bg'] ?? '#F5F7FF';
+    }
+
+    if ($hasDark) {
+        $config['theme']['background_color_dark'] = $themeData['dark']['bg'] ?? '#212121';
+        $config['theme']['text_color_dark'] = $themeData['dark']['text'] ?? '#DCDCDC';
+        $config['theme']['accent_color_dark'] = $themeData['dark']['accent'] ?? '#FFB300';
+        $config['theme']['border_color_dark'] = $themeData['dark']['border'] ?? '#555555';
+        $config['theme']['accent_bg_color_dark'] = $themeData['dark']['accent_bg'] ?? '#2B2B2B';
+    }
+
+    $config['theme']['active_theme_name'] = $themeData['name'] ?? '';
+
+    return save_config($config);
+}
+
+function save_theme_json(string $name, ?array $light, ?array $dark): array
+{
+    $name = trim($name);
+    if ($name === '') {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_name')];
+    }
+
+    if ($light === null && $dark === null) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_empty')];
+    }
+
+    $themeDir = PUREBLOG_THEMES_PATH;
+    if (!is_dir($themeDir)) {
+        if (!mkdir($themeDir, 0755, true) && !is_dir($themeDir)) {
+            return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_folder')];
+        }
+    }
+
+    $slug = slugify($name);
+    if ($slug === '') {
+        $slug = 'theme-' . time();
+    }
+    $filename = $slug . '.json';
+    $filePath = $themeDir . '/' . $filename;
+
+    $defaults = default_config()['theme'];
+    $cleanPalette = function (array $palette, bool $isDark) use ($defaults): array {
+        $map = [
+            'bg'        => $isDark ? $defaults['background_color_dark'] : $defaults['background_color'],
+            'text'      => $isDark ? $defaults['text_color_dark'] : $defaults['text_color'],
+            'accent'    => $isDark ? $defaults['accent_color_dark'] : $defaults['accent_color'],
+            'border'    => $isDark ? $defaults['border_color_dark'] : $defaults['border_color'],
+            'accent_bg' => $isDark ? $defaults['accent_bg_color_dark'] : $defaults['accent_bg_color'],
+        ];
+        $cleaned = [];
+        foreach ($map as $key => $defaultVal) {
+            $val = trim((string) ($palette[$key] ?? ''));
+            if ($val === '') {
+                $val = $defaultVal;
+            } elseif (!str_starts_with($val, '#')) {
+                $val = '#' . $val;
+            }
+            $cleaned[$key] = $val;
+        }
+        return $cleaned;
+    };
+
+    $themeData = ['name' => $name];
+    if ($light !== null) {
+        $themeData['light'] = $cleanPalette($light, false);
+    }
+    if ($dark !== null) {
+        $themeData['dark'] = $cleanPalette($dark, true);
+    }
+
+    $json = json_encode($themeData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    if (file_put_contents($filePath, $json) === false) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_save')];
+    }
+
+    return ['ok' => true, 'filename' => $filename, 'name' => $name];
+}
+
+function save_uploaded_theme(array $file): array
+{
+    if (empty($file['name']) || ($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_upload')];
+    }
+
+    $content = @file_get_contents($file['tmp_name']);
+    if (!$content) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_invalid')];
+    }
+
+    $json = json_decode($content, true);
+    if (!is_array($json)) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_invalid')];
+    }
+
+    $themeDir = PUREBLOG_THEMES_PATH;
+    if (!is_dir($themeDir)) {
+        if (!mkdir($themeDir, 0755, true) && !is_dir($themeDir)) {
+            return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_folder')];
+        }
+    }
+
+    $baseName = pathinfo((string) $file['name'], PATHINFO_FILENAME);
+    $slug = slugify($baseName);
+    if ($slug === '') {
+        $slug = 'imported-theme-' . time();
+    }
+    $filename = $slug . '.json';
+    $targetPath = $themeDir . '/' . $filename;
+
+    if (file_put_contents($targetPath, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)) === false) {
+        return ['ok' => false, 'error' => t('admin.settings.theme.error_theme_save')];
+    }
+
+    return ['ok' => true, 'filename' => $filename];
+}
+
+function delete_theme_file(string $filename): bool
+{
+    $cleanFilename = basename($filename);
+    if ($cleanFilename === '' || !str_ends_with(strtolower($cleanFilename), '.json')) {
+        return false;
+    }
+
+    $targetFile = PUREBLOG_THEMES_PATH . '/' . $cleanFilename;
+    if (is_file($targetFile)) {
+        return @unlink($targetFile);
+    }
+    return false;
+}
+

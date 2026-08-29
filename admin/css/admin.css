@@ -717,15 +717,15 @@ input[type="radio"] {
 }
 
 .font-preview-sans {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .font-preview-serif {
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Merriweather", Georgia, "Times New Roman", serif;
 }
 
 .font-preview-mono {
-    font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: "Iosevka", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
 }
 
 button,
@@ -2208,4 +2208,125 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
         padding: 0.5rem 0.75rem;
         border: none;
     }
+}
+
+/* Theme Management */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.theme-card {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 1rem;
+    background: var(--accent-bg-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-card.active {
+    border-color: var(--accent-color);
+    border-width: 2px;
+}
+
+.theme-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.theme-card-title {
+    font-weight: bold;
+    font-size: 1.05rem;
+}
+
+.theme-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    border: 1px solid currentColor;
+}
+
+.theme-badge.active-badge {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+}
+
+.theme-badge.custom-badge {
+    opacity: 0.8;
+}
+
+.theme-swatch-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.theme-swatch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.swatch-label {
+    opacity: 0.75;
+}
+
+.swatch-chips {
+    display: flex;
+    gap: 4px;
+}
+
+.swatch-chip {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
+}
+
+.theme-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.theme-card-actions .link-button {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+}
+
+.theme-creator-details {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--accent-bg-color);
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
+
+.theme-creator-summary {
+    cursor: pointer;
+    font-size: 1.05rem;
+    outline: none;
+    user-select: none;
+}
+
+.theme-creator-body {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
 }

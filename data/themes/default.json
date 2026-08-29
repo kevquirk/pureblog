@@ -1,0 +1,17 @@
+{
+  "name": "Pure Blog Default",
+  "light": {
+    "bg": "#FAFAFA",
+    "text": "#212121",
+    "accent": "#0D47A1",
+    "border": "#898EA4",
+    "accent_bg": "#F5F7FF"
+  },
+  "dark": {
+    "bg": "#212121",
+    "text": "#DCDCDC",
+    "accent": "#FFB300",
+    "border": "#555555",
+    "accent_bg": "#2B2B2B"
+  }
+}

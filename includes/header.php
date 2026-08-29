@@ -88,8 +88,28 @@ if ($featureImageRaw !== '') {
         <?php endif; ?>
     <?php endif; ?>
     <link rel="alternate" type="application/rss+xml" title="<?= e($config['site_title']) ?> RSS" href="<?= get_base_url() ?>/feed">
+    <?php
+    $themePreview = null;
+    if (function_exists('is_admin_logged_in') && !empty($_GET['theme_preview'])) {
+        start_admin_session();
+        if (is_admin_logged_in()) {
+            $themePreview = get_theme_by_id((string) $_GET['theme_preview']);
+        }
+    }
+    $bgLight = $themePreview['light']['bg'] ?? $config['theme']['background_color'];
+    $textLight = $themePreview['light']['text'] ?? $config['theme']['text_color'];
+    $accentLight = $themePreview['light']['accent'] ?? $config['theme']['accent_color'];
+    $borderLight = $themePreview['light']['border'] ?? $config['theme']['border_color'];
+    $accentBgLight = $themePreview['light']['accent_bg'] ?? $config['theme']['accent_bg_color'];
+
+    $bgDark = $themePreview['dark']['bg'] ?? $config['theme']['background_color_dark'];
+    $textDark = $themePreview['dark']['text'] ?? $config['theme']['text_color_dark'];
+    $accentDark = $themePreview['dark']['accent'] ?? $config['theme']['accent_color_dark'];
+    $borderDark = $themePreview['dark']['border'] ?? $config['theme']['border_color_dark'];
+    $accentBgDark = $themePreview['dark']['accent_bg'] ?? $config['theme']['accent_bg_color_dark'];
+    ?>
     <style>
-        body { background: <?= e($config['theme']['background_color']) ?>; }
+        body { background: <?= e($bgLight) ?>; }
     </style>
     <?php $fontUrl = font_stack_url($config['theme']['font_stack'] ?? 'sans'); ?>
     <?php if ($fontUrl !== null): ?>
@@ -99,16 +119,16 @@ if ($featureImageRaw !== '') {
     <link rel="stylesheet" href="<?= get_base_url() ?>/assets/css/style.css?v=<?= e($frontCssVersion) ?>">
     <style>
         :root {
-            --bg-light: <?= e($config['theme']['background_color']) ?>;
-            --text-light: <?= e($config['theme']['text_color']) ?>;
-            --accent-light: <?= e($config['theme']['accent_color']) ?>;
-            --border-light: <?= e($config['theme']['border_color']) ?>;
-            --accent-bg-light: <?= e($config['theme']['accent_bg_color']) ?>;
-            --bg-dark: <?= e($config['theme']['background_color_dark']) ?>;
-            --text-dark: <?= e($config['theme']['text_color_dark']) ?>;
-            --accent-dark: <?= e($config['theme']['accent_color_dark']) ?>;
-            --border-dark: <?= e($config['theme']['border_color_dark']) ?>;
-            --accent-bg-dark: <?= e($config['theme']['accent_bg_color_dark']) ?>;
+            --bg-light: <?= e($bgLight) ?>;
+            --text-light: <?= e($textLight) ?>;
+            --accent-light: <?= e($accentLight) ?>;
+            --border-light: <?= e($borderLight) ?>;
+            --accent-bg-light: <?= e($accentBgLight) ?>;
+            --bg-dark: <?= e($bgDark) ?>;
+            --text-dark: <?= e($textDark) ?>;
+            --accent-dark: <?= e($accentDark) ?>;
+            --border-dark: <?= e($borderDark) ?>;
+            --accent-bg-dark: <?= e($accentBgDark) ?>;
             --font-stack: <?= $fontStack ?>;
             --mono-font-stack: <?= font_stack_css('mono') ?>;
         }
@@ -122,3 +142,15 @@ if ($featureImageRaw !== '') {
 </head>
 <body>
     <?php readfile(PUREBLOG_BASE_PATH . '/assets/icons/sprite.svg'); ?>
+    <?php if ($themePreview !== null): ?>
+        <aside class="theme-preview-banner" style="position: sticky; top: 0; z-index: 9999; background: var(--bg-color); color: var(--text-color); border-bottom: 2px solid var(--border-color); padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: 0.85rem; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+            <span><?= e(t('admin.settings.theme.previewing')) ?>: <strong><?= e($themePreview['name'] ?? 'Theme') ?></strong> (<?= e(t('admin.settings.theme.preview_admin_only')) ?>)</span>
+            <form method="post" action="<?= e(base_path()) ?>/admin/settings-theme.php" style="margin: 0; display: inline;">
+                <input type="hidden" name="apply_theme_id" value="<?= e($themePreview['id'] ?? '') ?>">
+                <?= csrf_field() ?>
+                <button type="submit" class="save" style="cursor: pointer; background: var(--bg-color); color: var(--green, #2e7d32); border: 2px solid var(--green, #2e7d32); text-transform: uppercase; font-weight: bold; padding: 0.35rem 0.65rem; font-size: 0.75rem; font-family: inherit; line-height: 1.15; border-radius: 0;">
+                    <?= e(t('admin.settings.theme.apply')) ?>
+                </button>
+            </form>
+        </aside>
+    <?php endif; ?>

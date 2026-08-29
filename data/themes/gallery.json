@@ -1,0 +1,138 @@
+[
+  {
+    "name": "Classic",
+    "light": {
+      "bg": "#ffffff",
+      "text": "#222222",
+      "accent": "#0066cc",
+      "border": "#cccccc",
+      "accent_bg": "#f0f4f8"
+    },
+    "dark": {
+      "bg": "#1a1a1a",
+      "text": "#e8e8e8",
+      "accent": "#4da6ff",
+      "border": "#444444",
+      "accent_bg": "#2a2a2a"
+    }
+  },
+  {
+    "name": "Sepia",
+    "light": {
+      "bg": "#f5edd6",
+      "text": "#3b2f1e",
+      "accent": "#8b4513",
+      "border": "#c8a97a",
+      "accent_bg": "#ede0c4"
+    },
+    "dark": {
+      "bg": "#2a1f10",
+      "text": "#e8d5b0",
+      "accent": "#c8843a",
+      "border": "#6b4f2a",
+      "accent_bg": "#3d2e18"
+    }
+  },
+  {
+    "name": "Forest",
+    "light": {
+      "bg": "#f0f7ee",
+      "text": "#1a2e1a",
+      "accent": "#3a7d44",
+      "border": "#a8c8a0",
+      "accent_bg": "#deeeda"
+    },
+    "dark": {
+      "bg": "#1a2e1a",
+      "text": "#d4e8d0",
+      "accent": "#6abf69",
+      "border": "#3a5c3a",
+      "accent_bg": "#243824"
+    }
+  },
+  {
+    "name": "Solarized",
+    "light": {
+      "bg": "#fdf6e3",
+      "text": "#657b83",
+      "accent": "#268bd2",
+      "border": "#c8baa0",
+      "accent_bg": "#eee8d5"
+    },
+    "dark": {
+      "bg": "#002b36",
+      "text": "#839496",
+      "accent": "#268bd2",
+      "border": "#1d4b56",
+      "accent_bg": "#073642"
+    }
+  },
+  {
+    "name": "Nord",
+    "light": {
+      "bg": "#eceff4",
+      "text": "#2e3440",
+      "accent": "#5e81ac",
+      "border": "#d8dee9",
+      "accent_bg": "#e5e9f0"
+    },
+    "dark": {
+      "bg": "#2e3440",
+      "text": "#d8dee9",
+      "accent": "#88c0d0",
+      "border": "#4c566a",
+      "accent_bg": "#3b4252"
+    }
+  },
+  {
+    "name": "Rose",
+    "light": {
+      "bg": "#fff5f5",
+      "text": "#3d1a1a",
+      "accent": "#c0392b",
+      "border": "#e8b4b4",
+      "accent_bg": "#fce8e8"
+    },
+    "dark": {
+      "bg": "#2a1010",
+      "text": "#f5d5d5",
+      "accent": "#e06060",
+      "border": "#6b3333",
+      "accent_bg": "#3d1a1a"
+    }
+  },
+  {
+    "name": "Monochrome",
+    "light": {
+      "bg": "#f5f5f5",
+      "text": "#121212",
+      "accent": "#333333",
+      "border": "#cccccc",
+      "accent_bg": "#e8e8e8"
+    },
+    "dark": {
+      "bg": "#121212",
+      "text": "#f0f0f0",
+      "accent": "#ffffff",
+      "border": "#3a3a3a",
+      "accent_bg": "#1e1e1e"
+    }
+  },
+  {
+    "name": "Ocean",
+    "light": {
+      "bg": "#f0f8ff",
+      "text": "#0d2233",
+      "accent": "#0077aa",
+      "border": "#a0c8e0",
+      "accent_bg": "#dceef8"
+    },
+    "dark": {
+      "bg": "#0d2233",
+      "text": "#cce8f0",
+      "accent": "#00bcd4",
+      "border": "#1a4a66",
+      "accent_bg": "#122d42"
+    }
+  }
+]
