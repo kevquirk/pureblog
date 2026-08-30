@@ -377,7 +377,29 @@ function get_excerpt(string $markdown, int $length = 200): string
 
 function normalize_tag(string $tag): string
 {
-    return slugify($tag);
+    $tag = trim($tag);
+    if (function_exists('mb_strtolower')) {
+        $tag = mb_strtolower($tag, 'UTF-8');
+    } else {
+        $tag = strtolower($tag);
+    }
+
+    // Transliterate common diacritics to ASCII equivalents
+    $tag = strtr($tag, [
+        'ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue', 'ß' => 'ss',
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'å' => 'a',
+        'æ' => 'ae', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e',
+        'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+        'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o',
+        'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ý' => 'y',
+        'ÿ' => 'y',
+    ]);
+
+    // Retain letters, numbers, emojis, pictographs, variation selectors, and joiners
+    $tag = preg_replace('/[^\p{L}\p{N}\p{Extended_Pictographic}\p{So}\x{1F3FB}-\x{1F3FF}\p{M}\x{200D}\x{FE0E}\x{FE0F}\s_-]/u', '', $tag) ?? '';
+    $tag = preg_replace('/[\s_-]+/u', '-', $tag) ?? '';
+
+    return trim($tag, '-');
 }
 
 function render_tag_links(array $tags): string
@@ -390,7 +412,7 @@ function render_tag_links(array $tags): string
     $links = [];
     foreach ($tags as $tag) {
         $slug = normalize_tag($tag);
-        $links[] = '<a href="' . base_path() . '/tag/' . e(rawurlencode($slug)) . '">' . e($tag) . '</a>';
+        $links[] = '<a href="' . base_path() . '/tag/' . e($slug) . '">' . e($tag) . '</a>';
     }
 
     return implode(', ', $links);

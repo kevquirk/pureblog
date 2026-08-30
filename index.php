@@ -189,7 +189,7 @@ $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
                 <p><?= e(t('frontend.no_posts_for_tag')) ?></p>
             <?php else: ?>
                 <?php
-                $paginationBase = base_path() . '/tag/' . rawurlencode($tagSlug);
+                $paginationBase = base_path() . '/tag/' . $tagSlug;
                 if ($__p = find_include('post-list')) require $__p;
                 ?>
             <?php endif; ?>
