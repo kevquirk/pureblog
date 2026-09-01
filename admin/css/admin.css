@@ -1385,6 +1385,10 @@ td {
     font-weight: bold !important;
 }
 
+span.token.title.important {
+    font-size: 125%;
+}
+
 .editor.language-markdown .token.bold {
     font-weight: bold !important;
 }
