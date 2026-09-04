@@ -384,7 +384,7 @@ return [
                 'tip_favicon'            => '建議使用 512px 正方形',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '橫幅請用 1360x712px，正方形請用 1200x1200px',
+                'tip_og_image'           => '建議橫幅 1360x712px，正方形 1200x1200px',
                 'tip_og_image_dynamic'   => '留空以使用動態產生的 Open Graph 預覽橫幅。',
                 'tip_og_image_doc_link'  => '閱讀說明文件',
                 'tip_one_per_line'       => '每行一項',

@@ -395,7 +395,7 @@ return [
                 'tip_favicon'            => '512px carré de préférence',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712px pour bannière, ou 1200x1200px pour carré',
+                'tip_og_image'           => 'recommandé 1360x712px pour bannière, ou 1200x1200px pour carré',
                 'tip_og_image_dynamic'   => 'Laissez vide pour utiliser des bannières Open Graph générées dynamiquement.',
                 'tip_og_image_doc_link'  => 'Lire la documentation',
                 'tip_one_per_line'       => 'un par ligne',

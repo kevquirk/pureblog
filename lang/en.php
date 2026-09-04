@@ -392,7 +392,7 @@ return [
                 'tip_favicon'            => '512px square works best',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px',
                 'tip_sidebar_logo'       => '124x34px works best',
-                'tip_og_image'           => '1360x712px for banner, or 1200x1200px for square',
+                'tip_og_image'           => 'recommended 1360x712px for banner, or 1200x1200px for square',
                 'tip_og_image_dynamic'   => 'Leave blank to use dynamically generated Open Graph preview banners.',
                 'tip_og_image_doc_link'  => 'Read the docs',
                 'tip_one_per_line'       => 'one per line',

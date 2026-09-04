@@ -396,7 +396,7 @@ return [
                 'tip_favicon'            => 'Cel mai bine funcționează 512px pătrat',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712px pentru banner sau 1200x1200px pentru pătrat',
+                'tip_og_image'           => 'recomandat 1360x712px pentru banner sau 1200x1200px pentru pătrat',
                 'tip_og_image_dynamic'   => 'Lăsați necompletat pentru a utiliza bannere Open Graph generate dinamic.',
                 'tip_og_image_doc_link'  => 'Citiți documentația',
                 'tip_one_per_line'       => 'unul pe linie',

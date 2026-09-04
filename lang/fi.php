@@ -396,7 +396,7 @@ return [
                 'tip_favicon'            => '512px nelikulmio toimii parhaiten',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => 'Banneri: 1360x712px tai neliö: 1200x1200px',
+                'tip_og_image'           => 'Suositus: banneri 1360x712px tai neliö 1200x1200px',
                 'tip_og_image_dynamic'   => 'Jätä tyhjäksi käyttääksesi dynaamisesti luotuja Open Graph -bannereita.',
                 'tip_og_image_doc_link'  => 'Lue ohjeet',
                 'tip_one_per_line'       => 'yksi per rivi',

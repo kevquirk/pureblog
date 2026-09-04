@@ -396,7 +396,7 @@ return [
                 'tip_favicon'            => '512px quadrato è l\'ideale',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712px per banner, o 1200x1200px per quadrato',
+                'tip_og_image'           => 'consigliato 1360x712px per banner, o 1200x1200px per quadrato',
                 'tip_og_image_dynamic'   => 'Lascia vuoto per utilizzare i banner Open Graph generati dinamicamente.',
                 'tip_og_image_doc_link'  => 'Leggi la documentazione',
                 'tip_one_per_line'       => 'uno per riga',

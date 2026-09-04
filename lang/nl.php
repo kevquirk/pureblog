@@ -396,7 +396,7 @@ return [
                 'tip_favicon'            => '512px vierkant werkt het best',
                 'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
                 'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
-                'tip_og_image'           => '1360x712px voor rechthoek, of 1200x1200px voor vierkant',
+                'tip_og_image'           => 'aanbevolen 1360x712px voor rechthoek, of 1200x1200px voor vierkant',
                 'tip_og_image_dynamic'   => 'Laat leeg om dynamisch gegenereerde Open Graph-banners te gebruiken.',
                 'tip_og_image_doc_link'  => 'Lees de documentatie',
                 'tip_one_per_line'       => 'één per regel',
