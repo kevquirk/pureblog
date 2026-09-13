@@ -1,5 +1,5 @@
 <header>
-    <h1><a href="<?= base_path() ?>/"><?= e($config['site_title']) ?></a></h1>
+    <p class="site-title"><a href="<?= base_path() ?>/"><?= e($config['site_title']) ?></a></p>
     <?php if ($siteTagline !== ''): ?>
     <p class="tagline"><?= e($siteTagline) ?></p>
     <?php endif; ?>

@@ -5,6 +5,7 @@
     font-display: swap;
     src: url("../fonts/inter/regular.woff2") format("woff2");
 }
+
 @font-face {
     font-family: "Inter";
     font-style: normal;
@@ -12,6 +13,7 @@
     font-display: swap;
     src: url("../fonts/inter/bold.woff2") format("woff2");
 }
+
 @font-face {
     font-family: "Inter";
     font-style: italic;
@@ -19,6 +21,7 @@
     font-display: swap;
     src: url("../fonts/inter/italic.woff2") format("woff2");
 }
+
 @font-face {
     font-family: "Inter";
     font-style: italic;
@@ -33,31 +36,34 @@
     font-weight: 400;
     font-display: swap;
     src: url("../fonts/iosevka/subset-regular.woff2") format("woff2"),
-         url("../fonts/iosevka/subset-regular.woff") format("woff");
+        url("../fonts/iosevka/subset-regular.woff") format("woff");
 }
+
 @font-face {
     font-family: "Iosevka";
     font-style: normal;
     font-weight: 700;
     font-display: swap;
     src: url("../fonts/iosevka/subset-bold.woff2") format("woff2"),
-         url("../fonts/iosevka/subset-bold.woff") format("woff");
+        url("../fonts/iosevka/subset-bold.woff") format("woff");
 }
+
 @font-face {
     font-family: "Iosevka";
     font-style: italic;
     font-weight: 400;
     font-display: swap;
     src: url("../fonts/iosevka/subset-italic.woff2") format("woff2"),
-         url("../fonts/iosevka/subset-italic.woff") format("woff");
+        url("../fonts/iosevka/subset-italic.woff") format("woff");
 }
+
 @font-face {
     font-family: "Iosevka";
     font-style: italic;
     font-weight: 700;
     font-display: swap;
     src: url("../fonts/iosevka/subset-bolditalic.woff2") format("woff2"),
-         url("../fonts/iosevka/subset-bolditalic.woff") format("woff");
+        url("../fonts/iosevka/subset-bolditalic.woff") format("woff");
 }
 
 @font-face {
@@ -66,31 +72,34 @@
     font-weight: 400;
     font-display: swap;
     src: url("../fonts/merriweather/regular.woff2") format("woff2"),
-         url("../fonts/merriweather/regular.woff") format("woff");
+        url("../fonts/merriweather/regular.woff") format("woff");
 }
+
 @font-face {
     font-family: "Merriweather";
     font-style: normal;
     font-weight: 700;
     font-display: swap;
     src: url("../fonts/merriweather/bold.woff2") format("woff2"),
-         url("../fonts/merriweather/bold.woff") format("woff");
+        url("../fonts/merriweather/bold.woff") format("woff");
 }
+
 @font-face {
     font-family: "Merriweather";
     font-style: italic;
     font-weight: 400;
     font-display: swap;
     src: url("../fonts/merriweather/italic.woff2") format("woff2"),
-         url("../fonts/merriweather/italic.woff") format("woff");
+        url("../fonts/merriweather/italic.woff") format("woff");
 }
+
 @font-face {
     font-family: "Merriweather";
     font-style: italic;
     font-weight: 700;
     font-display: swap;
     src: url("../fonts/merriweather/bold-italic.woff2") format("woff2"),
-         url("../fonts/merriweather/bold-italic.woff") format("woff");
+        url("../fonts/merriweather/bold-italic.woff") format("woff");
 }
 
 :root {
@@ -134,7 +143,8 @@ html[data-theme="light"] {
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -179,27 +189,30 @@ footer {
     border-top: 1px solid var(--border-color);
 }
 
-header, footer,
+header,
+footer,
 main h1 {
     margin-bottom: 2rem;
 }
 
 /* Format headers */
-h1 {
+h1,
+p.site-title {
     font-size: 3rem;
     margin-top: 0;
 }
 
-header h1 {
-    margin-top: 0.5rem;
+p.site-title {
+    margin: 0.5rem 0 0 0;
+    font-weight: bold;
 }
 
-header h1 a {
+p.site-title a {
     color: var(--text-color);
     text-decoration: none;
 }
 
-header h1 a:hover {
+p.site-title a:hover {
     color: var(--accent-color);
 }
 
@@ -225,19 +238,28 @@ h6 {
     font-size: 0.96rem;
 }
 
-h1,h2,h3,h4,h5,h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin-bottom: 1rem;
     overflow-wrap: break-word;
     text-wrap: balance;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     line-height: 1.1;
 }
 
 /* Reduce header size on mobile */
 @media only screen and (max-width: 720px) {
-    h1 {
+
+    h1,
+    p.site-title {
         font-size: 2.5rem;
     }
 
@@ -410,7 +432,9 @@ p.tagline {
     }
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
     font: inherit;
     padding: 0.5rem;
     width: 100%;
@@ -423,7 +447,8 @@ textarea {
 
 /* !pb:9e4f2a817c3d6b05 */
 
-button, a.button {
+button,
+a.button {
     cursor: pointer;
     background: var(--accent-color);
     color: var(--bg-color);
@@ -436,7 +461,8 @@ button, a.button {
     text-decoration: none;
 }
 
-button:hover, a.button:hover {
+button:hover,
+a.button:hover {
     background-color: var(--text-color);
 }
 
@@ -487,7 +513,8 @@ code {
     font-family: var(--mono-font-stack, ui-monospace, monospace);
 }
 
-h2 code, h3 code {
+h2 code,
+h3 code {
     font-size: 90%;
 }
 
@@ -535,15 +562,15 @@ summary {
     word-break: break-all;
 }
 
-details[open] > summary + * {
+details[open]>summary+* {
     margin-top: 0;
 }
 
-details[open] > summary {
+details[open]>summary {
     margin-bottom: 0.5rem;
 }
 
-details[open] > :last-child {
+details[open]> :last-child {
     margin-bottom: 0;
 }
 
@@ -553,7 +580,7 @@ table {
     margin: 1.5rem 0;
 }
 
-figure > table {
+figure>table {
     width: max-content;
     margin: 0;
 }
@@ -611,13 +638,14 @@ input[type="radio"] {
     width: min-content;
 }
 
-input[type="checkbox"] + label,
-input[type="radio"] + label {
+input[type="checkbox"]+label,
+input[type="radio"]+label {
     display: inline-block;
 }
 
 /* Makes input fields wider on smaller screens */
 @media only screen and (max-width: 720px) {
+
     textarea,
     select,
     input {
@@ -749,6 +777,7 @@ hr {
     .admin-edit-link span {
         display: none;
     }
+
     .admin-edit-link {
         border-radius: 50%;
         padding: 0.75rem;
@@ -756,6 +785,7 @@ hr {
         font-size: 1.25rem;
         justify-content: center;
     }
+
     .admin-edit-link .icon {
         padding-right: 0;
         top: 0;
