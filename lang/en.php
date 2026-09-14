@@ -154,6 +154,14 @@ return [
             'pagination_older'      => 'Older posts ➡',
             'new_page'              => 'New page',
             'no_pages'              => 'No pages yet.',
+            'badge_home'                 => 'Home page',
+            'badge_blog'                 => 'Blog page',
+            'badge_search'               => 'Search page',
+            'badge_special_page_label'   => 'Special Page',
+            'badge_docs_link'            => 'the docs',
+            'badge_home_popover'         => 'This is a special page configured as your site homepage. Read more in {docs_link}.',
+            'badge_blog_popover'         => 'This is a special page configured to display your blog feed. Read more in {docs_link}.',
+            'badge_search_popover'       => 'This is a special page configured to handle site searches. Read more in {docs_link}.',
         ],
 
         'editor' => [
@@ -333,6 +341,7 @@ return [
                 'posts_per_page'            => 'Posts per page',
                 'search_excerpt_length'     => 'Search excerpt length',
                 'search_excerpt_length_tip' => 'Number of characters indexed per post for search. Larger values improve search accuracy but increase memory usage. Set to 0 to index the full post content.',
+                'search_include_pages'      => 'Include pages in search results',
                 'language'           => 'Language',
                 'timezone'           => 'Timezone',
                 'date_format'        => 'Date format',

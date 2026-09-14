@@ -157,6 +157,14 @@ return [
             'pagination_older'      => 'Older posts ➡',
             'new_page'              => 'New page',
             'no_pages'              => 'No pages yet.',
+            'badge_home'                 => 'Página de inicio',
+            'badge_blog'                 => 'Página de blog',
+            'badge_search'               => 'Página de búsqueda',
+            'badge_special_page_label'   => 'Página especial',
+            'badge_docs_link'            => 'la documentación',
+            'badge_home_popover'         => 'Esta es una página especial configurada como página de inicio. Lea más en {docs_link}.',
+            'badge_blog_popover'         => 'Esta es una página especial configurada para mostrar las entradas del blog. Lea más en {docs_link}.',
+            'badge_search_popover'       => 'Esta es una página especial configurada para gestionar las búsquedas. Lea más en {docs_link}.',
         ],
 
         'editor' => [
@@ -337,6 +345,7 @@ return [
                 'posts_per_page'            => 'Entradas por página',
                 'search_excerpt_length'     => 'Longitud del extracto de búsqueda',
                 'search_excerpt_length_tip' => 'Número de caracteres indexados por entrada para la búsqueda. Valores más grandes mejoran la precisión pero aumentan el uso de memoria. Establecer en 0 para indexar el contenido completo.',
+                'search_include_pages'      => 'Incluir páginas en los resultados de búsqueda',
                 'language'            => 'Idioma',
                 'timezone'            => 'Zona horaria',
                 'date_format'         => 'Formato de fecha',

@@ -157,6 +157,14 @@ return [
             'pagination_older'      => 'Vanhemmat julkaisut ➡',
             'new_page'              => 'Uusi sivu',
             'no_pages'              => 'Ei toistaiseksi sivuja.',
+            'badge_home'                 => 'Etusivu',
+            'badge_blog'                 => 'Blogisivu',
+            'badge_search'               => 'Hakusivu',
+            'badge_special_page_label'   => 'Erikoissivu',
+            'badge_docs_link'            => 'dokumentaatiosta',
+            'badge_home_popover'         => 'Tämä on erikoissivu, joka on määritetty sivuston etusivuksi. Lue lisää {docs_link}.',
+            'badge_blog_popover'         => 'Tämä on erikoissivu, joka on määritetty näyttämään blogin syöte. Lue lisää {docs_link}.',
+            'badge_search_popover'       => 'Tämä on erikoissivu, joka on määritetty hoitamaan sivuston hakuja. Lue lisää {docs_link}.',
         ],
 
         'editor' => [
@@ -337,6 +345,7 @@ return [
                 'posts_per_page'            => 'Julkaisua per sivu',
                 'search_excerpt_length'     => 'Hakulausekkeen pituus',
                 'search_excerpt_length_tip' => 'Julkaisujen hakua varten indeksoitujen merkkien määrä. Suuremmat arvot parantavat haun tarkkuutta mutta kasvattavat muistinkulutusta. Aseta 0:aan indeksoidaksesi julkaisun kokonaisuudessaan.',
+                'search_include_pages'      => 'Sisällytä sivut hakutuloksiin',
                 'language'           => 'Kieli',
                 'timezone'           => 'Aikavyöhyke',
                 'date_format'        => 'Päivänmäärän formaatti',

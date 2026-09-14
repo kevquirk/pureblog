@@ -31,9 +31,7 @@ $isAdminLoggedIn = is_admin_logged_in();
             $isSearchPage = $searchPageSlug !== '' && ($page['slug'] ?? '') === $searchPageSlug;
             ?>
             <article>
-                <?php if (!$isSearchPage): ?>
-                    <?= render_markdown($page['content'], ['page_title' => (string) ($page['title'] ?? '')]) ?>
-                <?php endif; ?>
+                <?= render_markdown($page['content'], ['page_title' => (string) ($page['title'] ?? '')]) ?>
                 <?php if ($isBlogPage): ?>
                     <?php
                     $perPage = (int) ($config['posts_per_page'] ?? 20);
@@ -55,15 +53,24 @@ $isAdminLoggedIn = is_admin_logged_in();
                     <?php
                     $query = trim($_GET['q'] ?? '');
                     $index = load_search_index();
-                    $sourcePosts = $index ?? get_all_posts(false);
+                    $includePages = (bool) ($config['search_include_pages'] ?? true);
+                    $sourcePosts = $index ?? ($includePages ? array_merge(get_all_posts(false), get_all_pages(false)) : get_all_posts(false));
                     $filteredPosts = filter_posts_by_query($sourcePosts, $query);
                     if ($index !== null && $filteredPosts) {
                         $hydrated = [];
                         foreach ($filteredPosts as $post) {
                             $slug = (string) ($post['slug'] ?? '');
                             if ($slug === '') continue;
-                            $fullPost = get_post_by_slug($slug, false);
-                            if ($fullPost) $hydrated[] = $fullPost;
+                            if (!empty($post['is_page'])) {
+                                $fullPage = get_page_by_slug($slug, false);
+                                if ($fullPage) {
+                                    $fullPage['is_page'] = true;
+                                    $hydrated[] = $fullPage;
+                                }
+                            } else {
+                                $fullPost = get_post_by_slug($slug, false);
+                                if ($fullPost) $hydrated[] = $fullPost;
+                            }
                         }
                         $filteredPosts = $hydrated;
                     }

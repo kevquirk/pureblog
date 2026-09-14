@@ -146,6 +146,14 @@ return [
             'pagination_older'      => '較舊的文章 ➡',
             'new_page'              => '新增頁面',
             'no_pages'              => '尚無頁面。',
+            'badge_home'                 => '首頁頁面',
+            'badge_blog'                 => '部落格頁面',
+            'badge_search'               => '搜尋頁面',
+            'badge_special_page_label'   => '特殊頁面',
+            'badge_docs_link'            => '說明文件',
+            'badge_home_popover'         => '這是設定為網站首頁的特殊頁面。請參閱{docs_link}以了解更多資訊。',
+            'badge_blog_popover'         => '這是設定為顯示部落格文章摘要的特殊頁面。請參閱{docs_link}以了解更多資訊。',
+            'badge_search_popover'       => '這是設定為處理站內搜尋的特殊頁面。請參閱{docs_link}以了解更多資訊。',
         ],
 
         'editor' => [
@@ -325,6 +333,7 @@ return [
                 'posts_per_page'            => '每頁文章數',
                 'search_excerpt_length'     => '搜尋摘要長度',
                 'search_excerpt_length_tip' => '每篇文章建立索引的字元數。數值越大搜尋越精準，但會增加記憶體用量。設為 0 則索引完整內容。',
+                'search_include_pages'      => '在搜尋結果中包含頁面',
                 'language'           => '語言',
                 'timezone'           => '時區',
                 'date_format'        => '日期格式',

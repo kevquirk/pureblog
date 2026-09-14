@@ -157,6 +157,14 @@ return [
             'pagination_older'      => 'Articole mai vechi ➡',
             'new_page'              => 'Pagină nouă',
             'no_pages'              => 'Nicio pagină încă.',
+            'badge_home'                 => 'Pagina principală',
+            'badge_blog'                 => 'Pagina blogului',
+            'badge_search'               => 'Pagina de căutare',
+            'badge_special_page_label'   => 'Pagină specială',
+            'badge_docs_link'            => 'documentație',
+            'badge_home_popover'         => 'Aceasta este o pagină specială configurată ca pagină principală. Citiți mai multe în {docs_link}.',
+            'badge_blog_popover'         => 'Aceasta este o pagină specială configurată pentru a afișa fluxul blogului. Citiți mai multe în {docs_link}.',
+            'badge_search_popover'       => 'Aceasta este o pagină specială configurată pentru căutările pe site. Citiți mai multe în {docs_link}.',
         ],
 
         'editor' => [
@@ -337,6 +345,7 @@ return [
                 'posts_per_page'            => 'Articole pe pagină',
                 'search_excerpt_length'     => 'Lungimea extrasului de căutare',
                 'search_excerpt_length_tip' => 'Numărul de caractere indexate per articol pentru căutare. Valori mai mari îmbunătățesc precizia dar cresc utilizarea memoriei. Setați la 0 pentru a indexa conținutul complet.',
+                'search_include_pages'      => 'Include paginile în rezultatele căutării',
                 'language'           => 'Limbă',
                 'timezone'           => 'Fus orar',
                 'date_format'        => 'Format dată',

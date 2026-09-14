@@ -939,6 +939,7 @@ function save_page(array &$page, ?string $originalSlug = null, ?string $original
     }
 
     get_all_pages(true, true);
+    build_search_index();
     cache_clear();
     return true;
 }
@@ -968,6 +969,8 @@ function delete_page_by_slug(string $slug): bool
         }
     }
 
+    get_all_pages(true, true);
+    build_search_index();
     cache_clear();
     return true;
 }

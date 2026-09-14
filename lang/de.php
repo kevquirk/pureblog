@@ -165,6 +165,14 @@ return [
             'pagination_older'      => 'Ältere Beiträge ➡',
             'new_page'              => 'Neue Seite',
             'no_pages'              => 'Noch keine Seiten.',
+            'badge_home'                 => 'Startseite',
+            'badge_blog'                 => 'Blogseite',
+            'badge_search'               => 'Suchseite',
+            'badge_special_page_label'   => 'Sonderseite',
+            'badge_docs_link'            => 'der Dokumentation',
+            'badge_home_popover'         => 'Dies ist eine Sonderseite, die als Startseite eingerichtet ist. Mehr dazu in {docs_link}.',
+            'badge_blog_popover'         => 'Dies ist eine Sonderseite, die Ihren Blog-Feed anzeigt. Mehr dazu in {docs_link}.',
+            'badge_search_popover'       => 'Dies ist eine Sonderseite, die für die Suchfunktion eingerichtet ist. Mehr dazu in {docs_link}.',
         ],
 
 
@@ -353,6 +361,7 @@ return [
                 'posts_per_page'            => 'Beiträge pro Seite',
                 'search_excerpt_length'     => 'Länge des Suchauszugs',
                 'search_excerpt_length_tip' => 'Anzahl der pro Beitrag indizierten Zeichen für die Suche. Größere Werte verbessern die Suchgenauigkeit, erhöhen aber den Speicherbedarf. Auf 0 setzen, um den vollständigen Beitragsinhalt zu indizieren.',
+                'search_include_pages'      => 'Seiten in die Suchergebnisse einbeziehen',
                 'language'           => 'Sprache',
                 'timezone'           => 'Zeitzone',
                 'date_format'        => 'Datumsformat',

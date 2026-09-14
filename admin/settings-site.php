@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $footerInjectPost = trim($_POST['footer_inject_post'] ?? '');
     $postsPerPage = (int) ($_POST['posts_per_page'] ?? 20);
     $searchExcerptLength = max(0, (int) ($_POST['search_excerpt_length'] ?? 2500));
+    $searchIncludePages = !empty($_POST['search_include_pages']);
     $language = trim($_POST['language'] ?? '');
     $timezone = trim($_POST['timezone'] ?? '');
     $dateFormat = trim($_POST['date_format'] ?? '');
@@ -126,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['footer_inject_post'] = $footerInjectPost;
         $config['posts_per_page'] = $postsPerPage;
         $config['search_excerpt_length'] = $searchExcerptLength;
+        $config['search_include_pages'] = $searchIncludePages;
         $config['language'] = $language !== '' ? $language : 'en';
         $config['timezone'] = $timezone;
         $config['date_format'] = $dateFormat;
@@ -232,6 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         }
 
         if (save_config($config)) {
+            build_search_index();
             $notice = t('admin.settings.site.notice_updated');
         } else {
             $errors[] = t('admin.settings.site.error_save');
@@ -275,6 +278,11 @@ require __DIR__ . '/../includes/admin-head.php';
                 <label for="search_excerpt_length"><?= e(t('admin.settings.site.search_excerpt_length')) ?></label>
                 <input type="number" id="search_excerpt_length" name="search_excerpt_length" min="0" value="<?= e((string) ($config['search_excerpt_length'] ?? 2500)) ?>">
                 <p class="tip"><?= e(t('admin.settings.site.search_excerpt_length_tip')) ?></p>
+
+                <label class="inline-checkbox" for="search_include_pages">
+                    <input type="checkbox" id="search_include_pages" name="search_include_pages"<?= ($config['search_include_pages'] ?? true) ? ' checked' : '' ?>>
+                    <?= e(t('admin.settings.site.search_include_pages')) ?>
+                </label>
 
                 <label for="language"><?= e(t('admin.settings.site.language')) ?> <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_language_link')) ?></a>, e.g. en, fr, pt-BR)</span></label>
                 <input type="text" id="language" name="language" value="<?= e((string) ($config['language'] ?? 'en')) ?>" placeholder="en">

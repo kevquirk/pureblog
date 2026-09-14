@@ -679,6 +679,7 @@ function build_search_index(): bool
 {
     $config = load_config();
     $excerptLength = (int) ($config['search_excerpt_length'] ?? 2500);
+    $includePages = (bool) ($config['search_include_pages'] ?? true);
     $posts = get_all_posts(false, true);
     get_all_posts_meta(false, true);
     $index = array_map(function (array $post) use ($excerptLength): array {
@@ -691,8 +692,27 @@ function build_search_index(): bool
             'tags' => $post['tags'] ?? [],
             'description' => (string) ($post['description'] ?? ''),
             'excerpt' => $excerpt,
+            'is_page' => false,
         ];
     }, $posts);
+
+    if ($includePages) {
+        $pages = get_all_pages(false, true);
+        $pageIndex = array_map(function (array $page) use ($excerptLength): array {
+            $content = (string) ($page['content'] ?? '');
+            $excerpt = $excerptLength === 0 ? $content : get_excerpt($content, $excerptLength);
+            return [
+                'title' => (string) ($page['title'] ?? ''),
+                'slug' => (string) ($page['slug'] ?? ''),
+                'date' => '',
+                'tags' => [],
+                'description' => (string) ($page['description'] ?? ''),
+                'excerpt' => $excerpt,
+                'is_page' => true,
+            ];
+        }, $pages);
+        $index = array_merge($index, $pageIndex);
+    }
 
     $json = json_encode($index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     if ($json === false) {

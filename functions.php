@@ -66,6 +66,7 @@ function default_config(): array
         'footer_inject_post' => '',
         'posts_per_page' => 20,
         'search_excerpt_length' => 2500,
+        'search_include_pages' => true,
         'homepage_slug' => '',
         'blog_page_slug' => '',
         'search_page_slug' => 'search',

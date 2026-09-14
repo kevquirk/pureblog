@@ -342,14 +342,83 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php if (!$pages): ?>
                 <p><?= e(t('admin.content.no_pages')) ?></p>
             <?php else: ?>
+                <?php
+                $homepageSlug   = trim((string) ($config['homepage_slug'] ?? 'home'));
+                $blogPageSlug   = trim((string) ($config['blog_page_slug'] ?? 'blog'));
+                $searchPageSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
+                $blogFeedHidden = ($blogPageSlug === '__hidden__');
+                ?>
                 <ul class="admin-list">
                     <?php foreach ($pages as $page): ?>
+                        <?php
+                        $pageSlug = (string) ($page['slug'] ?? '');
+                        $isHome   = $homepageSlug !== '' && $pageSlug === $homepageSlug;
+                        $isBlog   = !$blogFeedHidden && $blogPageSlug !== '' && $pageSlug === $blogPageSlug;
+                        $isSearch = $searchPageSlug !== '' && $pageSlug === $searchPageSlug;
+                        ?>
                         <li class="admin-list-item">
                             <a class="admin-list-title" href="<?= base_path() ?>/admin/edit-page.php?slug=<?= e($page['slug']) ?>">
                                 <?= e($page['title']) ?>
                             </a>
                             <div class="admin-list-meta">
                                 <span class="status <?= e($page['status']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-toggle-right"></use></svg> <?= e(t('admin.editor.status_' . $page['status'])) ?></span>
+                                <?php if ($isHome): ?>
+                                    <div class="page-badge-wrapper">
+                                        <button type="button" class="page-badge home" aria-expanded="false" aria-controls="badge-popover-home-<?= e($pageSlug) ?>">
+                                            <svg class="icon" aria-hidden="true"><use href="#icon-globe"></use></svg> <?= e(t('admin.content.badge_home')) ?>
+                                        </button>
+                                        <div id="badge-popover-home-<?= e($pageSlug) ?>" class="page-badge-popover" hidden>
+                                            <div class="page-badge-popover-top">
+                                                <span class="page-badge-popover-label"><?= e(t('admin.content.badge_special_page_label')) ?></span>
+                                                <button type="button" class="page-badge-popover-close" aria-label="Close">&times;</button>
+                                            </div>
+                                            <div class="page-badge-popover-title"><?= e(t('admin.content.badge_home')) ?></div>
+                                            <p class="page-badge-popover-text">
+                                                <?= t('admin.content.badge_home_popover', [
+                                                    'docs_link' => '<a href="https://docs.pureblog.org/special-pages/" target="_blank" rel="noopener noreferrer">' . e(t('admin.content.badge_docs_link')) . '</a>'
+                                                ]) ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($isBlog): ?>
+                                    <div class="page-badge-wrapper">
+                                        <button type="button" class="page-badge blog" aria-expanded="false" aria-controls="badge-popover-blog-<?= e($pageSlug) ?>">
+                                            <svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg> <?= e(t('admin.content.badge_blog')) ?>
+                                        </button>
+                                        <div id="badge-popover-blog-<?= e($pageSlug) ?>" class="page-badge-popover" hidden>
+                                            <div class="page-badge-popover-top">
+                                                <span class="page-badge-popover-label"><?= e(t('admin.content.badge_special_page_label')) ?></span>
+                                                <button type="button" class="page-badge-popover-close" aria-label="Close">&times;</button>
+                                            </div>
+                                            <div class="page-badge-popover-title"><?= e(t('admin.content.badge_blog')) ?></div>
+                                            <p class="page-badge-popover-text">
+                                                <?= t('admin.content.badge_blog_popover', [
+                                                    'docs_link' => '<a href="https://docs.pureblog.org/special-pages/" target="_blank" rel="noopener noreferrer">' . e(t('admin.content.badge_docs_link')) . '</a>'
+                                                ]) ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($isSearch): ?>
+                                    <div class="page-badge-wrapper">
+                                        <button type="button" class="page-badge search" aria-expanded="false" aria-controls="badge-popover-search-<?= e($pageSlug) ?>">
+                                            <svg class="icon" aria-hidden="true"><use href="#icon-search"></use></svg> <?= e(t('admin.content.badge_search')) ?>
+                                        </button>
+                                        <div id="badge-popover-search-<?= e($pageSlug) ?>" class="page-badge-popover" hidden>
+                                            <div class="page-badge-popover-top">
+                                                <span class="page-badge-popover-label"><?= e(t('admin.content.badge_special_page_label')) ?></span>
+                                                <button type="button" class="page-badge-popover-close" aria-label="Close">&times;</button>
+                                            </div>
+                                            <div class="page-badge-popover-title"><?= e(t('admin.content.badge_search')) ?></div>
+                                            <p class="page-badge-popover-text">
+                                                <?= t('admin.content.badge_search_popover', [
+                                                    'docs_link' => '<a href="https://docs.pureblog.org/special-pages/" target="_blank" rel="noopener noreferrer">' . e(t('admin.content.badge_docs_link')) . '</a>'
+                                                ]) ?>
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </li>
                     <?php endforeach; ?>

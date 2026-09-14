@@ -24,7 +24,7 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
             'status'         => 'published',
             'description'    => 'Search posts on this site.',
             'include_in_nav' => true,
-            'content'        => '',
+            'content'        => "# Search this site\n\nThis is the search page. You can replace (or remove) this text by editing the page in Pure Blog admin.",
         ];
         $saveError = null;
         save_page($newPage, null, null, $saveError);

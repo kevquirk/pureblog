@@ -157,6 +157,14 @@ return [
             'pagination_older'      => 'Starsze posty ➡',
             'new_page'              => 'Nowa strona',
             'no_pages'              => 'Brak stron.',
+            'badge_home'                 => 'Strona główna',
+            'badge_blog'                 => 'Strona bloga',
+            'badge_search'               => 'Strona wyszukiwania',
+            'badge_special_page_label'   => 'Strona specjalna',
+            'badge_docs_link'            => 'dokumentacji',
+            'badge_home_popover'         => 'To jest strona specjalna skonfigurowana jako strona główna. Przeczytaj więcej w {docs_link}.',
+            'badge_blog_popover'         => 'To jest strona specjalna skonfigurowana do wyświetlania wpisów na blogu. Przeczytaj więcej w {docs_link}.',
+            'badge_search_popover'       => 'To jest strona specjalna skonfigurowana do obsługi wyszukiwarki. Przeczytaj więcej w {docs_link}.',
         ],
 
         'editor' => [
@@ -336,6 +344,7 @@ return [
                 'posts_per_page'            => 'Ilość postów na stronę',
                 'search_excerpt_length'     => 'Rozmiar indeksowania treści',
                 'search_excerpt_length_tip' => 'Ilość znaków indeksowania każdego postu dla wyszukiwarki. Wyższe wartości dodatnio wpływają na dokładność wyszukiwania, jednak zwiększają zużycie pamięci. Ustaw na 0, aby indeksować pełne treści postów.',
+                'search_include_pages'      => 'Uwzględniaj strony w wynikach wyszukiwania',
                 'language'           => 'Język',
                 'timezone'           => 'Strefa czasowa',
                 'date_format'        => 'Format daty',

@@ -157,6 +157,14 @@ return [
             'pagination_older'      => 'Older posts ➡',
             'new_page'              => 'New page',
             'no_pages'              => 'No pages yet.',
+            'badge_home'                 => 'Startpagina',
+            'badge_blog'                 => 'Blogpagina',
+            'badge_search'               => 'Zoekpagina',
+            'badge_special_page_label'   => 'Speciale pagina',
+            'badge_docs_link'            => 'de documentatie',
+            'badge_home_popover'         => 'Dit is een speciale pagina die is ingesteld als startpagina. Lees meer in {docs_link}.',
+            'badge_blog_popover'         => 'Dit is een speciale pagina die is ingesteld om de blogfeed weer te geven. Lees meer in {docs_link}.',
+            'badge_search_popover'       => 'Dit is een speciale pagina die is ingesteld voor zoekopdrachten. Lees meer in {docs_link}.',
         ],
 
         'editor' => [
@@ -337,6 +345,7 @@ return [
                 'posts_per_page'            => 'Posts per pagina',
                 'search_excerpt_length'     => 'Lengte zoekfragment',
                 'search_excerpt_length_tip' => 'Aantal tekens dat per post wordt geïndexeerd voor zoeken. Grotere waarden verbeteren de zoeknauwkeurigheid maar verhogen het geheugengebruik. Stel in op 0 om de volledige inhoud te indexeren.',
+                'search_include_pages'      => 'Pagina\'s opnemen in zoekresultaten',
                 'language'           => 'Taal',
                 'timezone'           => 'Tijdzone',
                 'date_format'        => 'Datum formatering',

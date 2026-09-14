@@ -135,6 +135,59 @@
     if (sidebarOverlay) {
         sidebarOverlay.addEventListener('click', closeMobileNav);
     }
+
+    // Special page badge popovers controller
+    const badgeWrappers = document.querySelectorAll('.page-badge-wrapper');
+    if (badgeWrappers.length) {
+        function closeAllBadgePopovers() {
+            badgeWrappers.forEach(wrapper => {
+                const btn = wrapper.querySelector('button.page-badge');
+                const popover = wrapper.querySelector('.page-badge-popover');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+                if (popover) popover.hidden = true;
+            });
+        }
+
+        badgeWrappers.forEach(wrapper => {
+            const btn = wrapper.querySelector('button.page-badge');
+            const popover = wrapper.querySelector('.page-badge-popover');
+            const closeBtn = wrapper.querySelector('.page-badge-popover-close');
+
+            if (!btn || !popover) return;
+
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                closeAllBadgePopovers();
+                if (!isExpanded) {
+                    btn.setAttribute('aria-expanded', 'true');
+                    popover.hidden = false;
+                }
+            });
+
+            popover.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    closeAllBadgePopovers();
+                    btn.focus();
+                });
+            }
+        });
+
+        document.addEventListener('click', () => {
+            closeAllBadgePopovers();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllBadgePopovers();
+            }
+        });
+    }
 </script>
     </div><!-- /.admin-content -->
     </div><!-- /.admin-main -->
