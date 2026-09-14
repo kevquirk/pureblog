@@ -1181,6 +1181,7 @@ td {
     font-size: 0.9rem;
     line-height: 1.45;
     color: var(--text-color);
+    text-transform: none;
 }
 
 .page-badge-popover-text a {
