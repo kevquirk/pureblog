@@ -12,7 +12,7 @@ $metaDescription = '';
 
 http_response_code(404);
 require __DIR__ . '/includes/header.php';
-render_masthead_layout($config, ['page' => $page ?? null]);
+render_masthead_layout($config, ['page' => $page ?? null, 'is404' => true]);
 ?>
     <main>
         <h1><?= e(t('frontend.page_not_found')) ?></h1>

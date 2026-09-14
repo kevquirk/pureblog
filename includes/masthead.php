@@ -1,5 +1,12 @@
+<?php
+$hasPageH1 = !empty($post)
+    || !empty($isTag)
+    || !empty($is404)
+    || (!empty($page['content']) && content_has_h1($page['content']));
+$siteTitleTag = $hasPageH1 ? 'p' : 'h1';
+?>
 <header>
-    <p class="site-title"><a href="<?= base_path() ?>/"><?= e($config['site_title']) ?></a></p>
+    <<?= $siteTitleTag ?> class="site-title"><a href="<?= base_path() ?>/"><?= e($config['site_title']) ?></a></<?= $siteTitleTag ?>>
     <?php if ($siteTagline !== ''): ?>
     <p class="tagline"><?= e($siteTagline) ?></p>
     <?php endif; ?>

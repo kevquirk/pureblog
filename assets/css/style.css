@@ -202,16 +202,20 @@ p.site-title {
     margin-top: 0;
 }
 
+header h1,
 p.site-title {
     margin: 0.5rem 0 0 0;
     font-weight: bold;
+    line-height: 1.1;
 }
 
+header h1 a,
 p.site-title a {
     color: var(--text-color);
     text-decoration: none;
 }
 
+header h1 a:hover,
 p.site-title a:hover {
     color: var(--accent-color);
 }
@@ -386,6 +390,10 @@ article {
     border-color: var(--border-color);
     margin-top: 4rem;
     max-width: 70%;
+}
+
+.full-post-view p.post-date {
+    margin-top: -0.5rem;
 }
 
 .notice {

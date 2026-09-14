@@ -178,7 +178,7 @@ $postListLayout = $config['theme']['post_list_layout'] ?? 'excerpt';
 
 ?>
 <?php if ($__p = find_include('header')) require $__p; ?>
-<?php render_masthead_layout($config, ['post' => $post ?? null, 'page' => $page ?? null]); ?>
+<?php render_masthead_layout($config, ['post' => $post ?? null, 'page' => $page ?? null, 'isTag' => $isTag ?? false]); ?>
     <main>
         <!-- Tag archive view -->
         <?php if ($isTag): ?>

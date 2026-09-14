@@ -371,6 +371,15 @@ function get_excerpt(string $markdown, int $length = 200): string
     return $excerpt;
 }
 
+function content_has_h1(string $content): bool
+{
+    if (trim($content) === '') {
+        return false;
+    }
+    $cleaned = preg_replace('/```.*?```/s', '', $content) ?? $content;
+    return (bool) preg_match('/(^|\n)(#\s+[^\n]+|[^\n]+\r?\n={3,}|<\s*h1(\s+[^>]*)?>)/i', $cleaned);
+}
+
 // ---------------------------------------------------------------------------
 // Tag and layout helpers
 // ---------------------------------------------------------------------------
