@@ -154,9 +154,14 @@ function is_htaccess_path(string $relativePath): bool
 function collect_existing_htaccess_files(): array
 {
     $files = [];
+    $preserveTop = array_fill_keys(preserved_top_level_paths(), true);
     $all = collect_relative_files(PUREBLOG_BASE_PATH);
     foreach ($all as $relative) {
         if (!is_htaccess_path($relative)) {
+            continue;
+        }
+        $top = (string) strtok($relative, '/');
+        if (isset($preserveTop[$top]) || $top === 'backup') {
             continue;
         }
         $fullPath = PUREBLOG_BASE_PATH . '/' . $relative;
@@ -177,6 +182,12 @@ function restore_htaccess_files(array $files): void
 {
     foreach ($files as $relative => $content) {
         $target = PUREBLOG_BASE_PATH . '/' . $relative;
+        if (is_file($target)) {
+            $existing = @file_get_contents($target);
+            if ($existing === $content) {
+                continue;
+            }
+        }
         $dir = dirname($target);
         if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
             throw new RuntimeException(t('admin.settings.updates.error_htaccess_dir', ['path' => $relative]));
