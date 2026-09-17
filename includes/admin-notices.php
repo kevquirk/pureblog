@@ -5,7 +5,7 @@
     <p class="notice" data-auto-dismiss><?= e($notice) ?></p>
 <?php endif; ?>
 <?php if (!empty($errors)): ?>
-    <div class="notice">
+    <div class="notice delete">
         <ul>
             <?php foreach ($errors as $error): ?>
                 <li><?= e($error) ?></li>

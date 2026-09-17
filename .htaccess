@@ -22,7 +22,9 @@ RewriteEngine On
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 
 # Block access to sensitive directories and files
+RewriteRule ^config/ - [F,L]
 RewriteRule ^data/ - [F,L]
+RewriteRule ^cache/ - [F,L]
 RewriteRule ^content/autosaves/ - [F,L]
 RewriteRule ^content/layouts/ - [F,L]
 RewriteRule ^content/functions\.php$ - [F,L]

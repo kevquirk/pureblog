@@ -78,6 +78,9 @@ function default_config(): array
         'date_format' => 'F j, Y',
         'admin_username' => '',
         'admin_password_hash' => '',
+        'mfa_enabled' => false,
+        'mfa_secret' => '',
+        'mfa_backup_codes' => [],
         'cache' => [
             'enabled' => true,
             'rss_ttl' => 3600,
@@ -142,6 +145,8 @@ function load_hooks(): void
 require __DIR__ . '/includes/lib/i18n.php';
 require __DIR__ . '/includes/lib/content.php';
 require __DIR__ . '/includes/lib/auth.php';
+require __DIR__ . '/includes/lib/totp.php';
+require __DIR__ . '/includes/lib/qrcode.php';
 require __DIR__ . '/includes/lib/template.php';
 require __DIR__ . '/includes/lib/cache.php';
 
