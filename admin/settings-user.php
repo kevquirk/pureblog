@@ -183,8 +183,8 @@ require __DIR__ . '/../includes/admin-head.php';
                     <strong><?= e(t('admin.settings.user.mfa_backup_codes_heading')) ?></strong>
                     <p><?= e(t('admin.settings.user.mfa_backup_codes_warning')) ?></p>
                     <pre style="background: var(--bg-color); padding: 1rem; font-size: 1.1rem; line-height: 1.8; user-select: all; border: 1px dashed var(--border-color); margin: 0.75rem 0;"><code><?= e(implode("\n", $newBackupCodes)) ?></code></pre>
-                    <button type="button" class="link-button" onclick="navigator.clipboard.writeText(<?= e(json_encode(implode("\n", $newBackupCodes))) ?>).then(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-circle-check\'></use></svg> Copied!'; setTimeout(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-copy\'></use></svg> Copy all codes';}, 2500);})">
-                        <svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> Copy all codes
+                    <button type="button" class="link-button" onclick="navigator.clipboard.writeText(<?= e(json_encode(implode("\n", $newBackupCodes))) ?>).then(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-circle-check\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copied'))) ?>'; setTimeout(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-copy\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copy_codes'))) ?>';}, 2500);})">
+                        <svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.settings.user.mfa_copy_codes')) ?>
                     </button>
                 </div>
             <?php endif; ?>
@@ -231,8 +231,8 @@ require __DIR__ . '/../includes/admin-head.php';
                         <p style="margin-top: 0;"><?= e(t('admin.settings.user.mfa_manual_entry_intro')) ?></p>
                         <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0 1.25rem 0;">
                             <code style="font-size: 1.15rem; font-weight: bold; padding: 0.35rem 0.6rem; letter-spacing: 0.05em; user-select: all;"><?= e($mfaSecret) ?></code>
-                            <button type="button" class="link-button" onclick="navigator.clipboard.writeText('<?= e($mfaSecret) ?>').then(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-circle-check\'></use></svg> Copied!'; setTimeout(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-copy\'></use></svg> Copy';}, 2000);})">
-                                <svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> Copy
+                            <button type="button" class="link-button" onclick="navigator.clipboard.writeText('<?= e($mfaSecret) ?>').then(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-circle-check\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copied'))) ?>'; setTimeout(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-copy\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copy'))) ?>';}, 2000);})">
+                                <svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.settings.user.mfa_copy')) ?>
                             </button>
                         </div>
 

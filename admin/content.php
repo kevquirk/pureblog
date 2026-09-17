@@ -145,7 +145,7 @@ if ($anyFilter) {
         $parts[] = t('date.months.' . ($filterMonth - 1));
     }
     if ($filterTag !== '') {
-        $parts[] = $filterTag;
+        $parts[] = $availableTags[$filterTag] ?? $filterTag;
     }
     if ($filterStatus !== '') {
         $parts[] = t('admin.editor.status_' . $filterStatus);
@@ -297,6 +297,14 @@ require __DIR__ . '/../includes/admin-head.php';
             <?php else: ?>
                 <ul class="admin-list">
                     <?php foreach ($posts as $post): ?>
+                        <?php
+                        $postSlug   = (string) ($post['slug'] ?? '');
+                        $postStatus = (string) ($post['status'] ?? 'draft');
+                        $postViewUrl = ($postStatus === 'published')
+                            ? (base_path() . '/' . rawurlencode($postSlug))
+                            : (base_path() . '/admin/preview.php?type=post&slug=' . urlencode($postSlug));
+                        $postTags = array_values(array_filter(array_map('trim', (array) ($post['tags'] ?? []))));
+                        ?>
                         <li class="admin-list-item">
                             <a class="admin-list-title" href="<?= base_path() ?>/admin/edit-post.php?slug=<?= e($post['slug']) ?>">
                                 <?= e($post['title']) ?>
@@ -304,6 +312,18 @@ require __DIR__ . '/../includes/admin-head.php';
                             <div class="admin-list-meta">
                                 <span><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <?= e(format_datetime_for_display((string) ($post['date'] ?? ''), $config, $postDateFmt)) ?></span>
                                 <span class="status <?= e($post['status']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-toggle-right"></use></svg> <?= e(t('admin.editor.status_' . $post['status'])) ?></span>
+                                <a class="admin-list-view" href="<?= e($postViewUrl) ?>" target="_blank" rel="noopener noreferrer" title="<?= e(t('admin.content.view_post')) ?>">
+                                    <svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.content.view_post')) ?>
+                                </a>
+                                <?php if ($postTags): ?>
+                                    <span class="admin-list-tags">
+                                        <svg class="icon" aria-hidden="true"><use href="#icon-tag"></use></svg>
+                                        <?php foreach ($postTags as $idx => $tag): ?>
+                                            <?php $tagSlug = normalize_tag($tag); ?>
+                                            <a class="admin-tag-link<?= $filterTag === $tagSlug ? ' active' : '' ?>" href="<?= base_path() ?>/admin/content.php?tab=posts&amp;tag=<?= urlencode($tagSlug) ?>"><?= e($tag) ?></a><?= $idx < count($postTags) - 1 ? ',' : '' ?>
+                                        <?php endforeach; ?>
+                                    </span>
+                                <?php endif; ?>
                             </div>
                         </li>
                     <?php endforeach; ?>
@@ -351,10 +371,16 @@ require __DIR__ . '/../includes/admin-head.php';
                 <ul class="admin-list">
                     <?php foreach ($pages as $page): ?>
                         <?php
-                        $pageSlug = (string) ($page['slug'] ?? '');
-                        $isHome   = $homepageSlug !== '' && $pageSlug === $homepageSlug;
-                        $isBlog   = !$blogFeedHidden && $blogPageSlug !== '' && $pageSlug === $blogPageSlug;
-                        $isSearch = $searchPageSlug !== '' && $pageSlug === $searchPageSlug;
+                        $pageSlug   = (string) ($page['slug'] ?? '');
+                        $pageStatus = (string) ($page['status'] ?? 'draft');
+                        $isHome     = $homepageSlug !== '' && $pageSlug === $homepageSlug;
+                        $isBlog     = !$blogFeedHidden && $blogPageSlug !== '' && $pageSlug === $blogPageSlug;
+                        $isSearch   = $searchPageSlug !== '' && $pageSlug === $searchPageSlug;
+                        if ($pageStatus === 'published') {
+                            $pageViewUrl = $isHome ? (base_path() . '/') : (base_path() . '/' . rawurlencode($pageSlug));
+                        } else {
+                            $pageViewUrl = base_path() . '/admin/preview.php?type=page&slug=' . urlencode($pageSlug);
+                        }
                         ?>
                         <li class="admin-list-item">
                             <a class="admin-list-title" href="<?= base_path() ?>/admin/edit-page.php?slug=<?= e($page['slug']) ?>">
@@ -362,6 +388,9 @@ require __DIR__ . '/../includes/admin-head.php';
                             </a>
                             <div class="admin-list-meta">
                                 <span class="status <?= e($page['status']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-toggle-right"></use></svg> <?= e(t('admin.editor.status_' . $page['status'])) ?></span>
+                                <a class="admin-list-view" href="<?= e($pageViewUrl) ?>" target="_blank" rel="noopener noreferrer" title="<?= e(t('admin.content.view_page')) ?>">
+                                    <svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg> <?= e(t('admin.content.view_page')) ?>
+                                </a>
                                 <?php if ($isHome): ?>
                                     <div class="page-badge-wrapper">
                                         <button type="button" class="page-badge home" aria-expanded="false" aria-controls="badge-popover-home-<?= e($pageSlug) ?>">

@@ -73,12 +73,17 @@ function _lang_strings(): array
     static $strings = null;
 
     if ($strings === null) {
+        $enStrings = _lang_load_file('en');
         global $_pureblog_lang_code;
-        if (isset($_pureblog_lang_code) && $_pureblog_lang_code !== '') {
-            $strings = _lang_load_file($_pureblog_lang_code);
+        $langCode = (isset($_pureblog_lang_code) && $_pureblog_lang_code !== '')
+            ? $_pureblog_lang_code
+            : (string) (load_config()['language'] ?? 'en');
+
+        if ($langCode === 'en' || $langCode === '') {
+            $strings = $enStrings;
         } else {
-            $config  = load_config();
-            $strings = _lang_load_file((string) ($config['language'] ?? 'en'));
+            $customStrings = _lang_load_file($langCode);
+            $strings = array_replace_recursive($enStrings, $customStrings);
         }
     }
 

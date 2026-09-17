@@ -129,6 +129,8 @@ return [
             'tabs_label'            => 'Content tabs',
             'tab_posts'             => 'Posts',
             'tab_pages'             => 'Pages',
+            'view_post'             => 'View post',
+            'view_page'             => 'View page',
             'new_post'              => 'New post',
             'choose_layout'         => 'Choose a layout',
             'default_post'          => 'Default post',
@@ -457,6 +459,9 @@ return [
                 'mfa_disable_title'             => 'Disable Two-Factor Authentication',
                 'mfa_disable_btn'               => 'Disable 2FA',
                 'mfa_confirm_password_label'    => 'Confirm your current password',
+                'mfa_copy'                      => 'Copy',
+                'mfa_copy_codes'                => 'Copy all codes',
+                'mfa_copied'                    => 'Copied!',
             ],
 
             'theme' => [

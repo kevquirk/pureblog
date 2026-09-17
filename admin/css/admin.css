@@ -1063,19 +1063,59 @@ td {
     font-size: 1.4rem;
 }
 
+.admin-list-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.admin-list-view:hover,
+.admin-list-view:focus-visible {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
 .admin-list-meta {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem 1.5rem;
     margin-top: 0.25rem;
     color: color-mix(in srgb, var(--text-color) 70%, transparent);
     font-size: 0.95rem;
+    flex-wrap: wrap;
 }
 
 .admin-list-meta span {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+}
+
+.admin-list-tags {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.admin-tag-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.admin-tag-link:hover,
+.admin-tag-link:focus-visible {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.admin-tag-link.active {
+    color: var(--accent-color);
+    font-weight: 600;
 }
 
 .admin-list-meta .status.published {

@@ -102,7 +102,7 @@ header('Pragma: no-cache');
 if ($editorType === 'page') {
     $page = [
         'title' => $title !== '' ? $title : t('admin.editor.preview_title'),
-        'slug' => '',
+        'slug' => $slug,
         'status' => 'draft',
         'description' => $description,
         'include_in_nav' => false,

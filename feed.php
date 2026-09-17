@@ -76,7 +76,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
         <link><?= e($baseUrl) ?></link>
         <atom:link href="<?= e($baseUrl) ?>/feed" rel="self" type="application/rss+xml"/>
         <description><?= e($siteTagline !== '' ? $siteTagline : $siteTitle) ?></description>
-        <language><?= e($config['language'] ?? 'en') ?></language>
+        <language><?= e(str_replace('_', '-', (string) ($config['language'] ?? 'en'))) ?></language>
         <?php foreach ($posts as $post): ?>
             <?php
             $postUrl = $baseUrl . '/' . $post['slug'];

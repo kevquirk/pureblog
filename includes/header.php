@@ -30,7 +30,7 @@ if ($featureImageRaw !== '') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="<?= e($config['language'] ?? 'en') ?>" data-theme="<?= e($mode) ?>">
+<html lang="<?= e(str_replace('_', '-', (string) ($config['language'] ?? 'en'))) ?>" data-theme="<?= e($mode) ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -73,7 +73,19 @@ if ($featureImageRaw !== '') {
         <meta property="og:description" content="<?= e($metaDescription) ?>">
     <?php endif; ?>
     <?php
-    $ogLocaleMap = ['de' => 'de_DE', 'fr' => 'fr_FR', 'es' => 'es_ES', 'it' => 'it_IT', 'nl' => 'nl_NL', 'pt' => 'pt_PT', 'ro' => 'ro_RO'];
+    $ogLocaleMap = [
+        'de'    => 'de_DE',
+        'en'    => 'en_US',
+        'es'    => 'es_ES',
+        'fi'    => 'fi_FI',
+        'fr'    => 'fr_FR',
+        'it'    => 'it_IT',
+        'nl'    => 'nl_NL',
+        'pl'    => 'pl_PL',
+        'pt'    => 'pt_PT',
+        'ro'    => 'ro_RO',
+        'zh_TW' => 'zh_TW',
+    ];
     $ogLocale = $ogLocaleMap[$config['language'] ?? 'en'] ?? 'en_US';
     ?>
     <meta property="og:locale" content="<?= e($ogLocale) ?>">

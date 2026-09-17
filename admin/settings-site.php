@@ -284,8 +284,19 @@ require __DIR__ . '/../includes/admin-head.php';
                     <?= e(t('admin.settings.site.search_include_pages')) ?>
                 </label>
 
-                <label for="language"><?= e(t('admin.settings.site.language')) ?> <span class="tip">(<a href="https://www.w3schools.com/tags/ref_language_codes.asp" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_language_link')) ?></a>, e.g. en, fr, pt-BR)</span></label>
-                <input type="text" id="language" name="language" value="<?= e((string) ($config['language'] ?? 'en')) ?>" placeholder="en">
+                <?php
+                $availableLanguages = lang_available();
+                $currentLanguage = (string) ($config['language'] ?? 'en');
+                if (!isset($availableLanguages[$currentLanguage]) && $currentLanguage !== '') {
+                    $availableLanguages[$currentLanguage] = $currentLanguage;
+                }
+                ?>
+                <label for="language"><?= e(t('admin.settings.site.language')) ?></label>
+                <select id="language" name="language">
+                    <?php foreach ($availableLanguages as $langCode => $langName): ?>
+                        <option value="<?= e($langCode) ?>"<?= $langCode === $currentLanguage ? ' selected' : '' ?>><?= e($langName) ?> (<?= e($langCode) ?>)</option>
+                    <?php endforeach; ?>
+                </select>
 
                 <label for="timezone"><?= e(t('admin.settings.site.timezone')) ?> <span class="tip">(<a href="https://www.php.net/manual/en/timezones.php" target="_blank" rel="noopener noreferrer"><?= e(t('admin.settings.site.tip_timezone_link')) ?></a>)</span></label>
                 <input type="text" id="timezone" name="timezone" value="<?= e((string) ($config['timezone'] ?? date_default_timezone_get())) ?>" placeholder="UTC" required>
