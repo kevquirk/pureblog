@@ -616,17 +616,17 @@
         });
 
         if (!response.ok) {
-          throw new Error('Upload failed');
+          throw new Error(config.strings.upload_failed || 'Upload failed');
         }
 
         const redirectUrl = new URL(response.url);
         const markdown = redirectUrl.searchParams.get('uploaded');
         if (!markdown) {
-          throw new Error(redirectUrl.searchParams.get('upload_error') || 'Upload failed');
+          throw new Error(redirectUrl.searchParams.get('upload_error') || config.strings.upload_failed || 'Upload failed');
         }
         insertTextAtCursor(jar, editorContainer, markdown);
       } catch (error) {
-        alert(config.strings.upload_failed);
+        alert(error?.message || config.strings.upload_failed);
       }
     }
   });

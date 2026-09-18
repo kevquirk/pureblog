@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
 
+// Detect when post_max_size is exceeded (PHP empties $_POST and $_FILES on POST requests)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES) && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+    $postMaxSize = ini_get('post_max_size') ?: 'unknown';
+    $error = t('admin.editor.error_upload_post_size', ['limit' => $postMaxSize]);
+    $redirect = base_path() . '/admin/content.php?upload_error=' . urlencode($error);
+    header('Location: ' . $redirect);
+    exit;
+}
+
 verify_csrf();
 
 $slug = trim($_POST['slug'] ?? '');
@@ -17,7 +26,17 @@ if ($slug === '') {
 } elseif (!isset($_FILES['image'])) {
     $error = t('admin.editor.error_upload_no_file');
 } elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-    $error = t('admin.editor.error_upload_failed');
+    $uploadErr = (int) $_FILES['image']['error'];
+    $maxFileSize = ini_get('upload_max_filesize') ?: 'unknown';
+    $error = match ($uploadErr) {
+        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => t('admin.editor.error_upload_size', ['limit' => $maxFileSize]),
+        UPLOAD_ERR_PARTIAL   => t('admin.editor.error_upload_partial'),
+        UPLOAD_ERR_NO_FILE   => t('admin.editor.error_upload_no_file'),
+        UPLOAD_ERR_NO_TMP_DIR => t('admin.editor.error_upload_no_tmp_dir'),
+        UPLOAD_ERR_CANT_WRITE => t('admin.editor.error_upload_cant_write'),
+        UPLOAD_ERR_EXTENSION => t('admin.editor.error_upload_extension'),
+        default              => t('admin.editor.error_upload_failed'),
+    };
 } else {
     $allowedTypes = [
         'image/jpeg' => 'jpg',
