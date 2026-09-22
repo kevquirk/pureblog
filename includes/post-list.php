@@ -20,7 +20,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
             <?php if ($postListLayout === 'excerpt'): ?>
                 <div class="excerpt-view">
                     <h2><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h2>
-                    <?php if ($post['date']): ?>
+                    <?php if (!empty($post['date'])): ?>
                         <p><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time datetime="<?= e(format_datetime_for_display((string) $post['date'], $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?php
@@ -39,7 +39,7 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
             <?php elseif ($postListLayout === 'full'): ?>
                 <div class="full-post-view">
                     <h2><a href="<?= base_path() ?>/<?= e($post['slug']) ?>"><?= e($post['title']) ?></a></h2>
-                    <?php if ($post['date']): ?>
+                    <?php if (!empty($post['date'])): ?>
                         <p class="post-date"><svg class="icon" aria-hidden="true"><use href="#icon-calendar"></use></svg> <time datetime="<?= e(format_datetime_for_display((string) $post['date'], $config ?? [], 'c')) ?>"><?= e(format_post_date_for_display((string) $post['date'], $config ?? [])) ?></time></p>
                     <?php endif; ?>
                     <?= render_markdown($post['content'], ['post_title' => (string) ($post['title'] ?? '')]) ?>
