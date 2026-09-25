@@ -742,12 +742,16 @@ a.save,
     text-transform: uppercase;
     text-decoration: none;
     font-weight: bold;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
     width: auto;
     padding: 0.7rem 0.75rem;
     font-family: inherit;
     font-size: inherit;
     line-height: 1.15;
+    vertical-align: middle;
 }
 
 button:hover,
@@ -763,12 +767,7 @@ a.save:hover,
 
 .editor-actions button,
 .editor-actions a {
-    display: inline-flex;
-    align-items: center;
-    line-height: 1.2;
-    gap: 0.4rem;
     max-width: 470px;
-    justify-content: space-between;
 }
 
 .editor-actions a.delete:hover {
@@ -1024,7 +1023,24 @@ button.save:hover {
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
-    vertical-align: -2px;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+}
+
+.admin-nav .icon,
+button .icon,
+a.button .icon,
+.link-button .icon,
+.editor-actions .icon {
+    margin-top: -0.1em;
+}
+
+html[data-admin-font="mono"] .admin-nav .icon,
+html[data-admin-font="mono"] button .icon,
+html[data-admin-font="mono"] a.button .icon,
+html[data-admin-font="mono"] .link-button .icon,
+html[data-admin-font="mono"] .editor-actions .icon {
+    margin-top: -0.2em;
 }
 
 table {
