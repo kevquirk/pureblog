@@ -268,7 +268,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Editor de publicação',
             'settings_title'      => 'Definições da publicação',
-            'tags_label'          => 'Etiquetas (separadas por vírgula)',
+            'tags_label'          => 'Etiquetas',
             'save'                => 'Guardar publicação',
             'preview'             => 'Pré-visualizar publicação',
             'delete'              => 'Eliminar publicação',

@@ -257,7 +257,7 @@ return [
         'post_editor' => [
             'page_title'          => '文章編輯器',
             'settings_title'      => '文章設定',
-            'tags_label'          => '標籤（以逗號分隔）',
+            'tags_label'          => '標籤',
             'save'                => '儲存文章',
             'preview'             => '預覽文章',
             'delete'              => '刪除文章',

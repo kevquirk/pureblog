@@ -521,7 +521,6 @@ html[data-admin-theme="dark"] .notice.delete {
 .admin-toast-container .notice {
     margin-bottom: 0;
     pointer-events: auto;
-    border-radius: 8px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -670,7 +669,6 @@ input[type="radio"] {
     width: 250px;
     height: auto;
     border: 3px solid var(--border-color);
-    border-radius: 6px;
     padding: 0.35rem;
     background: var(--input-bg);
     box-sizing: border-box;
@@ -2070,6 +2068,27 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
 
 .tag-input-wrap {
     position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.tag-entry-row {
+    display: flex;
+    gap: 0.5rem;
+    position: relative;
+    align-items: stretch;
+    margin-bottom: 0.6rem;
+}
+
+.tag-entry-row input[type="text"] {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.tag-entry-row .tag-add-btn {
+    padding: 0.45rem 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
 .tag-suggestions {
@@ -2077,7 +2096,7 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
     top: 100%;
     left: 0;
     right: 0;
-    margin: -1.5rem 0 0 0;
+    margin: 0;
     padding: 0;
     list-style: none;
     background: var(--input-bg);
@@ -2086,6 +2105,7 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
     z-index: 100;
     max-height: 220px;
     overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .tag-suggestions li {
@@ -2097,6 +2117,56 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
 .tag-suggestions li.active {
     background: var(--text-color);
     color: var(--bg-color);
+}
+
+.tag-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.tag-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    padding: 0.2rem 0.5rem;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    color: var(--text-color);
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.tag-badge-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tag-badge-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.6;
+    transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.tag-badge-remove:hover,
+.tag-badge-remove:focus-visible {
+    opacity: 1;
+    color: var(--red);
+    background: rgba(175, 46, 27, 0.15);
 }
 
 .autosave-restore-notice {
@@ -2386,7 +2456,6 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 
 .theme-card {
     border: 1px solid var(--border-color);
-    border-radius: 4px;
     padding: 1rem;
     background: var(--accent-bg-color);
     display: flex;
@@ -2417,7 +2486,6 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
     font-weight: 600;
     text-transform: uppercase;
     padding: 0.15rem 0.45rem;
-    border-radius: 3px;
     border: 1px solid currentColor;
 }
 
@@ -2457,7 +2525,6 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
     display: inline-block;
     width: 20px;
     height: 20px;
-    border-radius: 3px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset;
 }
 
@@ -2478,7 +2545,6 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
 
 .theme-creator-details {
     border: 1px solid var(--border-color);
-    border-radius: 4px;
     background: var(--accent-bg-color);
     padding: 0.75rem 1rem;
     margin-top: 1rem;

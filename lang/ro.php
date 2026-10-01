@@ -269,7 +269,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Editor articol',
             'settings_title'      => 'Setări articol',
-            'tags_label'          => 'Etichete (separate prin virgulă)',
+            'tags_label'          => 'Etichete',
             'save'                => 'Salvează articolul',
             'preview'             => 'Previzualizează articolul',
             'delete'              => 'Șterge articolul',

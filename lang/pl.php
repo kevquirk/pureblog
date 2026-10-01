@@ -268,7 +268,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Edytor postu',
             'settings_title'      => 'Ustawienia postu',
-            'tags_label'          => 'Tagi (oddzielone przecinkami)',
+            'tags_label'          => 'Tagi',
             'save'                => 'Zapisz',
             'preview'             => 'Podgląd',
             'delete'              => 'Usuń',

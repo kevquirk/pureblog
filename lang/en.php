@@ -271,7 +271,10 @@ return [
         'post_editor' => [
             'page_title'          => 'Post editor',
             'settings_title'      => 'Post settings',
-            'tags_label'          => 'Tags (comma separated)',
+            'tags_label'          => 'Tags',
+            'add_tag'             => 'Add',
+            'add_tag_placeholder' => 'Add new tag',
+            'remove_tag'          => 'Remove tag',
             'save'                => 'Save post',
             'preview'             => 'Preview post',
             'delete'              => 'Delete post',

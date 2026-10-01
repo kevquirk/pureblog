@@ -340,10 +340,15 @@ require __DIR__ . '/../includes/admin-head.php';
                             <option value="published" <?= $post['status'] === 'published' ? 'selected' : '' ?>><?= e(t('admin.editor.status_published')) ?></option>
                         </select>
 
-                        <label for="tags"><?= e(t('admin.post_editor.tags_label')) ?></label>
+                        <label for="tag-entry"><?= e(t('admin.post_editor.tags_label')) ?></label>
                         <div class="tag-input-wrap">
-                            <input type="text" id="tags" name="tags" form="editor-form" value="<?= e(implode(', ', $post['tags'])) ?>" autocomplete="off">
-                            <ul id="tag-suggestions" class="tag-suggestions" hidden></ul>
+                            <div class="tag-entry-row">
+                                <input type="text" id="tag-entry" placeholder="<?= e(t('admin.post_editor.add_tag_placeholder')) ?>" autocomplete="off">
+                                <button type="button" id="tag-add-btn" class="button tag-add-btn"><?= e(t('admin.post_editor.add_tag')) ?></button>
+                                <ul id="tag-suggestions" class="tag-suggestions" hidden></ul>
+                            </div>
+                            <input type="hidden" id="tags" name="tags" form="editor-form" value="<?= e(implode(', ', $post['tags'])) ?>">
+                            <div id="tag-badges" class="tag-badges" aria-live="polite"></div>
                         </div>
                     </div>
                 </section>
@@ -432,36 +437,92 @@ require __DIR__ . '/../includes/admin-head.php';
     <script type="module" src="<?= base_path() ?>/admin/js/editor.js?v=<?= e((string) @filemtime(__DIR__ . '/js/editor.js')) ?>"></script>
     <script>
     (function () {
-        const input = document.getElementById('tags');
-        const list  = document.getElementById('tag-suggestions');
-        if (!input || !list) return;
+        const hiddenInput = document.getElementById('tags');
+        const entryInput  = document.getElementById('tag-entry');
+        const addBtn      = document.getElementById('tag-add-btn');
+        const badgesWrap  = document.getElementById('tag-badges');
+        const list        = document.getElementById('tag-suggestions');
+        if (!hiddenInput || !entryInput || !badgesWrap || !list) return;
 
         let allTags = [];
         let activeIndex = -1;
+
+        function parseTags(val) {
+            if (!val || typeof val !== 'string') return [];
+            return val
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+        }
+
+        let tags = parseTags(hiddenInput.value);
 
         fetch(window.PureblogEditorConfig.basePath + '/content/tag-index.json?v=<?= e((string) (@filemtime(PUREBLOG_BASE_PATH . '/content/tag-index.json') ?: PUREBLOG_VERSION)) ?>')
             .then(r => r.ok ? r.json() : null)
             .then(data => { if (data) allTags = Object.values(data).map(v => v.name); })
             .catch(() => {});
 
-        function currentToken() {
-            const val = input.value;
-            const lastComma = val.lastIndexOf(',');
-            return val.slice(lastComma + 1).trimStart().toLowerCase();
+        function syncTags() {
+            hiddenInput.value = tags.join(', ');
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+            renderBadges();
         }
 
-        function currentPrefix() {
-            const val = input.value;
-            const lastComma = val.lastIndexOf(',');
-            return lastComma === -1 ? '' : val.slice(0, lastComma + 1) + ' ';
+        function renderBadges() {
+            badgesWrap.innerHTML = '';
+            tags.forEach((tag, idx) => {
+                const badge = document.createElement('span');
+                badge.className = 'tag-badge';
+
+                const label = document.createElement('span');
+                label.className = 'tag-badge-text';
+                label.textContent = tag;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'tag-badge-remove';
+                removeBtn.innerHTML = '&times;';
+                removeBtn.setAttribute('aria-label', '<?= e(t('admin.post_editor.remove_tag')) ?>: ' + tag);
+                removeBtn.title = '<?= e(t('admin.post_editor.remove_tag')) ?>';
+                removeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    removeTag(idx);
+                });
+
+                badge.appendChild(label);
+                badge.appendChild(removeBtn);
+                badgesWrap.appendChild(badge);
+            });
         }
 
-        function applySelection(tag) {
-            input.value = currentPrefix() + tag;
-            hide();
+        function addTag(raw) {
+            if (!raw) return;
+            const pieces = raw.split(',').map(s => s.trim()).filter(Boolean);
+            let added = false;
+            pieces.forEach(item => {
+                const lower = item.toLowerCase();
+                const exists = tags.some(t => t.toLowerCase() === lower);
+                if (!exists) {
+                    tags.push(item);
+                    added = true;
+                }
+            });
+
+            if (added) {
+                syncTags();
+            }
+            entryInput.value = '';
+            hideSuggestions();
         }
 
-        function hide() {
+        function removeTag(index) {
+            if (index >= 0 && index < tags.length) {
+                tags.splice(index, 1);
+                syncTags();
+            }
+        }
+
+        function hideSuggestions() {
             list.hidden = true;
             list.innerHTML = '';
             activeIndex = -1;
@@ -474,49 +535,98 @@ require __DIR__ . '/../includes/admin-head.php';
             if (activeIndex >= 0) items[activeIndex].classList.add('active');
         }
 
-        input.addEventListener('input', function () {
-            const token = currentToken();
-            const existing = input.value.split(',').map(s => s.trim());
-
+        function showSuggestions() {
+            const token = entryInput.value.trim().toLowerCase();
             list.innerHTML = '';
             activeIndex = -1;
 
-            if (token.length === 0) { hide(); return; }
+            if (token.length === 0) {
+                hideSuggestions();
+                return;
+            }
 
+            const existingLower = tags.map(t => t.toLowerCase());
             const matches = allTags
-                .filter(t => t.toLowerCase().startsWith(token) && !existing.includes(t))
+                .filter(t => t.toLowerCase().startsWith(token) && !existingLower.includes(t.toLowerCase()))
                 .slice(0, 10);
 
-            if (matches.length === 0) { hide(); return; }
+            if (matches.length === 0) {
+                hideSuggestions();
+                return;
+            }
 
             matches.forEach(tag => {
                 const li = document.createElement('li');
                 li.textContent = tag;
                 li.dataset.tag = tag;
-                li.addEventListener('mousedown', e => { e.preventDefault(); applySelection(tag); });
+                li.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    addTag(tag);
+                    entryInput.focus();
+                });
                 list.appendChild(li);
             });
 
             list.hidden = false;
+        }
+
+        entryInput.addEventListener('input', function () {
+            const val = entryInput.value;
+            if (val.includes(',')) {
+                addTag(val);
+                return;
+            }
+            showSuggestions();
         });
 
-        input.addEventListener('keydown', function (e) {
-            if (list.hidden) return;
-            if (e.key === 'ArrowDown')  { e.preventDefault(); setActive(activeIndex + 1); }
-            if (e.key === 'ArrowUp')    { e.preventDefault(); setActive(activeIndex - 1); }
-            if (e.key === 'Enter' || e.key === 'Tab') {
-                const items = list.querySelectorAll('li');
-                if (activeIndex >= 0 && items[activeIndex]) {
-                    e.preventDefault();
-                    applySelection(items[activeIndex].dataset.tag);
+        entryInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (!list.hidden && activeIndex >= 0) {
+                    const items = list.querySelectorAll('li');
+                    if (items[activeIndex]) {
+                        addTag(items[activeIndex].dataset.tag);
+                        return;
+                    }
                 }
+                addTag(entryInput.value);
+            } else if (e.key === 'Tab' && !list.hidden && activeIndex >= 0) {
+                const items = list.querySelectorAll('li');
+                if (items[activeIndex]) {
+                    e.preventDefault();
+                    addTag(items[activeIndex].dataset.tag);
+                }
+            } else if (e.key === 'Backspace' && entryInput.value === '' && tags.length > 0) {
+                removeTag(tags.length - 1);
+            } else if (e.key === 'ArrowDown' && !list.hidden) {
+                e.preventDefault();
+                setActive(activeIndex + 1);
+            } else if (e.key === 'ArrowUp' && !list.hidden) {
+                e.preventDefault();
+                setActive(activeIndex - 1);
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
             }
-            if (e.key === 'Escape') hide();
+        });
+
+        addBtn?.addEventListener('click', function (e) {
+            e.preventDefault();
+            addTag(entryInput.value);
+            entryInput.focus();
+        });
+
+        hiddenInput.addEventListener('change', function () {
+            tags = parseTags(hiddenInput.value);
+            renderBadges();
         });
 
         document.addEventListener('click', e => {
-            if (!input.contains(e.target) && !list.contains(e.target)) hide();
+            if (!entryInput.contains(e.target) && !list.contains(e.target)) {
+                hideSuggestions();
+            }
         });
+
+        renderBadges();
     })();
     </script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

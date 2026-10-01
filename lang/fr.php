@@ -268,7 +268,7 @@ return [
         'post_editor' => [
             'page_title'           => 'Éditeur d\'article - Pure Blog',
             'settings_title'       => 'Paramètres de l\'article',
-            'tags_label'           => 'Tags (séparés par des virgules)',
+            'tags_label'           => 'Tags',
             'save'                 => 'Enregistrer l\'article',
             'preview'              => 'Prévisualiser l\'article',
             'delete'               => 'Supprimer l\'article',

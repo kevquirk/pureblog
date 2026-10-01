@@ -269,7 +269,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Editor de entradas',
             'settings_title'      => 'Ajustes de la entrada',
-            'tags_label'          => 'Etiquetas (separadas por coma)',
+            'tags_label'          => 'Etiquetas',
             'save'                => 'Guardar entrada',
             'preview'             => 'Vista previa',
             'delete'              => 'Eliminar entrada',

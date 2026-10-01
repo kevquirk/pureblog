@@ -269,7 +269,7 @@ return [
         'post_editor' => [
             'page_title'           => 'Editor articolo',
             'settings_title'       => 'Impostazioni articolo',
-            'tags_label'           => 'Tag (separati da virgola)',
+            'tags_label'           => 'Tag',
             'save'                 => 'Salva articolo',
             'preview'              => 'Anteprima articolo',
             'delete'               => 'Elimina articolo',

@@ -269,7 +269,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Artikel-editor',
             'settings_title'      => 'Artikel-instellingen',
-            'tags_label'          => 'Tags (gescheiden door komma)',
+            'tags_label'          => 'Tags',
             'save'                => 'Artikel opslaan',
             'preview'             => 'Bekijk artikel',
             'delete'              => 'Verwijder artikel',

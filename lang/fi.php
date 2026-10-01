@@ -269,7 +269,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Julkaisueditori',
             'settings_title'      => 'Julkaisun asetukset',
-            'tags_label'          => 'Tagit (erottele pilkulla)',
+            'tags_label'          => 'Tagit',
             'save'                => 'Tallenna julkaisu',
             'preview'             => 'Esikatsele julkaisua',
             'delete'              => 'Poista julkaisu',

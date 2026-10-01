@@ -278,7 +278,7 @@ return [
         'post_editor' => [
             'page_title'          => 'Beitragseditor',
             'settings_title'      => 'Beitragseinstellungen',
-            'tags_label'          => 'Tags (kommagetrennt)',
+            'tags_label'          => 'Tags',
             'save'                => 'Beitrag speichern',
             'preview'             => 'Beitragsvorschau',
             'delete'              => 'Beitrag löschen',

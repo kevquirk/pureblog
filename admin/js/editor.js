@@ -252,7 +252,10 @@
 
       if (titleField2  && saved.title       != null) titleField2.value  = saved.title;
       if (descField2   && saved.description != null) descField2.value   = saved.description;
-      if (tagsField2   && saved.tags        != null) tagsField2.value   = saved.tags;
+      if (tagsField2   && saved.tags        != null) {
+        tagsField2.value = saved.tags;
+        tagsField2.dispatchEvent(new Event('change'));
+      }
       if (dateField2   && saved.date        != null) dateField2.value   = saved.date;
       if (navField2    && saved.include_in_nav != null) navField2.value = saved.include_in_nav;
       if (statusField  && saved.status      != null) statusField.value  = saved.status;
