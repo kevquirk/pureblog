@@ -245,7 +245,10 @@ return [
             'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
             'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
             'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
-            'slug_label'         => 'Folder:', // ENGLISH PLACEHOLDER
+            'used_in_label'      => '用於：',
+            'used_in_count'      => '{count} 個項目',
+            'type_post'          => '文章',
+            'type_page'          => '頁面',
             'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
             'pagination_prev'    => '⬅ Previous', // ENGLISH PLACEHOLDER
             'pagination_next'    => 'Next ➡', // ENGLISH PLACEHOLDER

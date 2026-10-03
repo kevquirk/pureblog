@@ -939,7 +939,8 @@ button.save:hover {
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    position: relative;
+    background: var(--bg-color);
 }
 
 .image-library-thumb {
@@ -948,6 +949,12 @@ button.save:hover {
     object-fit: cover;
     display: block;
     background: var(--accent-bg-color);
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.image-library-thumb:hover {
+    opacity: 0.88;
 }
 
 .image-library-info {
@@ -956,6 +963,7 @@ button.save:hover {
     flex-direction: column;
     gap: 0.2rem;
     min-width: 0;
+    position: relative;
 }
 
 .image-library-name {
@@ -966,12 +974,149 @@ button.save:hover {
     display: block;
 }
 
-.image-library-slug {
+.image-library-usage {
     font-size: 0.75rem;
-    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.image-library-usage-label {
+    opacity: 0.75;
+    flex-shrink: 0;
+}
+
+.image-usage-link {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--accent-color);
+    min-width: 0;
+    flex: 1;
+}
+
+.image-usage-link:hover {
+    color: var(--accent-color);
+}
+
+.image-usage-fallback {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.75;
+    min-width: 0;
+    flex: 1;
+}
+
+.image-usage-dropdown {
+    position: relative;
+    display: inline-block;
+    min-width: 0;
+}
+
+.image-usage-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.08rem 0.35rem;
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+}
+
+.image-usage-summary::-webkit-details-marker {
+    display: none;
+}
+
+.image-usage-summary:hover {
+    background: var(--input-bg);
+}
+
+.image-usage-summary .icon-chevron {
+    width: 0.65em;
+    height: 0.65em;
+    transform: rotate(-90deg);
+    transition: transform 0.15s ease;
+}
+
+.image-usage-dropdown[open] .image-usage-summary .icon-chevron {
+    transform: rotate(90deg);
+}
+
+.image-usage-menu {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    min-width: 180px;
+    max-width: 250px;
+    padding: 0.3rem 0;
+}
+
+.image-usage-menu-header {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.65;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.2rem;
+}
+
+.image-usage-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.image-usage-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background 0.1s ease;
+}
+
+.image-usage-menu li a:hover {
+    background: var(--accent-bg-color);
+    color: var(--accent-color);
+}
+
+.image-usage-badge-type {
+    display: inline-block;
+    font-size: 0.62rem;
+    padding: 0.05rem 0.3rem;
+    border-radius: 2px;
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    opacity: 0.85;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.image-usage-item-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
 }
 
 .image-library-actions {
@@ -980,12 +1125,91 @@ button.save:hover {
     flex-wrap: wrap;
     padding: 0.4rem 0.5rem 0.5rem;
     font-size: 0.8rem;
+    margin: auto;
 }
 
 .image-library-actions .link-button {
     font-size: 0.8rem;
     white-space: nowrap;
     margin-left: 0;
+    padding: 6px 12px;
+}
+
+.image-lightbox {
+    padding: 0;
+    border: 2px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 4px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+}
+
+.image-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.image-lightbox-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.image-lightbox-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: var(--accent-bg-color);
+    border-bottom: 1px solid var(--border-color);
+    gap: 1rem;
+    box-sizing: border-box;
+}
+
+.image-lightbox-title {
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.image-lightbox-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.2rem;
+    color: var(--text-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.image-lightbox-close:hover {
+    color: var(--red);
+}
+
+.image-lightbox-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: var(--bg-color);
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.image-lightbox-img {
+    max-width: 100%;
+    max-height: calc(85vh - 60px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .image-delete-dialog {
