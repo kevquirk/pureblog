@@ -243,6 +243,16 @@ return [
             'feature_image'              => 'Imagine reprezentativă',
             'js_feature_image_confirm'   => 'Înlocuiești imaginea reprezentativă curentă cu „{filename}”?',
             'js_feature_image_failed'    => 'Actualizarea imaginii reprezentative a eșuat.',
+            'insert_gallery'             => 'Inserează galerie',
+            'insert_gallery_title'       => 'Inserează imaginile atașate ca galerie în editor',
+            'js_gallery_inserted'        => 'Galerie inserată',
+            'gallery_picker_title'       => 'Selectează imagini pentru galerie',
+            'gallery_picker_select_all'  => 'Selectează tot',
+            'gallery_picker_deselect_all'=> 'Deselectează tot',
+            'gallery_picker_insert'      => 'Inserează galerie ({count})',
+            'gallery_picker_cancel'      => 'Anulează',
+            'gallery_picker_count'       => '{selected} din {total} selectate',
+            'gallery_picker_no_selected' => 'Te rugăm să selectezi cel puțin o imagine.',
         ],
 
         'images' => [

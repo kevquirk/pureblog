@@ -242,6 +242,16 @@ return [
             'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
             'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
             'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'insert_gallery'             => 'Wstaw galerię',
+            'insert_gallery_title'       => 'Wstaw załączone obrazy jako galerię do edytora',
+            'js_gallery_inserted'        => 'Galeria wstawiona',
+            'gallery_picker_title'       => 'Wybierz obrazy do galerii',
+            'gallery_picker_select_all'  => 'Zaznacz wszystko',
+            'gallery_picker_deselect_all'=> 'Odznacz wszystko',
+            'gallery_picker_insert'      => 'Wstaw galerię ({count})',
+            'gallery_picker_cancel'      => 'Anuluj',
+            'gallery_picker_count'       => 'Wybrano {selected} z {total}',
+            'gallery_picker_no_selected' => 'Wybierz co najmniej jeden obraz.',
         ],
 
         'images' => [

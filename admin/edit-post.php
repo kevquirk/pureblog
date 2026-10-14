@@ -361,7 +361,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             <input type="hidden" name="date" value="<?= e($post['date']) ?>">
                             <?= csrf_field() ?>
                             <label class="hidden" for="image"><?= e(t('admin.editor.upload_label')) ?></label>
-                            <input type="file" id="image" name="image" accept="image/*,.avif">
+                            <input type="file" id="image" name="image[]" accept="image/*,.avif" multiple>
                             <button type="submit" disabled>
                                 <svg class="icon" aria-hidden="true"><use href="#icon-upload"></use></svg>
                                 <?= e(t('admin.editor.upload')) ?>
@@ -370,7 +370,13 @@ require __DIR__ . '/../includes/admin-head.php';
                         <?php if (!$images): ?>
                             <p><?= e(t('admin.editor.no_images')) ?></p>
                         <?php else: ?>
-                            <p><?= e(t('admin.editor.attached_images')) ?></p>
+                            <div class="attached-images-header">
+                                <p><?= e(t('admin.editor.attached_images')) ?></p>
+                                <button type="button" class="link-button insert-gallery-btn" title="<?= e(t('admin.editor.insert_gallery_title')) ?>">
+                                    <svg class="icon" aria-hidden="true"><use href="#icon-image"></use></svg>
+                                    <?= e(t('admin.editor.insert_gallery')) ?>
+                                </button>
+                            </div>
                             <ul class="image-list">
                             <?php foreach ($images as $image):
                                 $imageRawPath = '/content/images/' . $post['slug'] . '/' . $image['filename'];
@@ -431,6 +437,15 @@ require __DIR__ . '/../includes/admin-head.php';
                 'upload_failed'            => t('admin.editor.js_upload_failed'),
                 'feature_image_confirm'    => t('admin.editor.js_feature_image_confirm'),
                 'feature_image_failed'     => t('admin.editor.js_feature_image_failed'),
+                'insert_gallery'           => t('admin.editor.insert_gallery'),
+                'gallery_inserted'         => t('admin.editor.js_gallery_inserted'),
+                'gallery_picker_title'     => t('admin.editor.gallery_picker_title'),
+                'gallery_picker_select_all' => t('admin.editor.gallery_picker_select_all'),
+                'gallery_picker_deselect_all' => t('admin.editor.gallery_picker_deselect_all'),
+                'gallery_picker_insert'    => t('admin.editor.gallery_picker_insert'),
+                'gallery_picker_cancel'    => t('admin.editor.gallery_picker_cancel'),
+                'gallery_picker_count'     => t('admin.editor.gallery_picker_count'),
+                'gallery_picker_no_selected' => t('admin.editor.gallery_picker_no_selected'),
             ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) ?>,
         };
     </script>

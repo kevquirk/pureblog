@@ -246,6 +246,71 @@ function render_any_data_loops(string $markdown): string
     }, $markdown) ?? $markdown;
 }
 
+function has_gallery_rendered(?bool $set = null): bool
+{
+    static $rendered = false;
+    if ($set !== null) {
+        $rendered = $set;
+    }
+    return $rendered;
+}
+
+function render_gallery_blocks(string $markdown): string
+{
+    $pattern = '/(?:^|\r?\n):::\s*gallery\s*\r?\n(.*?)\r?\n:::\s*(?:\r?\n|$)/s';
+
+    return preg_replace_callback($pattern, function (array $matches): string {
+        $blockContent = trim($matches[1]);
+        if ($blockContent === '') {
+            return '';
+        }
+
+        // Match each markdown image: ![alt](src "title") followed by optional non-image text (caption)
+        $imgPattern = '/!\[(?P<alt>[^\]]*)\]\((?P<src>[^\)\s"]+)(?:\s+["\'](?P<title>[^"\']*)["\'])?\)(?P<caption>[^\r\n!]*\r?\n?(?:(?!\r?\n*!\[)[^\r\n]*\r?\n?)*)/u';
+
+        if (!preg_match_all($imgPattern, $blockContent, $imgMatches, PREG_SET_ORDER)) {
+            return $matches[0];
+        }
+
+        has_gallery_rendered(true);
+
+        $html = "\n<div class=\"gallery\">\n";
+
+        foreach ($imgMatches as $m) {
+            $src = trim($m['src']);
+            $alt = trim($m['alt']);
+            $title = trim($m['title'] ?? '');
+
+            $rawCaption = trim($m['caption'] ?? '');
+            $caption = '';
+            if ($rawCaption !== '') {
+                $caption = trim(preg_replace('/^\s*[*_](.*?)[*_]\s*$/s', '$1', $rawCaption));
+            } elseif ($title !== '') {
+                $caption = $title;
+            }
+
+            $lightboxCaption = $caption !== '' ? $caption : $alt;
+
+            $html .= '  <figure class="gallery-item">' . "\n";
+            $html .= '    <a href="' . htmlspecialchars($src, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" class="gallery-link" data-pb-lightbox';
+            if ($lightboxCaption !== '') {
+                $html .= ' data-caption="' . htmlspecialchars($lightboxCaption, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"';
+            }
+            $html .= '>' . "\n";
+            $html .= '      <img src="' . htmlspecialchars($src, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" alt="' . htmlspecialchars($alt, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '" loading="lazy">' . "\n";
+            $html .= '    </a>' . "\n";
+            if ($caption !== '') {
+                $html .= '    <figcaption class="gallery-caption">' . htmlspecialchars($caption, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</figcaption>' . "\n";
+            }
+            $html .= '  </figure>' . "\n";
+        }
+
+        $html .= "</div>\n";
+
+        return "\n\n" . $html . "\n\n";
+    }, $markdown) ?? $markdown;
+}
+
 function protect_fenced_code_blocks(string $markdown, array &$blocks): string
 {
     $blocks = [];
@@ -338,6 +403,7 @@ function filter_content(string $markdown, array $context = []): string
 
     $markdown = render_global_shortcodes($markdown, $context);
     $markdown = render_any_data_loops($markdown);
+    $markdown = render_gallery_blocks($markdown);
     $markdown = apply_filter('on_filter_content', $markdown);
 
     $markdown = restore_inline_code_spans($markdown, $inlineCodeSpans);
@@ -354,6 +420,8 @@ function get_excerpt(string $markdown, int $length = 200): string
     }
     $excerpt = preg_replace('/```.*?```/s', ' ', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/`[^`]*`/', ' ', $excerpt) ?? $excerpt;
+    $excerpt = preg_replace('/:::\s*gallery/i', ' ', $excerpt) ?? $excerpt;
+    $excerpt = preg_replace('/:::/', ' ', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/!\[[^\]]*\]\([^)]+\)/', ' ', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/\[([^\]]*)\]\([^)]+\)/', '$1', $excerpt) ?? $excerpt;
     $excerpt = preg_replace('/^[ \t]*[-*>]+[ \t]*/m', ' ', $excerpt) ?? $excerpt; // list markers / blockquotes
@@ -507,7 +575,148 @@ function render_footer_layout(array $config, array $context = []): void
         }
     }
 
+    if (has_gallery_rendered()) {
+        $output .= render_lightbox_markup();
+    }
+
     echo $output;
+}
+
+function render_lightbox_markup(): string
+{
+    return <<<HTML
+<dialog id="pb-lightbox" class="pb-lightbox" aria-label="Image gallery lightbox">
+  <div class="pb-lightbox-content">
+    <button type="button" class="pb-lightbox-btn pb-lightbox-close" aria-label="Close" title="Close (Esc)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <button type="button" class="pb-lightbox-btn pb-lightbox-prev" aria-label="Previous image" title="Previous (Left arrow)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button type="button" class="pb-lightbox-btn pb-lightbox-next" aria-label="Next image" title="Next (Right arrow)">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+    <figure class="pb-lightbox-figure">
+      <img src="" alt="" class="pb-lightbox-image">
+      <figcaption class="pb-lightbox-caption"></figcaption>
+    </figure>
+    <div class="pb-lightbox-counter" aria-live="polite"></div>
+  </div>
+</dialog>
+<script>
+(() => {
+  const dialog = document.getElementById('pb-lightbox');
+  if (!dialog) return;
+
+  const img = dialog.querySelector('.pb-lightbox-image');
+  const caption = dialog.querySelector('.pb-lightbox-caption');
+  const counter = dialog.querySelector('.pb-lightbox-counter');
+  const prevBtn = dialog.querySelector('.pb-lightbox-prev');
+  const nextBtn = dialog.querySelector('.pb-lightbox-next');
+  const closeBtn = dialog.querySelector('.pb-lightbox-close');
+
+  let activeItems = [];
+  let currentIndex = -1;
+
+  function update() {
+    if (currentIndex < 0 || currentIndex >= activeItems.length) return;
+    const item = activeItems[currentIndex];
+    const src = item.getAttribute('href') || '';
+    const cap = item.getAttribute('data-caption') || '';
+
+    img.src = src;
+    img.alt = cap || 'Gallery image';
+    if (cap) {
+      caption.textContent = cap;
+      caption.style.display = 'block';
+    } else {
+      caption.textContent = '';
+      caption.style.display = 'none';
+    }
+
+    if (activeItems.length > 1) {
+      counter.textContent = (currentIndex + 1) + ' / ' + activeItems.length;
+      counter.style.display = 'block';
+      prevBtn.style.display = 'flex';
+      nextBtn.style.display = 'flex';
+    } else {
+      counter.style.display = 'none';
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    }
+  }
+
+  function step(offset) {
+    if (activeItems.length < 2) return;
+    currentIndex = (currentIndex + offset + activeItems.length) % activeItems.length;
+    update();
+  }
+
+  document.querySelectorAll('a[data-pb-lightbox]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const gallery = link.closest('.gallery');
+      activeItems = gallery
+        ? Array.from(gallery.querySelectorAll('a[data-pb-lightbox]'))
+        : [link];
+      currentIndex = activeItems.indexOf(link);
+      if (currentIndex === -1) currentIndex = 0;
+      update();
+      if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+      } else {
+        dialog.setAttribute('open', '');
+      }
+    });
+  });
+
+  closeBtn?.addEventListener('click', () => dialog.close());
+
+  dialog.addEventListener('click', e => {
+    if (e.target === dialog || e.target.classList.contains('pb-lightbox-content')) {
+      dialog.close();
+    }
+  });
+
+  prevBtn?.addEventListener('click', e => {
+    e.stopPropagation();
+    step(-1);
+  });
+
+  nextBtn?.addEventListener('click', e => {
+    e.stopPropagation();
+    step(1);
+  });
+
+  dialog.addEventListener('close', () => {
+    img.src = '';
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!dialog.open) return;
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      step(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      step(1);
+    }
+  });
+
+  let touchStartX = 0;
+  dialog.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  dialog.addEventListener('touchend', e => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 40) {
+      step(diff < 0 ? 1 : -1);
+    }
+  }, { passive: true });
+})();
+</script>
+HTML;
 }
 
 function render_masthead_layout(array $config, array $context = []): void

@@ -231,6 +231,16 @@ return [
             'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
             'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
             'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'insert_gallery'             => '插入圖庫',
+            'insert_gallery_title'       => '將附加圖片作為圖庫插入編輯器',
+            'js_gallery_inserted'        => '已插入圖庫',
+            'gallery_picker_title'       => '選擇圖庫圖片',
+            'gallery_picker_select_all'  => '全選',
+            'gallery_picker_deselect_all'=> '取消全選',
+            'gallery_picker_insert'      => '插入圖庫 ({count})',
+            'gallery_picker_cancel'      => '取消',
+            'gallery_picker_count'       => '已選擇 {selected} / {total}',
+            'gallery_picker_no_selected' => '請至少選擇一張圖片。',
         ],
 
         'images' => [

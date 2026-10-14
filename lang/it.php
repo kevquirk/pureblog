@@ -243,6 +243,16 @@ return [
             'feature_image'              => 'Immagine di copertina',
             'js_feature_image_confirm'   => 'Sostituire l\'immagine di copertina attuale con "{filename}"?',
             'js_feature_image_failed'    => 'Impossibile aggiornare l\'immagine di copertina.',
+            'insert_gallery'             => 'Inserisci galleria',
+            'insert_gallery_title'       => 'Inserisci le immagini allegate come galleria nell\'editor',
+            'js_gallery_inserted'        => 'Galleria inserita',
+            'gallery_picker_title'       => 'Seleziona immagini per la galleria',
+            'gallery_picker_select_all'  => 'Seleziona tutto',
+            'gallery_picker_deselect_all'=> 'Deseleziona tutto',
+            'gallery_picker_insert'      => 'Inserisci galleria ({count})',
+            'gallery_picker_cancel'      => 'Annulla',
+            'gallery_picker_count'       => '{selected} di {total} selezionate',
+            'gallery_picker_no_selected' => 'Seleziona almeno un\'immagine.',
         ],
 
         'images' => [

@@ -252,6 +252,16 @@ return [
             'feature_image'              => 'Titelbild',
             'js_feature_image_confirm'   => 'Das aktuelle Titelbild durch „{filename}“ ersetzen?',
             'js_feature_image_failed'    => 'Aktualisieren des Titelbilds fehlgeschlagen.',
+            'insert_gallery'             => 'Galerie einfügen',
+            'insert_gallery_title'       => 'Angehängte Bilder als Galerie in den Editor einfügen',
+            'js_gallery_inserted'        => 'Galerie eingefügt',
+            'gallery_picker_title'       => 'Bilder für Galerie auswählen',
+            'gallery_picker_select_all'  => 'Alle auswählen',
+            'gallery_picker_deselect_all'=> 'Alle abwählen',
+            'gallery_picker_insert'      => 'Galerie einfügen ({count})',
+            'gallery_picker_cancel'      => 'Abbrechen',
+            'gallery_picker_count'       => '{selected} von {total} ausgewählt',
+            'gallery_picker_no_selected' => 'Bitte mindestens ein Bild auswählen.',
         ],
 
         'images' => [

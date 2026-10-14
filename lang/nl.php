@@ -243,6 +243,16 @@ return [
             'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
             'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
             'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'insert_gallery'             => 'Galerij invoegen',
+            'insert_gallery_title'       => 'Bijgevoegde afbeeldingen als galerij in de editor invoegen',
+            'js_gallery_inserted'        => 'Galerij ingevoegd',
+            'gallery_picker_title'       => 'Afbeeldingen voor galerij selecteren',
+            'gallery_picker_select_all'  => 'Alles selecteren',
+            'gallery_picker_deselect_all'=> 'Alles deselecteren',
+            'gallery_picker_insert'      => 'Galerij invoegen ({count})',
+            'gallery_picker_cancel'      => 'Annuleren',
+            'gallery_picker_count'       => '{selected} van {total} geselecteerd',
+            'gallery_picker_no_selected' => 'Selecteer ten minste één afbeelding.',
         ],
 
         'images' => [

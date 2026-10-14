@@ -245,6 +245,16 @@ return [
             'feature_image'              => 'Feature image',
             'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?',
             'js_feature_image_failed'    => 'Failed to update feature image.',
+            'insert_gallery'             => 'Insert gallery',
+            'insert_gallery_title'       => 'Insert attached images as a gallery into the editor',
+            'js_gallery_inserted'        => 'Gallery inserted',
+            'gallery_picker_title'       => 'Select images for gallery',
+            'gallery_picker_select_all'  => 'Select all',
+            'gallery_picker_deselect_all'=> 'Deselect all',
+            'gallery_picker_insert'      => 'Insert gallery ({count})',
+            'gallery_picker_cancel'      => 'Cancel',
+            'gallery_picker_count'       => '{selected} of {total} selected',
+            'gallery_picker_no_selected' => 'Please select at least one image.',
         ],
 
         'images' => [

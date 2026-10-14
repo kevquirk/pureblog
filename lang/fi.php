@@ -243,6 +243,16 @@ return [
             'feature_image'              => 'Pääkuva',
             'js_feature_image_confirm'   => 'Haluatko korvata nykyisen pääkuvan tällä kuvalla: “{filename}”?',
             'js_feature_image_failed'    => 'Pääkuvan päivittäminen ei onnistunut.',
+            'insert_gallery'             => 'Lisää galleria',
+            'insert_gallery_title'       => 'Lisää liitetyt kuvat galleriana editoriin',
+            'js_gallery_inserted'        => 'Galleria lisätty',
+            'gallery_picker_title'       => 'Valitse kuvat galleriaan',
+            'gallery_picker_select_all'  => 'Valitse kaikki',
+            'gallery_picker_deselect_all'=> 'Poista kaikki valinnat',
+            'gallery_picker_insert'      => 'Lisää galleria ({count})',
+            'gallery_picker_cancel'      => 'Peruuta',
+            'gallery_picker_count'       => '{selected} / {total} valittu',
+            'gallery_picker_no_selected' => 'Valitse vähintään yksi kuva.',
         ],
 
         'images' => [

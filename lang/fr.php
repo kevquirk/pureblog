@@ -242,6 +242,16 @@ return [
             'feature_image'              => 'Image mise en avant',
             'js_feature_image_confirm'   => 'Remplacer l\'image mise en avant par «{filename}»?',
             'js_feature_image_failed'    => 'Échec de la mise à jour de l\'image mise en avant.',
+            'insert_gallery'             => 'Insérer une galerie',
+            'insert_gallery_title'       => 'Insérer les images jointes sous forme de galerie dans l\'éditeur',
+            'js_gallery_inserted'        => 'Galerie insérée',
+            'gallery_picker_title'       => 'Sélectionner des images pour la galerie',
+            'gallery_picker_select_all'  => 'Tout sélectionner',
+            'gallery_picker_deselect_all'=> 'Tout désélectionner',
+            'gallery_picker_insert'      => 'Insérer la galerie ({count})',
+            'gallery_picker_cancel'      => 'Annuler',
+            'gallery_picker_count'       => '{selected} sur {total} sélectionnée(s)',
+            'gallery_picker_no_selected' => 'Veuillez sélectionner au moins une image.',
         ],
 
         'images' => [

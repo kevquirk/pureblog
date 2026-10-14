@@ -819,6 +819,133 @@ button.save:hover {
     max-width: none;
 }
 
+.attached-images-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin: 0.75rem 0 0.5rem;
+}
+
+.attached-images-header p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.attached-images-header .insert-gallery-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* Gallery Picker Dialog */
+.gallery-picker-dialog {
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    color: var(--text-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    max-width: 520px;
+    width: 92vw;
+    max-height: 85vh;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    box-sizing: border-box;
+}
+
+.gallery-picker-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+}
+
+.gallery-picker-dialog h3 {
+    margin: 0 0 1rem;
+    font-size: 1.15rem;
+}
+
+.gallery-picker-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.gallery-picker-toolbar-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.gallery-picker-toolbar-actions button {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+}
+
+.gallery-picker-list {
+    list-style: none;
+    margin: 0 0 1.25rem;
+    padding: 0;
+    max-height: 48vh;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--accent-bg-color);
+}
+
+.gallery-picker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.gallery-picker-item:last-child {
+    border-bottom: none;
+}
+
+.gallery-picker-item:hover {
+    background: rgba(127, 127, 127, 0.1);
+}
+
+.gallery-picker-item input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.gallery-picker-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.gallery-picker-filename {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.gallery-picker-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 .image-list {
     list-style-type: none;
     padding: 0;

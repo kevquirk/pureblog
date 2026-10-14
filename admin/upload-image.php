@@ -18,49 +18,54 @@ verify_csrf();
 $slug = trim($_POST['slug'] ?? '');
 $date = trim($_POST['date'] ?? '');
 $editorType = trim($_POST['editor_type'] ?? 'post');
-$message = '';
-$error = '';
+$messages = [];
+$errors = [];
 
 if ($slug === '') {
-    $error = t('admin.editor.error_upload_no_slug');
+    $errors[] = t('admin.editor.error_upload_no_slug');
 } elseif (!isset($_FILES['image'])) {
-    $error = t('admin.editor.error_upload_no_file');
-} elseif ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-    $uploadErr = (int) $_FILES['image']['error'];
-    $maxFileSize = ini_get('upload_max_filesize') ?: 'unknown';
-    $error = match ($uploadErr) {
-        UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => t('admin.editor.error_upload_size', ['limit' => $maxFileSize]),
-        UPLOAD_ERR_PARTIAL   => t('admin.editor.error_upload_partial'),
-        UPLOAD_ERR_NO_FILE   => t('admin.editor.error_upload_no_file'),
-        UPLOAD_ERR_NO_TMP_DIR => t('admin.editor.error_upload_no_tmp_dir'),
-        UPLOAD_ERR_CANT_WRITE => t('admin.editor.error_upload_cant_write'),
-        UPLOAD_ERR_EXTENSION => t('admin.editor.error_upload_extension'),
-        default              => t('admin.editor.error_upload_failed'),
-    };
-} else {
-    $allowedTypes = [
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-        'image/gif' => 'gif',
-        'image/webp' => 'webp',
-        'image/avif' => 'avif',
-    ];
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mimeType = $finfo->file($_FILES['image']['tmp_name']) ?: '';
-    if (!isset($allowedTypes[$mimeType])) {
-        $error = t('admin.editor.error_upload_type');
+    $errors[] = t('admin.editor.error_upload_no_file');
+}
+
+$fileList = [];
+if (empty($errors) && isset($_FILES['image'])) {
+    if (is_array($_FILES['image']['name'])) {
+        $count = count($_FILES['image']['name']);
+        for ($i = 0; $i < $count; $i++) {
+            if ($_FILES['image']['error'][$i] === UPLOAD_ERR_NO_FILE && $count > 1) {
+                continue;
+            }
+            $fileList[] = [
+                'name'     => (string) $_FILES['image']['name'][$i],
+                'type'     => (string) ($_FILES['image']['type'][$i] ?? ''),
+                'tmp_name' => (string) ($_FILES['image']['tmp_name'][$i] ?? ''),
+                'error'    => (int) $_FILES['image']['error'][$i],
+                'size'     => (int) $_FILES['image']['size'][$i],
+            ];
+        }
+    } else {
+        $fileList[] = [
+            'name'     => (string) $_FILES['image']['name'],
+            'type'     => (string) ($_FILES['image']['type'] ?? ''),
+            'tmp_name' => (string) ($_FILES['image']['tmp_name'] ?? ''),
+            'error'    => (int) $_FILES['image']['error'],
+            'size'     => (int) $_FILES['image']['size'],
+        ];
+    }
+
+    if (empty($fileList)) {
+        $errors[] = t('admin.editor.error_upload_no_file');
     }
 }
 
-if ($error === '') {
-    $folder = $slug;
-
+$folder = $slug;
+if (empty($errors)) {
     if (!is_safe_image_slug($folder)) {
-        $error = t('admin.editor.error_upload_invalid_slug');
+        $errors[] = t('admin.editor.error_upload_invalid_slug');
     }
 }
 
-if ($error === '') {
+if (empty($errors)) {
     $baseDir = realpath(__DIR__ . '/../content/images');
     $uploadDir = __DIR__ . '/../content/images/' . $folder;
 
@@ -69,56 +74,94 @@ if ($error === '') {
     }
 
     if ($baseDir === false) {
-        $error = t('admin.editor.error_image_folder_missing');
+        $errors[] = t('admin.editor.error_image_folder_missing');
     } elseif (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-        $error = t('admin.editor.error_upload_folder_create');
+        $errors[] = t('admin.editor.error_upload_folder_create');
     } elseif (!validate_image_path($baseDir, $uploadDir)) {
         @rmdir($uploadDir);
-        $error = t('admin.editor.error_image_invalid_path');
+        $errors[] = t('admin.editor.error_image_invalid_path');
     }
 }
 
-if ($error === '') {
-    $uploadedFilename = basename($_FILES['image']['name']);
-    $uploadedFilename = preg_replace('/[^a-zA-Z0-9._-]/', '-', $uploadedFilename) ?? $uploadedFilename;
-    $uploadedFilename = preg_replace('/-+/', '-', $uploadedFilename) ?? $uploadedFilename;
-    $uploadedFilename = trim($uploadedFilename, '-');
+if (empty($errors)) {
+    $allowedTypes = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/gif'  => 'gif',
+        'image/webp' => 'webp',
+        'image/avif' => 'avif',
+    ];
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
 
-    $expectedExt = $allowedTypes[$mimeType];
-    $baseName = pathinfo($uploadedFilename, PATHINFO_FILENAME);
-    $baseName = str_replace('.', '-', $baseName);
-    $filename = $baseName . '.' . $expectedExt;
-
-    if ($filename === '') {
-        $error = t('admin.editor.error_upload_invalid_name');
-    } elseif (is_file($uploadDir . '/' . $filename)) {
-        $error = t('admin.editor.error_upload_duplicate', ['filename' => $filename]);
-    } else {
-        $destination = $uploadDir . '/' . $filename;
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $destination)) {
-            $error = t('admin.editor.error_upload_save');
-        } else {
-            strip_image_metadata($destination, $mimeType);
-            call_hook('on_image_uploaded', [$destination]);
-            $webpDestination = preg_replace('/\.[^.]+$/', '.webp', $destination) ?? $destination;
-            if ($webpDestination !== $destination && file_exists($webpDestination)) {
-                $destination = $webpDestination;
-            }
-            $filename = basename($destination);
-            $url = base_path() . '/content/images/' . $folder . '/' . $filename;
-            $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
-            $message = '![' . $altText . '](' . $url . ')';
+    foreach ($fileList as $file) {
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $uploadErr = $file['error'];
+            $maxFileSize = ini_get('upload_max_filesize') ?: 'unknown';
+            $errors[] = match ($uploadErr) {
+                UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => t('admin.editor.error_upload_size', ['limit' => $maxFileSize]),
+                UPLOAD_ERR_PARTIAL    => t('admin.editor.error_upload_partial'),
+                UPLOAD_ERR_NO_FILE    => t('admin.editor.error_upload_no_file'),
+                UPLOAD_ERR_NO_TMP_DIR => t('admin.editor.error_upload_no_tmp_dir'),
+                UPLOAD_ERR_CANT_WRITE => t('admin.editor.error_upload_cant_write'),
+                UPLOAD_ERR_EXTENSION  => t('admin.editor.error_upload_extension'),
+                default               => t('admin.editor.error_upload_failed'),
+            };
+            continue;
         }
+
+        $mimeType = $finfo->file($file['tmp_name']) ?: '';
+        if (!isset($allowedTypes[$mimeType])) {
+            $errors[] = t('admin.editor.error_upload_type') . ' (' . htmlspecialchars($file['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ')';
+            continue;
+        }
+
+        $uploadedFilename = basename($file['name']);
+        $uploadedFilename = preg_replace('/[^a-zA-Z0-9._-]/', '-', $uploadedFilename) ?? $uploadedFilename;
+        $uploadedFilename = preg_replace('/-+/', '-', $uploadedFilename) ?? $uploadedFilename;
+        $uploadedFilename = trim($uploadedFilename, '-');
+
+        $expectedExt = $allowedTypes[$mimeType];
+        $baseName = pathinfo($uploadedFilename, PATHINFO_FILENAME);
+        $baseName = str_replace('.', '-', $baseName);
+        $filename = $baseName . '.' . $expectedExt;
+
+        if ($filename === '') {
+            $errors[] = t('admin.editor.error_upload_invalid_name');
+            continue;
+        }
+
+        if (is_file($uploadDir . '/' . $filename)) {
+            $errors[] = t('admin.editor.error_upload_duplicate', ['filename' => $filename]);
+            continue;
+        }
+
+        $destination = $uploadDir . '/' . $filename;
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            $errors[] = t('admin.editor.error_upload_save') . ' (' . htmlspecialchars($filename, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . ')';
+            continue;
+        }
+
+        strip_image_metadata($destination, $mimeType);
+        call_hook('on_image_uploaded', [$destination]);
+        $webpDestination = preg_replace('/\.[^.]+$/', '.webp', $destination) ?? $destination;
+        if ($webpDestination !== $destination && file_exists($webpDestination)) {
+            $destination = $webpDestination;
+        }
+        $filename = basename($destination);
+        $url = base_path() . '/content/images/' . $folder . '/' . $filename;
+        $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
+        $messages[] = '![' . $altText . '](' . $url . ')';
     }
 }
 
 $redirect = $editorType === 'page'
     ? base_path() . '/admin/edit-page.php?slug=' . urlencode($slug)
     : base_path() . '/admin/edit-post.php?slug=' . urlencode($slug);
-if ($message !== '') {
-    $redirect .= '&uploaded=' . urlencode($message);
-} elseif ($error !== '') {
-    $redirect .= '&upload_error=' . urlencode($error);
+if (!empty($messages)) {
+    $redirect .= '&uploaded=' . urlencode(implode("\n", $messages));
+}
+if (!empty($errors)) {
+    $redirect .= '&upload_error=' . urlencode(implode(' ', $errors));
 }
 
 header('Location: ' . $redirect);

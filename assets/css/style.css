@@ -799,3 +799,213 @@ hr {
         top: 0;
     }
 }
+
+/* Image Gallery */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin: 2rem 0;
+}
+
+@media (max-width: 480px) {
+    .gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+}
+
+.gallery-item {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-link {
+    display: block;
+    overflow: hidden;
+    border-radius: 5px;
+    line-height: 0;
+    text-decoration: none;
+    border: none;
+    background: var(--accent-bg-color);
+}
+
+.gallery-link img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    margin: 0 !important;
+    display: block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    border-radius: 5px;
+}
+
+.gallery-link:hover img,
+.gallery-link:focus-visible img {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+}
+
+.gallery-caption {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-top: 0.35rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* Lightbox Dialog */
+dialog.pb-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: #fff;
+}
+
+dialog.pb-lightbox:not([open]) {
+    display: none;
+}
+
+dialog.pb-lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.pb-lightbox-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 92vw;
+    max-height: 92vh;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.pb-lightbox-content > * {
+    pointer-events: auto;
+}
+
+.pb-lightbox-figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.pb-lightbox-image {
+    max-width: 90vw;
+    max-height: calc(85vh - 3rem);
+    object-fit: contain;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    margin: 0 !important;
+    display: block;
+}
+
+.pb-lightbox-caption {
+    margin-top: 0.75rem;
+    color: #fff;
+    font-size: 0.95rem;
+    text-align: center;
+    max-width: 800px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    line-height: 1.4;
+}
+
+.pb-lightbox-btn {
+    position: absolute;
+    background: rgba(30, 30, 30, 0.75);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    z-index: 10;
+    padding: 0;
+}
+
+.pb-lightbox-btn:hover {
+    background: rgba(50, 50, 50, 0.95);
+    transform: scale(1.08);
+}
+
+.pb-lightbox-close {
+    top: 1rem;
+    right: 1rem;
+}
+
+.pb-lightbox-prev {
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.pb-lightbox-prev:hover {
+    transform: translateY(-50%) scale(1.08);
+}
+
+.pb-lightbox-next {
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.pb-lightbox-next:hover {
+    transform: translateY(-50%) scale(1.08);
+}
+
+.pb-lightbox-counter {
+    position: absolute;
+    bottom: 1rem;
+    background: rgba(0, 0, 0, 0.65);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.8rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 600px) {
+    .pb-lightbox-btn {
+        width: 38px;
+        height: 38px;
+    }
+    .pb-lightbox-close {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    .pb-lightbox-prev {
+        left: 0.5rem;
+    }
+    .pb-lightbox-next {
+        right: 0.5rem;
+    }
+}

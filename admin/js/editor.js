@@ -505,6 +505,228 @@
     });
   });
 
+  // Gallery Picker Dialogue & Cursor Tracking
+  let lastSavedCursor = null;
+
+  function recordEditorCursor() {
+    try {
+      const pos = jar.save();
+      if (pos && typeof pos.start === 'number') {
+        lastSavedCursor = pos;
+      }
+    } catch (e) {}
+  }
+
+  ['keyup', 'mouseup', 'touchend', 'input'].forEach((evt) => {
+    editorContainer.addEventListener(evt, recordEditorCursor);
+  });
+  document.addEventListener('selectionchange', () => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && editorContainer.contains(sel.anchorNode)) {
+      recordEditorCursor();
+    }
+  });
+
+  function createGalleryPickerDialog() {
+    let dialog = document.getElementById('gallery-picker-dialog');
+    if (!dialog) {
+      dialog = document.createElement('dialog');
+      dialog.id = 'gallery-picker-dialog';
+      dialog.className = 'gallery-picker-dialog';
+      document.body.appendChild(dialog);
+
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) {
+          dialog.close();
+        }
+      });
+    }
+    return dialog;
+  }
+
+  function openGalleryPicker(triggerButton) {
+    const listItems = document.querySelectorAll('.image-list li');
+    if (!listItems.length) {
+      return;
+    }
+
+    const dialog = createGalleryPickerDialog();
+    const strings = config.strings || {};
+    const titleText = strings.gallery_picker_title || 'Select images for gallery';
+    const selectAllText = strings.gallery_picker_select_all || 'Select all';
+    const deselectAllText = strings.gallery_picker_deselect_all || 'Deselect all';
+    const cancelText = strings.gallery_picker_cancel || 'Cancel';
+    const noSelectedText = strings.gallery_picker_no_selected || 'Please select at least one image.';
+
+    const images = [];
+    listItems.forEach((li, idx) => {
+      const copyBtn = li.querySelector('.copy-markdown');
+      const imgEl = li.querySelector('.image-list-preview');
+      const codeEl = li.querySelector('code');
+      const markdown = copyBtn?.getAttribute('data-markdown') || '';
+      const src = imgEl?.getAttribute('src') || '';
+      const filename = codeEl?.textContent || `image-${idx + 1}`;
+      if (markdown) {
+        images.push({ id: `gp-img-${idx}`, markdown, src, filename });
+      }
+    });
+
+    if (!images.length) {
+      return;
+    }
+
+    dialog.innerHTML = `
+      <h3>${titleText}</h3>
+      <div class="gallery-picker-toolbar">
+        <span class="gallery-picker-count" id="gallery-picker-count"></span>
+        <div class="gallery-picker-toolbar-actions">
+          <button type="button" class="link-button" id="gallery-picker-select-all">${selectAllText}</button>
+          <button type="button" class="link-button" id="gallery-picker-deselect-all">${deselectAllText}</button>
+        </div>
+      </div>
+      <ul class="gallery-picker-list">
+        ${images.map(img => `
+          <li class="gallery-picker-item" data-id="${img.id}">
+            <input type="checkbox" id="${img.id}" value="${img.markdown.replace(/"/g, '&quot;')}">
+            <img src="${img.src.replace(/"/g, '&quot;')}" class="gallery-picker-thumb" alt="${img.filename.replace(/"/g, '&quot;')}" loading="lazy">
+            <code class="gallery-picker-filename">${img.filename.replace(/</g, '&lt;')}</code>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="gallery-picker-footer">
+        <button type="button" class="link-button" id="gallery-picker-cancel">${cancelText}</button>
+        <button type="button" class="accent-button" id="gallery-picker-submit"></button>
+      </div>
+    `;
+
+    const countEl = dialog.querySelector('#gallery-picker-count');
+    const submitBtn = dialog.querySelector('#gallery-picker-submit');
+    const cancelBtn = dialog.querySelector('#gallery-picker-cancel');
+    const selectAllBtn = dialog.querySelector('#gallery-picker-select-all');
+    const deselectAllBtn = dialog.querySelector('#gallery-picker-deselect-all');
+    const checkboxes = dialog.querySelectorAll('.gallery-picker-item input[type="checkbox"]');
+
+    function updateCount() {
+      const selected = Array.from(checkboxes).filter(cb => cb.checked).length;
+      const countTemplate = strings.gallery_picker_count || '{selected} of {total} selected';
+      countEl.textContent = countTemplate.replace('{selected}', selected).replace('{total}', images.length);
+
+      const insertTemplate = strings.gallery_picker_insert || 'Insert gallery ({count})';
+      submitBtn.textContent = insertTemplate.replace('{count}', selected);
+      submitBtn.disabled = selected === 0;
+    }
+
+    dialog.querySelectorAll('.gallery-picker-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        if (e.target.tagName.toLowerCase() !== 'input') {
+          const cb = item.querySelector('input[type="checkbox"]');
+          if (cb) {
+            cb.checked = !cb.checked;
+            updateCount();
+          }
+        }
+      });
+    });
+
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', updateCount);
+    });
+
+    selectAllBtn.addEventListener('click', () => {
+      checkboxes.forEach(cb => { cb.checked = true; });
+      updateCount();
+    });
+
+    deselectAllBtn.addEventListener('click', () => {
+      checkboxes.forEach(cb => { cb.checked = false; });
+      updateCount();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      dialog.close();
+    });
+
+    submitBtn.addEventListener('click', async () => {
+      const selectedMarkdown = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      if (!selectedMarkdown.length) {
+        alert(noSelectedText);
+        return;
+      }
+
+      const currentCode = jar.toString();
+      let start = currentCode.length;
+      let end = currentCode.length;
+
+      if (lastSavedCursor && typeof lastSavedCursor.start === 'number') {
+        start = Math.max(0, Math.min(lastSavedCursor.start, currentCode.length));
+        end = Math.max(0, Math.min(lastSavedCursor.end, currentCode.length));
+      }
+
+      let prefix = '\n\n';
+      let suffix = '\n\n';
+      if (start === 0 || currentCode.slice(0, start).endsWith('\n\n')) {
+        prefix = '';
+      } else if (currentCode.slice(0, start).endsWith('\n')) {
+        prefix = '\n';
+      }
+
+      if (currentCode.slice(end).startsWith('\n\n') || currentCode.slice(end) === '') {
+        suffix = '\n';
+      } else if (currentCode.slice(end).startsWith('\n')) {
+        suffix = '\n';
+      }
+
+      const gallerySnippet = `${prefix}::: gallery\n${selectedMarkdown.join('\n')}\n:::${suffix}`;
+      const newCode = currentCode.slice(0, start) + gallerySnippet + currentCode.slice(end);
+
+      jar.updateCode(newCode);
+      contentField.value = newCode;
+      scheduleAutosave();
+
+      const newPos = {
+        start: start + gallerySnippet.length,
+        end: start + gallerySnippet.length,
+        dir: '<-',
+      };
+      try {
+        jar.restore(newPos);
+        lastSavedCursor = newPos;
+      } catch (e) {}
+      editorContainer.focus();
+
+      try {
+        await navigator.clipboard.writeText(gallerySnippet.trim());
+      } catch (e) {}
+
+      dialog.close();
+
+      if (triggerButton) {
+        const originalHtml = triggerButton.innerHTML;
+        const insertedText = strings.gallery_inserted || 'Gallery inserted';
+        triggerButton.innerHTML = '<svg class="icon" aria-hidden="true"><use href="/admin/icons/sprite.svg#icon-circle-check"></use></svg> ' + insertedText;
+        setTimeout(() => {
+          triggerButton.innerHTML = originalHtml;
+        }, 1500);
+      }
+    });
+
+    updateCount();
+    dialog.showModal();
+  }
+
+  document.querySelectorAll('.insert-gallery-btn').forEach((button) => {
+    button.addEventListener('mousedown', () => {
+      recordEditorCursor();
+    });
+    button.addEventListener('click', () => {
+      recordEditorCursor();
+      openGalleryPicker(button);
+    });
+  });
+
   const featureImageInput = document.getElementById('feature-image-value');
 
   document.querySelectorAll('.feature-image-check').forEach((checkbox) => {
