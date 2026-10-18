@@ -2480,7 +2480,7 @@ html[data-admin-theme="dark"] .editor.language-css .token.comment {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    background: var(--accent-bg-color);
+    background: var(--bg-color);
     border: 1px solid var(--border-color);
     padding: 0.2rem 0.5rem;
     font-size: 0.85rem;
