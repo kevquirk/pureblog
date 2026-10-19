@@ -490,6 +490,7 @@ img+em {
 main img,
 main video {
     max-width: 100%;
+    height: auto;
     border-radius: 5px;
     margin: 1.5rem auto;
     display: block;
@@ -901,7 +902,7 @@ dialog.pb-lightbox::backdrop {
     pointer-events: none;
 }
 
-.pb-lightbox-content > * {
+.pb-lightbox-content>* {
     pointer-events: auto;
 }
 
@@ -998,13 +999,16 @@ dialog.pb-lightbox::backdrop {
         width: 38px;
         height: 38px;
     }
+
     .pb-lightbox-close {
         top: 0.5rem;
         right: 0.5rem;
     }
+
     .pb-lightbox-prev {
         left: 0.5rem;
     }
+
     .pb-lightbox-next {
         right: 0.5rem;
     }
