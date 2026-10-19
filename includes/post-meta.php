@@ -9,7 +9,7 @@ $post = $post ?? [];
 <?php endif; ?>
 
 <?php if (!empty($config['community']['purecomments_enabled']) && !empty($config['community']['purecomments_url'])): ?>
-    <div id="comments" data-post-slug="<?= e((string) ($post['slug'] ?? '')) ?>"></div>
+    <div id="comments"<?= !empty($config['community']['purecomments_autoload']) ? ' data-autoload="true"' : '' ?> data-post-slug="<?= e((string) ($post['slug'] ?? '')) ?>"></div>
     <script src="<?= e($config['community']['purecomments_url']) ?>/public/embed.js" defer></script>
 <?php endif; ?>
 

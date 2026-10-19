@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
     $enableBlogPosts = ($blogPageSlug === $hiddenBlogValue) ? !empty($_POST['enable_blog_posts']) : true;
     $purecommentsEnabled = !empty($_POST['purecomments_enabled']);
     $purecommentsUrl = trim($_POST['purecomments_url'] ?? '');
+    $purecommentsAutoload = !empty($_POST['purecomments_autoload']);
 
     if ($siteTitle === '') {
         $errors[] = t('admin.settings.site.error_title');
@@ -143,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         $config['enable_blog_posts'] = $enableBlogPosts;
         $config['community']['purecomments_enabled'] = $purecommentsEnabled;
         $config['community']['purecomments_url'] = rtrim($purecommentsUrl, '/');
+        $config['community']['purecomments_autoload'] = $purecommentsAutoload;
 
         if (!isset($config['assets'])) {
             $config['assets'] = ['favicon' => '', 'apple_touch_icon' => '', 'og_image' => '', 'og_image_preferred' => 'banner', 'sidebar_logo' => ''];
@@ -401,6 +403,12 @@ require __DIR__ . '/../includes/admin-head.php';
                 <div id="purecomments_url_container" style="<?= !empty($config['community']['purecomments_enabled']) ? '' : 'display: none;' ?> margin-top: -0.75rem; margin-bottom: 1.5rem;">
                     <label for="purecomments_url"><?= e(t('admin.settings.site.purecomments_url')) ?></label>
                     <input type="url" id="purecomments_url" name="purecomments_url" value="<?= e($config['community']['purecomments_url'] ?? '') ?>" placeholder="https://comments.example.com"<?= !empty($config['community']['purecomments_enabled']) ? ' required' : ' disabled' ?>>
+
+                    <label class="inline-checkbox" for="purecomments_autoload" style="margin-top: -0.5rem;" title="<?= e(t('admin.settings.site.purecomments_autoload_tooltip')) ?>">
+                        <input type="checkbox" id="purecomments_autoload" name="purecomments_autoload"<?= !empty($config['community']['purecomments_autoload']) ? ' checked' : '' ?><?= !empty($config['community']['purecomments_enabled']) ? '' : ' disabled' ?>>
+                        <?= e(t('admin.settings.site.purecomments_autoload')) ?>
+                        <abbr title="<?= e(t('admin.settings.site.purecomments_autoload_tooltip')) ?>">(?)</abbr>
+                    </label>
                 </div>
             </section>
 
@@ -470,15 +478,18 @@ require __DIR__ . '/../includes/admin-head.php';
     const pureCommentsEnabledCheckbox = document.getElementById('purecomments_enabled');
     const pureCommentsUrlContainer = document.getElementById('purecomments_url_container');
     const pureCommentsUrlInput = document.getElementById('purecomments_url');
+    const pureCommentsAutoloadCheckbox = document.getElementById('purecomments_autoload');
     pureCommentsEnabledCheckbox.addEventListener('change', function () {
         if (this.checked) {
             pureCommentsUrlContainer.style.display = '';
             pureCommentsUrlInput.disabled = false;
             pureCommentsUrlInput.required = true;
+            if (pureCommentsAutoloadCheckbox) pureCommentsAutoloadCheckbox.disabled = false;
         } else {
             pureCommentsUrlContainer.style.display = 'none';
             pureCommentsUrlInput.disabled = true;
             pureCommentsUrlInput.required = false;
+            if (pureCommentsAutoloadCheckbox) pureCommentsAutoloadCheckbox.disabled = true;
         }
     });
 </script>

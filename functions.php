@@ -112,6 +112,7 @@ function default_config(): array
         'community' => [
             'purecomments_enabled' => false,
             'purecomments_url' => '',
+            'purecomments_autoload' => false,
         ],
     ];
 }
