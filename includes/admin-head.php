@@ -148,6 +148,29 @@ unset($_SESSION['admin_action_flash']);
                     }
                 }, true);
 
+                // Fix Enter key cursor jumping across browsers (especially Safari/WebKit)
+                editor.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey && !event.altKey && !event.isComposing) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        jar.recordHistory();
+
+                        const pos = jar.save();
+                        insertTextAtCursor('\n');
+                        highlight(editor);
+
+                        const newPos = {
+                            start: Math.min(pos.start, pos.end) + 1,
+                            end: Math.min(pos.start, pos.end) + 1,
+                            dir: '<-'
+                        };
+                        jar.restore(newPos);
+
+                        jar.recordHistory();
+                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+                    }
+                }, true);
+
                 return jar;
             };
         </script>
