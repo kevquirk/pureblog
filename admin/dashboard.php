@@ -158,7 +158,7 @@ if ($cacheAge > 21600) {
     $cached = @file_get_contents($versionCacheFile);
     $latestVersion = is_string($cached) ? trim($cached) : '';
 }
-$updateAvailable = $latestVersion !== '' && $currentVersion !== 'unknown' && !versions_match($currentVersion, $latestVersion);
+$updateAvailable = $latestVersion !== '' && $currentVersion !== 'unknown' && version_compare(ltrim($currentVersion, 'vV'), ltrim($latestVersion, 'vV'), '<');
 
 $fontStack  = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $adminTitle = t('admin.dashboard.page_title');

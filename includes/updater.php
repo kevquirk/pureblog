@@ -760,24 +760,47 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
 function fetch_latest_pureblog_release(): array
 {
-    $result = pureblog_http_get(
-        'https://packages.purecommons.org/blog/latest.json',
-        5,
-        ['User-Agent: Pureblog-Updates-Check', 'Accept: application/json']
-    );
-    if (!$result['ok']) {
-        return ['ok' => false, 'error' => $result['error']];
+    $config = function_exists('load_config') ? load_config() : [];
+    $isBeta = !empty($config['beta_updates']);
+
+    $fetchManifest = static function (string $url): array {
+        $result = pureblog_http_get(
+            $url,
+            5,
+            ['User-Agent: Pureblog-Updates-Check', 'Accept: application/json']
+        );
+        if (!$result['ok']) {
+            return ['ok' => false, 'error' => $result['error']];
+        }
+        $json = json_decode($result['body'], true);
+        if (!is_array($json)) {
+            return ['ok' => false, 'error' => t('admin.settings.updates.error_github_json')];
+        }
+        return [
+            'ok'           => true,
+            'tag'          => (string) ($json['tag_name'] ?? ''),
+            'name'         => (string) ($json['name'] ?? ''),
+            'url'          => (string) ($json['html_url'] ?? 'https://github.com/kevquirk/pureblog/releases'),
+            'zipball_url'  => (string) ($json['zipball_url'] ?? ''),
+            'published_at' => (string) ($json['published_at'] ?? ''),
+        ];
+    };
+
+    if ($isBeta) {
+        $beta = $fetchManifest('https://packages.purecommons.org/blog/beta.json');
+        if ($beta['ok'] && $beta['tag'] !== '') {
+            $latest = $fetchManifest('https://packages.purecommons.org/blog/latest.json');
+            if ($latest['ok'] && $latest['tag'] !== '') {
+                $normBeta = ltrim($beta['tag'], 'vV');
+                $normLatest = ltrim($latest['tag'], 'vV');
+                if (version_compare($normBeta, $normLatest, '>')) {
+                    return $beta;
+                }
+                return $latest;
+            }
+            return $beta;
+        }
     }
-    $json = json_decode($result['body'], true);
-    if (!is_array($json)) {
-        return ['ok' => false, 'error' => t('admin.settings.updates.error_github_json')];
-    }
-    return [
-        'ok'           => true,
-        'tag'          => (string) ($json['tag_name'] ?? ''),
-        'name'         => (string) ($json['name'] ?? ''),
-        'url'          => (string) ($json['html_url'] ?? 'https://github.com/kevquirk/pureblog/releases'),
-        'zipball_url'  => (string) ($json['zipball_url'] ?? ''),
-        'published_at' => (string) ($json['published_at'] ?? ''),
-    ];
+
+    return $fetchManifest('https://packages.purecommons.org/blog/latest.json');
 }

@@ -24,7 +24,7 @@ if (isset($_GET['package_plan'])) {
         $latestTag = (string) ($latest['tag'] ?? '');
         $currentVersion = detect_current_pureblog_version();
 
-        if ($latestTag !== '' && versions_match($currentVersion, $latestTag)) {
+        if ($latestTag !== '' && version_compare(ltrim($currentVersion, 'vV'), ltrim($latestTag, 'vV'), '>=')) {
             $packagePlan = [
                 'ok' => true,
                 'already_latest' => true,
