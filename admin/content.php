@@ -66,7 +66,9 @@ foreach ($allPosts as $p) {
         $t = trim((string) $t);
         if ($t !== '') {
             $slug = normalize_tag($t);
-            $availableTags[$slug] ??= $t;
+            if ($slug !== '') {
+                $availableTags[$slug] ??= $t;
+            }
         }
     }
 }

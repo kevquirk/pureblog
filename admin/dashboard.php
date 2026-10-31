@@ -81,6 +81,9 @@ foreach ($publishedPosts as $post) {
         $name = trim((string) $tag);
         if ($name !== '') {
             $slug = normalize_tag($name);
+            if ($slug === '') {
+                continue;
+            }
             $tagDisplayNames[$slug] ??= $name;
             $tagCounts[$slug] = ($tagCounts[$slug] ?? 0) + 1;
             if ($timestamp >= $recentCutoff) {
