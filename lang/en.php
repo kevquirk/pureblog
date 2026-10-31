@@ -445,6 +445,8 @@ return [
                 'purecomments_autoload_tooltip' => 'Automatically loads comments and the submission form when scrolled near, without requiring a button click.',
                 'error_purecomments_url'        => 'Pure Comments URL is required when Pure Comments is enabled.',
                 'error_purecomments_url_invalid'=> 'Pure Comments URL must be a valid URL.',
+                'download_backup'               => 'Download site backup',
+                'error_backup_zip'              => 'Unable to create backup archive.',
             ],
 
             'user' => [

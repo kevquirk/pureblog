@@ -111,36 +111,6 @@ function download_url_to_file(string $url, string $destination): ?string
     );
 }
 
-/**
- * @return list<string>
- */
-function collect_relative_files(string $root): array
-{
-    $files = [];
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
-    );
-
-    foreach ($iterator as $item) {
-        if (!$item->isFile()) {
-            continue;
-        }
-        $fullPath = str_replace('\\', '/', $item->getPathname());
-        $prefix = rtrim(str_replace('\\', '/', $root), '/') . '/';
-        if (!str_starts_with($fullPath, $prefix)) {
-            continue;
-        }
-        $relative = substr($fullPath, strlen($prefix));
-        if ($relative === '' || str_starts_with($relative, '.git/')) {
-            continue;
-        }
-        $files[] = $relative;
-    }
-
-    sort($files);
-    return $files;
-}
-
 function is_htaccess_path(string $relativePath): bool
 {
     return basename(str_replace('\\', '/', $relativePath)) === '.htaccess';

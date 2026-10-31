@@ -44,7 +44,30 @@ $pages = get_all_pages(true);
 $pageOptions = array_values(array_filter($pages, fn($page) => ($page['slug'] ?? '') !== ''));
 $pageSlugLookup = array_fill_keys(array_map(fn($page) => $page['slug'], $pageOptions), true);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['download_backup'])) {
+    verify_csrf();
+    $backupResult = create_site_backup_zip();
+    if ($backupResult['ok'] ?? false) {
+        $zipPath = (string) $backupResult['path'];
+        $zipName = (string) $backupResult['filename'];
+        try {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . $zipName . '"');
+            header('Content-Length: ' . (string) filesize($zipPath));
+            header('Cache-Control: no-store, no-cache, must-revalidate');
+            readfile($zipPath);
+        } finally {
+            @unlink($zipPath);
+        }
+        exit;
+    }
+    $errors[] = (string) ($backupResult['error'] ?? t('admin.settings.site.error_backup_zip'));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id']) && !isset($_POST['download_backup'])) {
     verify_csrf();
     $siteTitle = trim($_POST['site_title'] ?? '');
     $siteTagline = trim($_POST['site_tagline'] ?? '');
@@ -256,6 +279,13 @@ require __DIR__ . '/../includes/admin-head.php';
                 <svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg>
                 <?= e(t('admin.settings.nav.save')) ?>
             </button>
+            <form method="post" class="inline-form">
+                <?= csrf_field() ?>
+                <button type="submit" name="download_backup" value="1" aria-label="<?= e(t('admin.settings.site.download_backup')) ?>">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-download"></use></svg>
+                    <?= e(t('admin.settings.site.download_backup')) ?>
+                </button>
+            </form>
         </nav>
 
         <form method="post" enctype="multipart/form-data" id="settings-form">
