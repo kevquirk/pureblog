@@ -172,6 +172,8 @@ body {
 
 body {
     min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -186,19 +188,21 @@ body {
 .admin-shell {
     display: flex;
     flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
 .admin-main {
     flex: 1;
     min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
 
 .admin-content {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     padding: 0 1rem;
@@ -1780,7 +1784,7 @@ td {
     background: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    z-index: 1;
+    z-index: 10;
 }
 
 .editor-actions {
@@ -1794,7 +1798,7 @@ td {
     background: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    z-index: 1;
+    z-index: 10;
 }
 
 @media (max-width:560px) {
@@ -1851,6 +1855,7 @@ td {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     position: relative;
+    isolation: isolate;
     margin: 0 0 1.5rem 0;
     background-color: var(--input-bg);
     border: 1px solid var(--border-color);
@@ -1872,7 +1877,7 @@ td {
     -moz-tab-size: 4 !important;
     min-height: 400px;
     width: 100% !important;
-    height: 100%;
+    height: auto;
     outline: none;
     white-space: pre-wrap !important;
     word-wrap: break-word !important;
@@ -1905,6 +1910,10 @@ td {
 }
 
 .editor-textarea {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
     color: transparent !important;
     -webkit-text-fill-color: transparent !important;
     caret-color: var(--text-color) !important;
@@ -2204,9 +2213,12 @@ body.sidebar-ready .editor-grid {
         display: none !important;
     }
 
-    body.editor-sidebar-open .editor-grid,
-    body.editor-sidebar-open footer {
-        padding-right: var(--sidebar-width);
+    body.sidebar-ready .admin-main {
+        transition: margin-right 0.2s ease;
+    }
+
+    body.editor-sidebar-open .admin-main {
+        margin-right: var(--sidebar-width);
     }
 }
 

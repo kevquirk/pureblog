@@ -64,7 +64,7 @@ unset($_SESSION['admin_action_flash']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php $adminFavicon = get_base_url() . '/assets/images/favicon.png'; ?>
+    <?php $adminFavicon = base_path() . '/assets/images/favicon.png'; ?>
     <link rel="icon" href="<?= e($adminFavicon) ?>">
     <link rel="apple-touch-icon" href="<?= e($adminFavicon) ?>">
     <title><?= e($adminTitle) ?></title>
@@ -73,7 +73,7 @@ unset($_SESSION['admin_action_flash']);
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link rel="stylesheet" href="<?= e($adminFontUrl) ?>">
     <?php endif; ?>
-    <link rel="stylesheet" href="<?= get_base_url() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
+    <link rel="stylesheet" href="<?= base_path() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
     <script>try{if(localStorage.getItem('pb-sidebar')==='collapsed')document.documentElement.setAttribute('data-sidebar','collapsed');}catch(e){}</script>
     <style>
         :root {
