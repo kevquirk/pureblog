@@ -73,9 +73,6 @@ unset($_SESSION['admin_action_flash']);
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link rel="stylesheet" href="<?= e($adminFontUrl) ?>">
     <?php endif; ?>
-    <?php if ($codeMirror !== null): ?>
-        <link rel="stylesheet" href="https://unpkg.com/prismjs@1.29.0/themes/prism.min.css">
-    <?php endif; ?>
     <link rel="stylesheet" href="<?= get_base_url() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
     <script>try{if(localStorage.getItem('pb-sidebar')==='collapsed')document.documentElement.setAttribute('data-sidebar','collapsed');}catch(e){}</script>
     <style>
@@ -87,92 +84,89 @@ unset($_SESSION['admin_action_flash']);
 <?php endif; ?>
     </style>
     <?php if ($codeMirror !== null): ?>
-        <script src="https://unpkg.com/prismjs@1.29.0/prism.js"></script>
-        <?php if ($codeMirror === 'markdown'): ?>
-            <script src="https://unpkg.com/prismjs@1.29.0/components/prism-markdown.min.js"></script>
-        <?php endif; ?>
-        <script type="module">
-            import { CodeJar } from 'https://unpkg.com/codejar@3.7.0/codejar.js';
-            window.CodeJar = (editor, highlight, opt) => {
-                const jar = CodeJar(editor, highlight, opt);
-                
-                // Helper to insert plain text at cursor using standard Selection/Range APIs.
-                const insertTextAtCursor = (text) => {
-                    const selection = window.getSelection();
-                    if (!selection.rangeCount) return;
-                    const range = selection.getRangeAt(0);
-                    range.deleteContents();
-                    const textNode = document.createTextNode(text);
-                    range.insertNode(textNode);
-                    range.setStartAfter(textNode);
-                    range.setEndAfter(textNode);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                };
+        <script>
+            (() => {
+                const span = (cls, body) => `<span class="token ${cls}">${body}</span>`;
 
-                // Fix copy/paste formatting across all browsers (preserving tabs and newlines)
-                editor.addEventListener('paste', (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    const text = (event.originalEvent || event)
-                        .clipboardData
-                        .getData('text/plain')
-                        .replace(/\r/g, '');
-                    
-                    jar.recordHistory();
-                    
-                    const pos = jar.save();
-                    insertTextAtCursor(text);
-                    highlight(editor);
-                    
-                    const newPos = {
-                        start: Math.min(pos.start, pos.end) + text.length,
-                        end: Math.min(pos.start, pos.end) + text.length,
-                        dir: '<-'
+                const highlightInline = (s) => s.replace(
+                    /(`+[^`\n]+`+|\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\})|(!?\[)([^\]\n]+)(\]\([^)\s\n]+)(?:(\s+)("[^"\n]*"|'[^'\n]*'))?(\))|(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?[a-zA-Z][a-zA-Z0-9:-]*(?:\s+[^&\n]*)?\/?&gt;)|(\*\*\*|___)([^*\n]+?)\10|(\*\*|__)([^*\n]+?)\12|(\*|_)(?!\s)([^*\n]+?)(?<!\s)\14/g,
+                    (m, code, lOpen, lTxt, lUrl, lSp, lTit, lClose, comment, tag, biP, biB, bP, bB, iP, iB) => {
+                        if (code) return span('code', code);
+                        if (lOpen) return span('url', `${lOpen}${span('content', lTxt)}${lUrl}${lSp ? lSp + span('string', lTit) : ''}${lClose}`);
+                        if (comment) return span('comment', comment);
+                        if (tag) return span('tag', tag.replace(/([a-zA-Z_:][-a-zA-Z0-9_:.]*)(=)("[^"]*"|'[^']*')/g, (_, a, eq, v) => `${span('attr-name', a)}${span('punctuation', eq)}${span('attr-value', v)}`));
+                        if (biP) return span('bold italic', `${span('punctuation', biP)}${biB}${span('punctuation', biP)}`);
+                        if (bP) return span('bold', `${span('punctuation', bP)}${bB}${span('punctuation', bP)}`);
+                        if (iP) return span('italic', `${span('punctuation', iP)}${iB}${span('punctuation', iP)}`);
+                        return m;
+                    }
+                );
+
+                const highlightMarkdown = (raw) => raw
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/(^(?:```|~~~)[^\n]*\n[\s\S]*?(?:^(?:```|~~~)[ \t]*$|(?![\s\S])))|(&lt;!--[\s\S]*?--&gt;)|(^.+)/gm, (m, fence, comment, line) => {
+                        if (fence) return span('code-block', fence);
+                        if (comment) return span('comment', comment);
+                        if (/^#{1,6}[ \t]+/.test(line)) return line.replace(/^(#{1,6}[ \t]+)(.*)$/, (_, p, t) => span('title important', span('punctuation', p) + highlightInline(t)));
+                        if (/^(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/.test(line)) return span('punctuation', line);
+                        if (/^:::(?:\s+gallery)?\s*$/.test(line)) return span('code', line);
+                        if (/^[ \t]*&gt;/.test(line)) return span('blockquote', line);
+                        if (/^[ \t]*(?:[*+-]|\d+\.)[ \t]+/.test(line)) return line.replace(/^([ \t]*(?:[*+-]|\d+\.)[ \t]+)(.*)$/, (_, p, t) => span('list punctuation', p) + highlightInline(t));
+                        return highlightInline(line);
+                    });
+
+                const highlightCss = (raw) => raw
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/(\/\*[\s\S]*?\*\/)|("[^"\n]*"|'[^'\n]*')|(@[a-zA-Z_-]+)|([a-zA-Z-]+)(\s*:)|(!important\b)|(\b[a-zA-Z_-]+)(?=\()|(\b\d+(?:\.\d+)?(?:px|em|rem|vh|vw|vmin|vmax|%|deg|s|ms|fr|ch|ex)?\b|#[0-9a-fA-F]{3,8}\b)|([{}();:,])|([^{}();:,\s/]+(?:\s+[^{}();:,\s/]+)*)/g,
+                        (m, comment, str, at, prop, colon, imp, fn, num, punc, sel) => {
+                            if (comment) return span('comment', comment);
+                            if (str) return span('string', str);
+                            if (at) return span('atrule', at);
+                            if (prop) return span('property', prop) + span('punctuation', colon);
+                            if (imp) return span('keyword', imp);
+                            if (fn) return span('function', fn);
+                            if (num) return span('number', num);
+                            if (punc) return span('punctuation', punc);
+                            if (sel) return span('selector', sel);
+                            return m;
+                        }
+                    );
+
+                window.createSyntaxEditor = (textarea, language) => {
+                    if (!textarea) return null;
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'editor-wrap';
+                    const backdrop = document.createElement('pre');
+                    backdrop.className = `editor editor-backdrop language-${language}`;
+                    backdrop.setAttribute('aria-hidden', 'true');
+                    const codeEl = document.createElement('code');
+                    codeEl.className = `language-${language}`;
+                    backdrop.appendChild(codeEl);
+
+                    textarea.parentNode.insertBefore(wrapper, textarea);
+                    wrapper.append(backdrop, textarea);
+                    textarea.classList.add('editor', 'editor-textarea', `language-${language}`);
+
+                    const syncHighlight = () => {
+                        codeEl.innerHTML = (language === 'markdown' ? highlightMarkdown(textarea.value) : highlightCss(textarea.value)) + '\n';
                     };
-                    jar.restore(newPos);
-                    
-                    jar.recordHistory();
-                    editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                }, true);
 
-                // Fix Tab key indentation across all browsers
-                editor.addEventListener('keydown', (event) => {
-                    if (event.key === 'Tab' && !event.shiftKey) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        jar.recordHistory();
-                        document.execCommand('insertText', false, '\t');
-                        jar.recordHistory();
-                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                    }
-                }, true);
+                    textarea.addEventListener('input', syncHighlight);
+                    textarea.addEventListener('keydown', (e) => {
+                        if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                            e.preventDefault();
+                            textarea.focus();
+                            if (!document.execCommand?.('insertText', false, '\t')) {
+                                textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        }
+                    });
 
-                // Fix Enter key cursor jumping across browsers (especially Safari/WebKit)
-                editor.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey && !event.altKey && !event.isComposing) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        jar.recordHistory();
-
-                        const pos = jar.save();
-                        insertTextAtCursor('\n');
-                        highlight(editor);
-
-                        const newPos = {
-                            start: Math.min(pos.start, pos.end) + 1,
-                            end: Math.min(pos.start, pos.end) + 1,
-                            dir: '<-'
-                        };
-                        jar.restore(newPos);
-
-                        jar.recordHistory();
-                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                    }
-                }, true);
-
-                return jar;
-            };
+                    syncHighlight();
+                    return { textarea, wrapper, backdrop, syncHighlight, updateCode(c) { textarea.value = c; syncHighlight(); } };
+                };
+            })();
         </script>
     <?php endif; ?>
     <?= $extraHead ?>

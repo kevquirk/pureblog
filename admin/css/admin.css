@@ -1846,22 +1846,71 @@ td {
     max-width: 100%;
 }
 
-/* CodeJar & Prism Editor styling */
-.editor {
-    background-color: var(--input-bg) !important;
-    color: var(--text-color) !important;
+/* Syntax Highlighted Textarea Overlay Editor */
+.editor-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    position: relative;
+    margin: 0 0 1.5rem 0;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    padding: 0.75rem;
-    margin: 0 0 1rem 0;
-    font-family: inherit !important;
-    font-size: inherit !important;
+}
+
+.editor {
+    grid-area: 1 / 1 / 2 / 2;
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+    border: none !important;
+    padding: 0.75rem !important;
+    margin: 0 !important;
+    font-family: "Iosevka", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace !important;
+    font-size: 1rem !important;
     line-height: 1.6 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
     min-height: 400px;
-    height: auto;
+    width: 100% !important;
+    height: 100%;
     outline: none;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    box-sizing: border-box;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
+    font-variant-ligatures: none !important;
+}
+
+.editor-backdrop {
+    pointer-events: none;
+    user-select: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.editor-backdrop > code {
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    tab-size: inherit !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    display: block;
+}
+
+.editor-textarea {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    caret-color: var(--text-color) !important;
+    resize: none !important;
+    overflow: hidden !important;
+    z-index: 1;
 }
 
 /* Ensure no backgrounds and no text-shadows on any editor tokens/elements */
@@ -1878,13 +1927,18 @@ td {
 
 /* Style selected text using CodeMirror's selection background */
 .editor::selection,
-.editor *::selection {
+.editor *::selection,
+.editor-textarea::selection {
     background: var(--code-selection-bg) !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
 .editor::-moz-selection,
-.editor *::-moz-selection {
+.editor *::-moz-selection,
+.editor-textarea::-moz-selection {
     background: var(--code-selection-bg) !important;
+    color: transparent !important;
 }
 
 /* Light mode Prism Markdown styles - matching original CodeMirror colors */
@@ -1894,10 +1948,6 @@ td {
 .editor.language-markdown .token.important .token.punctuation {
     color: var(--blue) !important;
     font-weight: bold !important;
-}
-
-span.token.title.important {
-    font-size: 125%;
 }
 
 .editor.language-markdown .token.bold {
