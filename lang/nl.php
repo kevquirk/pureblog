@@ -14,18 +14,18 @@ return [
     // -------------------------------------------------------------------------
     'date' => [
         'months' => [
-            'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
-            'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December',
+            'januari', 'februari', 'maart', 'april', 'mei', 'juni',
+            'juli', 'augustus', 'september', 'oktober', 'november', 'december',
         ],
         'months_short' => [
-            'Jan', 'Feb', 'Mrt', 'Apr', 'Mei', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec',
+            'jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
+            'jul', 'aug', 'sep', 'okt', 'nov', 'dec',
         ],
         'days' => [
-            'Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag',
+            'zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag',
         ],
         'days_short' => [
-            'Zo.', 'Ma.', 'Di.', 'Wo.', 'Do.', 'Vr.', 'Za.',
+            'zo', 'ma', 'di', 'wo', 'do', 'vr', 'za',
         ],
     ],
 
@@ -53,9 +53,9 @@ return [
         'page_not_found_detail' => 'De pagina die je hebt opgevraagd kon niet worden gevonden.',
         'no_tag_selected'       => 'Geen tag geselecteerd.',
         'no_posts_for_tag'      => 'Geen berichten gevonden voor dit label.',
-        'edit_post'             => 'Edit post', // ENGLISH PLACEHOLDER
-        'edit_page'             => 'Edit page', // ENGLISH PLACEHOLDER
-        'reading_time'          => '{n} min read', // ENGLISH PLACEHOLDER
+        'edit_post'             => 'Artikel bewerken',
+        'edit_page'             => 'Pagina bewerken',
+        'reading_time'          => '{n} min leestijd',
     ],
 
     // -------------------------------------------------------------------------
@@ -72,7 +72,7 @@ return [
             'log_out'       => 'Uitloggen',
             'cache_cleared' => 'Cache is geleegd.',
             'invalid_action'=> 'Ongeldige admin actie.',
-            'images'        => 'Images', // ENGLISH PLACEHOLDER
+            'images'        => 'Afbeeldingen',
         ],
 
         'login' => [
@@ -128,21 +128,21 @@ return [
         ],
 
         'content' => [
-            'page_title'            => 'Content - Pure Blog',
-            'tabs_label'            => 'Content tabs',
-            'tab_posts'             => 'Posts',
-            'tab_pages'             => 'Pages',
+            'page_title'            => 'Inhoud - Pure Blog',
+            'tabs_label'            => 'Tabbladen inhoud',
+            'tab_posts'             => 'Artikelen',
+            'tab_pages'             => 'Pagina\'s',
             'view_post'             => 'Bericht bekijken',
             'view_page'             => 'Pagina bekijken',
-            'new_post'              => 'New post',
-            'choose_layout'         => 'Choose a layout',
-            'default_post'          => 'Default post',
-            'cancel'                => 'Cancel',
-            'search_label'          => 'Search posts',
-            'search_placeholder'    => 'Search for a post...',
-            'no_posts_found'        => 'No posts found for "{search}".',
+            'new_post'              => 'Nieuw artikel',
+            'choose_layout'         => 'Kies een lay-out',
+            'default_post'          => 'Standaardartikel',
+            'cancel'                => 'Annuleren',
+            'search_label'          => 'Artikelen doorzoeken',
+            'search_placeholder'    => 'Zoek een artikel...',
+            'no_posts_found'        => 'Geen artikelen gevonden voor "{search}".',
             'no_posts_filtered'     => 'Geen berichten gevonden voor {label}.',
-            'no_posts'              => 'No posts yet, get writing!',
+            'no_posts'              => 'Nog geen artikelen, tijd om te schrijven!',
             'filter_title'          => 'Zoeken & filteren',
             'filter_year'           => 'Jaar',
             'filter_month'          => 'Maand',
@@ -152,20 +152,20 @@ return [
             'filter_all_tags'       => 'Alle tags',
             'filter_status'         => 'Status',
             'filter_all_statuses'   => 'Alle',
-            'filter_layout'         => 'Layout', // ENGLISH PLACEHOLDER
-            'filter_all_layouts'    => 'All layouts', // ENGLISH PLACEHOLDER
+            'filter_layout'         => 'Lay-out',
+            'filter_all_layouts'    => 'Alle lay-outs',
             'filter_apply'          => 'Toepassen',
             'filter_active'         => 'Gefilterd op: {label}.',
             'filter_clear'          => 'Wissen',
             'filter_recent'         => 'laatste 12 maanden',
-            'notice_post_saved'     => 'Post saved.',
-            'notice_post_deleted'   => 'Post deleted.',
-            'notice_page_saved'     => 'Page saved.',
-            'notice_page_deleted'   => 'Page deleted.',
-            'pagination_newer'      => '⬅ Newer posts',
-            'pagination_older'      => 'Older posts ➡',
-            'new_page'              => 'New page',
-            'no_pages'              => 'No pages yet.',
+            'notice_post_saved'     => 'Artikel opgeslagen.',
+            'notice_post_deleted'   => 'Artikel verwijderd.',
+            'notice_page_saved'     => 'Pagina opgeslagen.',
+            'notice_page_deleted'   => 'Pagina verwijderd.',
+            'pagination_newer'      => '⬅ Nieuwere artikelen',
+            'pagination_older'      => 'Oudere artikelen ➡',
+            'new_page'              => 'Nieuwe pagina',
+            'no_pages'              => 'Nog geen pagina\'s.',
             'badge_home'                 => 'Startpagina',
             'badge_blog'                 => 'Blogpagina',
             'badge_search'               => 'Zoekpagina',
@@ -184,7 +184,7 @@ return [
             'date_label'            => 'Datum',
             'status_label'          => 'Status',
             'status_draft'          => 'Klad',
-            'status_scheduled'      => 'Scheduled', // ENGLISH PLACEHOLDER
+            'status_scheduled'      => 'Ingepland',
             'status_published'      => 'Gepubliceerd',
             'images_title'          => 'Afbeeldingen',
             'no_images'             => 'Nog geen afbeeldingen.',
@@ -205,7 +205,7 @@ return [
             'tip_markdown'          => 'Markdown',
             'error_empty_slug'           => 'De titel moet minimaal één letter of cijfer bevatten om een slug te genereren.',
             'preview_title'              => 'Voorbeeld',
-            'error_upload_no_slug'       => 'Sla de post eerst op zodat deze een slug heeft.',
+            'error_upload_no_slug'       => 'Sla het artikel eerst op zodat het een slug heeft.',
             'error_upload_no_file'       => 'Geen afbeelding geüpload.',
             'error_upload_failed'        => 'Upload mislukt.',
             'error_upload_too_large'     => 'Afbeelding is te groot. Maximale grootte: 3 MB.',
@@ -237,12 +237,12 @@ return [
             'js_save_before_upload'  => 'Kon niet opslaan vóór het uploaden van de afbeelding.',
             'js_copied'  => 'Gekopieerd',
             'js_copy_failed'  => 'Kopiëren naar klembord mislukt. Kopieer handmatig.',
-            'js_save_post_first'  => 'Sla de post eerst op zodat deze een slug en datum heeft.',
+            'js_save_post_first'  => 'Sla het artikel eerst op zodat het een slug en datum heeft.',
             'js_save_page_first'  => 'Sla de pagina eerst op zodat deze een slug heeft.',
             'js_upload_failed'           => 'Afbeelding uploaden mislukt.',
-            'feature_image'              => 'Feature image', // ENGLISH PLACEHOLDER
-            'js_feature_image_confirm'   => 'Replace the current feature image with "{filename}"?', // ENGLISH PLACEHOLDER
-            'js_feature_image_failed'    => 'Failed to update feature image.', // ENGLISH PLACEHOLDER
+            'feature_image'              => 'Uitgelichte afbeelding',
+            'js_feature_image_confirm'   => 'De huidige uitgelichte afbeelding vervangen door "{filename}"?',
+            'js_feature_image_failed'    => 'Uitgelichte afbeelding bijwerken mislukt.',
             'insert_gallery'             => 'Galerij invoegen',
             'insert_gallery_title'       => 'Bijgevoegde afbeeldingen als galerij in de editor invoegen',
             'js_gallery_inserted'        => 'Galerij ingevoegd',
@@ -256,24 +256,24 @@ return [
         ],
 
         'images' => [
-            'page_title'         => 'Images - Pure Blog Admin', // ENGLISH PLACEHOLDER
-            'heading'            => 'Images', // ENGLISH PLACEHOLDER
-            'no_images'          => 'No images uploaded yet.', // ENGLISH PLACEHOLDER
-            'search_label'       => 'Search images', // ENGLISH PLACEHOLDER
-            'search_placeholder' => 'Search by filename…', // ENGLISH PLACEHOLDER
-            'clear_search'       => 'Clear search', // ENGLISH PLACEHOLDER
-            'deleted'            => 'Image deleted.', // ENGLISH PLACEHOLDER
-            'delete_confirm'     => 'Delete this image?', // ENGLISH PLACEHOLDER
-            'delete_used_warning'=> 'This image is being used in the content below. You should remove it to avoid broken links.', // ENGLISH PLACEHOLDER
-            'delete_anyway'      => 'Delete anyway', // ENGLISH PLACEHOLDER
-            'cancel'             => 'Cancel', // ENGLISH PLACEHOLDER
+            'page_title'         => 'Afbeeldingen - Pure Blog Admin',
+            'heading'            => 'Afbeeldingen',
+            'no_images'          => 'Nog geen afbeeldingen geüpload.',
+            'search_label'       => 'Afbeeldingen doorzoeken',
+            'search_placeholder' => 'Zoek op bestandsnaam…',
+            'clear_search'       => 'Zoekopdracht wissen',
+            'deleted'            => 'Afbeelding verwijderd.',
+            'delete_confirm'     => 'Deze afbeelding verwijderen?',
+            'delete_used_warning'=> 'Deze afbeelding wordt gebruikt in de inhoud hieronder. Haal hem daar eerst weg, anders krijg je kapotte links.',
+            'delete_anyway'      => 'Toch verwijderen',
+            'cancel'             => 'Annuleren',
             'used_in_label'      => 'Gebruikt in:',
             'used_in_count'      => '{count} items',
             'type_post'          => 'Bericht',
             'type_page'          => 'Pagina',
-            'error_delete'       => 'Unable to delete image.', // ENGLISH PLACEHOLDER
-            'pagination_prev'    => '⬅ Previous', // ENGLISH PLACEHOLDER
-            'pagination_next'    => 'Next ➡', // ENGLISH PLACEHOLDER
+            'error_delete'       => 'Afbeelding kon niet worden verwijderd.',
+            'pagination_prev'    => '⬅ Vorige',
+            'pagination_next'    => 'Volgende ➡',
         ],
 
         'notices' => [
@@ -349,7 +349,7 @@ return [
 
             'nav' => [
                 'site'    => 'Site',
-                'theme'   => 'Design', // ENGLISH PLACEHOLDER
+                'theme'   => 'Ontwerp',
                 'css'     => 'CSS',
                 'user'    => 'Gebruiker',
                 'updates' => 'Updates',
@@ -371,17 +371,17 @@ return [
                 'language'           => 'Taal',
                 'timezone'           => 'Tijdzone',
                 'date_format'        => 'Datum formatering',
-                'show_reading_time'  => 'Show reading time on posts', // ENGLISH PLACEHOLDER
+                'show_reading_time'  => 'Leestijd tonen bij artikelen',
                 'homepage'           => 'Homepagina',
                 'blog_page'          => 'Blogpagina',
                 'base_url'           => 'Basis URL',
                 'favicon'            => 'Favicon',
-                'apple_touch_icon'   => 'Apple touch icon', // ENGLISH PLACEHOLDER
+                'apple_touch_icon'   => 'Apple-touch-icoon',
                 'og_image'           => 'Open Graph afbeelding',
                 'og_image_format'    => 'Open Graph afbeeldingsformaat',
                 'og_banner'          => 'Rechthoek (standaard)',
                 'og_square'          => 'Vierkant',
-                'sidebar_logo'       => 'Sidebar logo', // ENGLISH PLACEHOLDER
+                'sidebar_logo'       => 'Logo in zijbalk',
                 'custom_nav'         => 'Speciale navigatie-items',
                 'custom_nav_only'    => 'Vervang de volledige navigatie door speciale navigatie-items',
                 'custom_routes'      => 'Speciale routes',
@@ -419,14 +419,14 @@ return [
                 'create_search_page'      => 'Standaard zoekpagina aanmaken',
                 'dismiss_search_notice'   => 'Sluiten',
                 'error_og_format'        => 'Formaat van Open Graph afbeelding moet rechthoek of vierkant zijn.',
-                'error_apple_touch_icon_type' => 'Apple touch icon must be a PNG image.', // ENGLISH PLACEHOLDER
+                'error_apple_touch_icon_type' => 'Het Apple-touch-icoon moet een PNG-afbeelding zijn.',
                 'current'                => 'Huidig',
                 'tip_language_link'      => 'taalcode',
                 'tip_timezone_link'      => 'PHP-tijdzoneslijst',
                 'tip_date_format_link'   => 'PHP-datumformaat documentatie',
                 'tip_favicon'            => '512px vierkant werkt het best',
-                'tip_apple_touch_icon'   => 'Must be square and PNG format, recommended 360x360px', // ENGLISH PLACEHOLDER
-                'tip_sidebar_logo'       => '124x34px works best', // ENGLISH PLACEHOLDER
+                'tip_apple_touch_icon'   => 'vierkant en PNG, aanbevolen 360x360px',
+                'tip_sidebar_logo'       => '124x34px werkt het best',
                 'tip_og_image'           => 'aanbevolen 1360x712px voor rechthoek, of 1200x1200px voor vierkant',
                 'tip_og_image_dynamic'   => 'Laat leeg om dynamisch gegenereerde Open Graph-banners te gebruiken.',
                 'tip_og_image_doc_link'  => 'Lees de documentatie',
@@ -434,10 +434,10 @@ return [
                 'tip_optional'           => 'optioneel',
                 'tip_rss_ttl'            => 'seconden, 0 om uit te schakelen',
                 'community_section'      => 'Community',
-                'purecomments_enable'    => 'Enable Pure Comments',
+                'purecomments_enable'    => 'Pure Comments inschakelen',
                 'purecomments_url'       => 'Pure Comments URL',
-                'error_purecomments_url' => 'Pure Comments URL is required when Pure Comments is enabled.',
-                'error_purecomments_url_invalid' => 'Pure Comments URL must be a valid URL.',
+                'error_purecomments_url' => 'De Pure Comments URL is verplicht als Pure Comments aan staat.',
+                'error_purecomments_url_invalid' => 'De Pure Comments URL moet een geldige URL zijn.',
             ],
 
             'user' => [
@@ -485,47 +485,47 @@ return [
                 'page_title'          => 'Thema-instellingen - Pure Blog',
                 'heading'             => 'Thema- & lay-outinstellingen',
                 'notice_updated'      => 'Instellingen geüpdate.',
-                'notice_theme_applied'=> 'Theme applied.', // ENGLISH PLACEHOLDER
-                'notice_theme_created'=> 'Theme created and saved to your collection.', // ENGLISH PLACEHOLDER
-                'notice_theme_imported'=> 'Theme imported successfully.', // ENGLISH PLACEHOLDER
-                'notice_theme_deleted'=> 'Theme deleted.', // ENGLISH PLACEHOLDER
-                'notice_preview_exited'=> 'Theme preview exited.', // ENGLISH PLACEHOLDER
+                'notice_theme_applied'=> 'Thema toegepast.',
+                'notice_theme_created'=> 'Thema gemaakt en bewaard in je verzameling.',
+                'notice_theme_imported'=> 'Thema geïmporteerd.',
+                'notice_theme_deleted'=> 'Thema verwijderd.',
+                'notice_preview_exited'=> 'Voorbeeld van het thema gesloten.',
                 'error_save'          => 'Opslaan van instellingen mislukt.',
                 'error_font'          => 'Lettertype moet zijn sans, serif of mono.',
                 'error_admin_font'    => 'Admin lettertype moet zijn sans, serif of mono.',
                 'error_admin_color'   => 'Admin kleurkeuze moet zijn: licht, donker of automatisch.',
                 'error_color_mode'    => 'Kleurkeuze moet zijn: licht, donker of automatisch.',
                 'error_post_layout'   => 'Artikeloverzicht moet zijn: fragment, volledig of archief.',
-                'error_theme_name'    => 'Please enter a valid theme name.', // ENGLISH PLACEHOLDER
-                'error_theme_folder'  => 'Unable to create themes directory.', // ENGLISH PLACEHOLDER
-                'error_theme_save'    => 'Unable to save theme file.', // ENGLISH PLACEHOLDER
-                'error_theme_upload'  => 'Failed to upload theme file.', // ENGLISH PLACEHOLDER
-                'error_theme_invalid' => 'Invalid JSON theme file format.', // ENGLISH PLACEHOLDER
-                'error_theme_not_found'=> 'Theme not found.', // ENGLISH PLACEHOLDER
-                'error_theme_delete'  => 'Unable to delete theme.', // ENGLISH PLACEHOLDER
-                'error_theme_empty'   => 'Please provide colour values for light mode, dark mode, or both.', // ENGLISH PLACEHOLDER
-                'error_theme_light_incomplete' => 'Please fill in all colour fields for light mode, or leave them all blank.', // ENGLISH PLACEHOLDER
-                'error_theme_dark_incomplete'  => 'Please fill in all colour fields for dark mode, or leave them all blank.', // ENGLISH PLACEHOLDER
-                'section_themes'      => 'Themes', // ENGLISH PLACEHOLDER
-                'themes_intro'        => 'Choose a theme from your collection, create your own, or {link} to learn more.', // ENGLISH PLACEHOLDER
-                'docs_link'           => 'read the documentation', // ENGLISH PLACEHOLDER
-                'active'              => 'Active', // ENGLISH PLACEHOLDER
-                'custom'              => 'Custom', // ENGLISH PLACEHOLDER
-                'apply'               => 'Apply', // ENGLISH PLACEHOLDER
-                'preview'             => 'Preview', // ENGLISH PLACEHOLDER
-                'previewing'          => 'Previewing Theme', // ENGLISH PLACEHOLDER
-                'preview_admin_only'  => 'Visible only to you', // ENGLISH PLACEHOLDER
-                'exit_preview'        => 'Exit Preview', // ENGLISH PLACEHOLDER
-                'delete_confirm'      => 'Are you sure you want to delete this custom theme?', // ENGLISH PLACEHOLDER
-                'section_creator'     => 'Theme Creator', // ENGLISH PLACEHOLDER
-                'creator_title'       => 'Theme Creator', // ENGLISH PLACEHOLDER
-                'creator_tip'         => 'Create a custom theme by providing a name and hex colour codes.', // ENGLISH PLACEHOLDER
-                'theme_name'          => 'Theme name', // ENGLISH PLACEHOLDER
-                'save_theme'          => 'Save theme', // ENGLISH PLACEHOLDER
-                'section_import'      => 'Import Theme', // ENGLISH PLACEHOLDER
-                'import_file_label'   => 'Import theme file', // ENGLISH PLACEHOLDER
-                'import_file_tip'     => '.json theme files', // ENGLISH PLACEHOLDER
-                'import_button'       => 'Import theme', // ENGLISH PLACEHOLDER
+                'error_theme_name'    => 'Vul een geldige themanaam in.',
+                'error_theme_folder'  => 'De themamap kon niet worden aangemaakt.',
+                'error_theme_save'    => 'Het themabestand kon niet worden opgeslagen.',
+                'error_theme_upload'  => 'Uploaden van het themabestand mislukt.',
+                'error_theme_invalid' => 'Ongeldig themabestand (geen geldige JSON).',
+                'error_theme_not_found'=> 'Thema niet gevonden.',
+                'error_theme_delete'  => 'Het thema kon niet worden verwijderd.',
+                'error_theme_empty'   => 'Vul kleuren in voor de lichte modus, de donkere modus of allebei.',
+                'error_theme_light_incomplete' => 'Vul alle kleuren voor de lichte modus in, of laat ze allemaal leeg.',
+                'error_theme_dark_incomplete'  => 'Vul alle kleuren voor de donkere modus in, of laat ze allemaal leeg.',
+                'section_themes'      => 'Thema\'s',
+                'themes_intro'        => 'Kies een thema uit je verzameling, maak er zelf een, of {link} voor meer uitleg.',
+                'docs_link'           => 'lees de documentatie',
+                'active'              => 'Actief',
+                'custom'              => 'Eigen',
+                'apply'               => 'Toepassen',
+                'preview'             => 'Voorbeeld',
+                'previewing'          => 'Voorbeeld van thema',
+                'preview_admin_only'  => 'Alleen zichtbaar voor jou',
+                'exit_preview'        => 'Voorbeeld sluiten',
+                'delete_confirm'      => 'Weet je zeker dat je dit eigen thema wilt verwijderen?',
+                'section_creator'     => 'Thema maken',
+                'creator_title'       => 'Thema maken',
+                'creator_tip'         => 'Maak een eigen thema met een naam en hex-kleurcodes.',
+                'theme_name'          => 'Themanaam',
+                'save_theme'          => 'Thema opslaan',
+                'section_import'      => 'Thema importeren',
+                'import_file_label'   => 'Themabestand importeren',
+                'import_file_tip'     => '.json-themabestanden',
+                'import_button'       => 'Thema importeren',
                 'section_fonts'       => 'Lettertype-instellingen',
                 'site_font'           => 'Lettertype site',
                 'admin_font'          => 'Lettertype admin',
