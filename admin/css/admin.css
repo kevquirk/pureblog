@@ -1764,6 +1764,7 @@ td {
 
 .content-filter-field select {
     margin-bottom: 0;
+    padding: 11px 6px;
 }
 
 .content-filter-actions {
@@ -1893,7 +1894,7 @@ td {
     z-index: 0;
 }
 
-.editor-backdrop > code {
+.editor-backdrop>code {
     font: inherit !important;
     line-height: inherit !important;
     letter-spacing: inherit !important;
