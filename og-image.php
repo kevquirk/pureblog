@@ -326,7 +326,6 @@ if (function_exists('imagecreatetruecolor')) {
                 if ($favImg !== null && $favImg !== false) {
                     imagealphablending($img, true);
                     imagecopyresampled($img, $favImg, $faviconX, $faviconY, 0, 0, $faviconSize, $faviconSize, imagesx($favImg), imagesy($favImg));
-                    imagedestroy($favImg);
                     $textX = $faviconX + $faviconSize + 24;
                 }
             }
@@ -341,7 +340,6 @@ if (function_exists('imagecreatetruecolor')) {
         header('Content-Type: image/png');
         header('Cache-Control: public, max-age=86400');
         imagepng($img);
-        imagedestroy($img);
         exit;
     }
 }

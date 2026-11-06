@@ -224,7 +224,6 @@ function strip_image_metadata(string $path, string $mimeType): void
     }
 
     $saver($img);
-    imagedestroy($img);
 }
 
 function slugify(string $value): string
