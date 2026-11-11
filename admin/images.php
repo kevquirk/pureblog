@@ -10,7 +10,7 @@ $fontStack = font_stack_css($config['theme']['admin_font_stack'] ?? 'sans');
 $deleted     = isset($_GET['deleted']);
 $deleteError = trim((string) ($_GET['delete_error'] ?? ''));
 $search      = trim((string) ($_GET['q'] ?? ''));
-$perPage     = 32;
+$perPage     = 35;
 $page        = max(1, (int) ($_GET['page'] ?? 1));
 
 // Collect all images from all slug folders
