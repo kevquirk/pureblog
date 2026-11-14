@@ -131,6 +131,7 @@ foreach ($pageImages as &$image) {
 
     $image['used_in']       = $usedIn;
     $image['referenced_in'] = $usageMap[$imgKey] ?? [];
+    $image['thumb_url']     = get_image_thumb_url($image['slug'], $image['filename']);
 }
 unset($image);
 
@@ -169,7 +170,7 @@ require __DIR__ . '/../includes/admin-head.php';
                 <?php foreach ($pageImages as $i => $image): ?>
                     <?php $dialogId = 'delete-warn-' . $i; ?>
                     <div class="image-library-card">
-                        <img src="<?= e($image['url']) ?>" class="image-library-thumb" alt="<?= e($image['filename']) ?>" loading="lazy" data-url="<?= e($image['url']) ?>" data-filename="<?= e($image['filename']) ?>">
+                        <img src="<?= e($image['thumb_url']) ?>" class="image-library-thumb" alt="<?= e($image['filename']) ?>" loading="lazy" data-url="<?= e($image['url']) ?>" data-filename="<?= e($image['filename']) ?>">
                         <div class="image-library-info">
                             <code class="image-library-name" title="<?= e($image['filename']) ?>"><?= e($image['filename']) ?></code>
                             <div class="image-library-usage">

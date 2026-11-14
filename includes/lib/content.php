@@ -189,13 +189,21 @@ function is_safe_image_slug(string $slug): bool
 
 function strip_image_metadata(string $path, string $mimeType): void
 {
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
+    $tmpPath = $path . '.tmp' . ($ext !== '' ? '.' . $ext : '');
+
     if (class_exists('Imagick')) {
         try {
             $img = new Imagick($path);
             $img->stripImage();
-            $img->writeImage($path);
+            if ($img->writeImage($tmpPath) && is_file($tmpPath) && filesize($tmpPath) > 0) {
+                @rename($tmpPath, $path);
+            } else {
+                @unlink($tmpPath);
+            }
             $img->destroy();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
+            @unlink($tmpPath);
             // silently fail — upload still succeeds
         }
         return;
@@ -203,9 +211,9 @@ function strip_image_metadata(string $path, string $mimeType): void
 
     // GD fallback: re-encoding drops all metadata
     [$loader, $saver] = match($mimeType) {
-        'image/jpeg' => ['imagecreatefromjpeg', fn($i) => imagejpeg($i, $path, 90)],
-        'image/png'  => ['imagecreatefrompng',  fn($i) => imagepng($i, $path)],
-        'image/webp' => ['imagecreatefromwebp', fn($i) => imagewebp($i, $path)],
+        'image/jpeg' => ['imagecreatefromjpeg', fn($i, $dest) => imagejpeg($i, $dest, 90)],
+        'image/png'  => ['imagecreatefrompng',  fn($i, $dest) => imagepng($i, $dest)],
+        'image/webp' => ['imagecreatefromwebp', fn($i, $dest) => imagewebp($i, $dest)],
         default      => [null, null],
     };
 
@@ -213,17 +221,165 @@ function strip_image_metadata(string $path, string $mimeType): void
         return;
     }
 
-    $img = $loader($path);
-    if ($img === false) {
-        return;
+    try {
+        $img = @$loader($path);
+        if ($img === false) {
+            return;
+        }
+
+        if ($mimeType === 'image/png' || $mimeType === 'image/webp') {
+            imagealphablending($img, false);
+            imagesavealpha($img, true);
+        }
+
+        if (@$saver($img, $tmpPath) && is_file($tmpPath) && filesize($tmpPath) > 0) {
+            @rename($tmpPath, $path);
+        } else {
+            @unlink($tmpPath);
+        }
+    } catch (Throwable $e) {
+        @unlink($tmpPath);
+    }
+}
+
+/**
+ * Generate a resized thumbnail for an admin image preview.
+ */
+function generate_image_thumbnail(string $sourcePath, string $thumbPath, int $maxSize = 300): bool
+{
+    if (!is_file($sourcePath) || $maxSize < 1) {
+        return false;
     }
 
-    if ($mimeType === 'image/png' || $mimeType === 'image/webp') {
-        imagealphablending($img, false);
-        imagesavealpha($img, true);
+    if (!class_exists('Imagick') && !extension_loaded('gd')) {
+        return false;
     }
 
-    $saver($img);
+    $thumbDir = dirname($thumbPath);
+    if (!is_dir($thumbDir) && !@mkdir($thumbDir, 0755, true)) {
+        return false;
+    }
+
+    $ext = pathinfo($thumbPath, PATHINFO_EXTENSION);
+    $tmpPath = $thumbPath . '.tmp' . ($ext !== '' ? '.' . $ext : '');
+
+    if (class_exists('Imagick')) {
+        try {
+            $img = new Imagick($sourcePath);
+            if ($img->getNumberImages() > 1) {
+                $img = $img->coalesceImages();
+                $img->setIteratorIndex(0);
+                $single = $img->getImage();
+                $img->destroy();
+                $img = $single;
+            }
+            $w = $img->getImageWidth();
+            $h = $img->getImageHeight();
+            if ($w <= 0 || $h <= 0) {
+                $img->destroy();
+                return false;
+            }
+            if ($w <= $maxSize && $h <= $maxSize) {
+                $img->destroy();
+                return @copy($sourcePath, $thumbPath);
+            }
+            $img->thumbnailImage($maxSize, $maxSize, true);
+            $ok = $img->writeImage($tmpPath) && is_file($tmpPath) && filesize($tmpPath) > 0;
+            $img->destroy();
+            if ($ok) {
+                return @rename($tmpPath, $thumbPath);
+            }
+            @unlink($tmpPath);
+        } catch (Throwable $e) {
+            @unlink($tmpPath);
+        }
+        return false;
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($sourcePath) ?: '';
+
+    [$loader, $saver] = match($mimeType) {
+        'image/jpeg' => ['imagecreatefromjpeg', fn($i, $dest) => imagejpeg($i, $dest, 82)],
+        'image/png'  => ['imagecreatefrompng',  fn($i, $dest) => imagepng($i, $dest)],
+        'image/webp' => ['imagecreatefromwebp', fn($i, $dest) => imagewebp($i, $dest, 82)],
+        'image/gif'  => ['imagecreatefromgif',  fn($i, $dest) => imagegif($i, $dest)],
+        'image/avif' => ['imagecreatefromavif', fn($i, $dest) => function_exists('imageavif') ? imageavif($i, $dest, 82) : false],
+        default      => [null, null],
+    };
+
+    if ($loader === null || !function_exists($loader)) {
+        return false;
+    }
+
+    try {
+        $srcImg = @$loader($sourcePath);
+        if ($srcImg === false) {
+            return false;
+        }
+
+        $w = imagesx($srcImg);
+        $h = imagesy($srcImg);
+        if ($w <= 0 || $h <= 0) {
+            return false;
+        }
+
+        if ($w <= $maxSize && $h <= $maxSize) {
+            return @copy($sourcePath, $thumbPath);
+        }
+
+        $ratio = min($maxSize / $w, $maxSize / $h);
+        $newW = max(1, (int) round($w * $ratio));
+        $newH = max(1, (int) round($h * $ratio));
+
+        $dstImg = imagecreatetruecolor($newW, $newH);
+        if ($dstImg === false) {
+            return false;
+        }
+
+        if (in_array($mimeType, ['image/png', 'image/webp', 'image/gif', 'image/avif'], true)) {
+            imagealphablending($dstImg, false);
+            imagesavealpha($dstImg, true);
+            $transparent = imagecolorallocatealpha($dstImg, 0, 0, 0, 127);
+            if ($transparent !== false) {
+                imagefilledrectangle($dstImg, 0, 0, $newW, $newH, $transparent);
+            }
+        }
+
+        if (!imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $newW, $newH, $w, $h)) {
+            return false;
+        }
+
+        if (@$saver($dstImg, $tmpPath) && is_file($tmpPath) && filesize($tmpPath) > 0) {
+            return @rename($tmpPath, $thumbPath);
+        }
+        @unlink($tmpPath);
+    } catch (Throwable $e) {
+        @unlink($tmpPath);
+    }
+
+    return false;
+}
+
+/**
+ * Get the thumbnail URL for an image in a slug folder, lazily generating it if missing.
+ */
+function get_image_thumb_url(string $slug, string $filename): string
+{
+    $fullUrl = base_path() . '/content/images/' . $slug . '/' . $filename;
+    $thumbUrl = base_path() . '/content/images/' . $slug . '/thumbs/' . $filename;
+    $sourcePath = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug . '/' . $filename;
+    $thumbPath = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug . '/thumbs/' . $filename;
+
+    if (is_file($thumbPath) && filesize($thumbPath) > 0) {
+        return $thumbUrl;
+    }
+
+    if (is_file($sourcePath) && generate_image_thumbnail($sourcePath, $thumbPath)) {
+        return $thumbUrl;
+    }
+
+    return $fullUrl;
 }
 
 function slugify(string $value): string
@@ -957,6 +1113,15 @@ function delete_page_by_slug(string $slug): bool
 
     $imageDir = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug;
     if (is_dir($imageDir)) {
+        $thumbDir = $imageDir . '/thumbs';
+        if (is_dir($thumbDir)) {
+            foreach (glob($thumbDir . '/*') ?: [] as $thumbFile) {
+                if (is_file($thumbFile)) {
+                    @unlink($thumbFile);
+                }
+            }
+            @rmdir($thumbDir);
+        }
         $files = glob($imageDir . '/*') ?: [];
         foreach ($files as $file) {
             if (is_file($file) && !unlink($file)) {
@@ -1024,6 +1189,15 @@ function delete_post_by_slug(string $slug): bool
     if ($deleted) {
         $imageDir = PUREBLOG_CONTENT_IMAGES_PATH . '/' . $slug;
         if (is_dir($imageDir)) {
+            $thumbDir = $imageDir . '/thumbs';
+            if (is_dir($thumbDir)) {
+                foreach (glob($thumbDir . '/*') ?: [] as $thumbFile) {
+                    if (is_file($thumbFile)) {
+                        @unlink($thumbFile);
+                    }
+                }
+                @rmdir($thumbDir);
+            }
             $files = glob($imageDir . '/*') ?: [];
             foreach ($files as $file) {
                 if (is_file($file) && !unlink($file)) {

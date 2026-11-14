@@ -162,8 +162,8 @@
     field?.addEventListener('input', scheduleAutosave);
   });
 
-  // Discard autosave on successful manual save (form submit).
-  editorForm?.addEventListener('submit', () => { discardAutosave(); });
+  // Cancel any pending autosave timer on manual save (server deletes autosave file on save).
+  editorForm?.addEventListener('submit', () => { clearTimeout(autosaveTimer); });
 
   // Show restore banner if an autosave exists.
   if (config.autosave) {
@@ -314,9 +314,9 @@
 
   async function saveEditorBeforeSidebarAction() {
     clearTimeout(autosaveTimer);
-    await doAutosave();
 
     const formData = new FormData(editorForm);
+    formData.set('ajax_save', '1');
     const response = await fetch(editorForm.action || window.location.href, {
       method: 'POST',
       body: formData,
@@ -325,12 +325,11 @@
     if (!response.ok) {
       throw new Error(config.strings.save_failed);
     }
-    const responseUrl = new URL(response.url, window.location.origin);
-    if (!responseUrl.searchParams.get('saved')) {
+    const data = await response.json();
+    if (!data || !data.saved) {
       throw new Error(config.strings.save_failed);
     }
-    await discardAutosave();
-    return responseUrl.searchParams.get('slug') || (slugField?.value ?? '').trim();
+    return data.slug || (slugField?.value ?? '').trim();
   }
 
   if (uploadForm && editorForm) {

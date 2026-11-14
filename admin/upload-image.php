@@ -148,6 +148,7 @@ if (empty($errors)) {
             $destination = $webpDestination;
         }
         $filename = basename($destination);
+        generate_image_thumbnail($destination, $uploadDir . '/thumbs/' . $filename);
         $url = base_path() . '/content/images/' . $folder . '/' . $filename;
         $altText = pathinfo($filename, PATHINFO_FILENAME) ?: 'image';
         $messages[] = '![' . $altText . '](' . $url . ')';
