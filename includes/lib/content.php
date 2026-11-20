@@ -260,19 +260,27 @@ function generate_image_thumbnail(string $sourcePath, string $thumbPath, int $ma
         return false;
     }
 
+    $sizeInfo = @getimagesize($sourcePath);
+    if (is_array($sizeInfo) && isset($sizeInfo[0], $sizeInfo[1])) {
+        $infoW = (int) $sizeInfo[0];
+        $infoH = (int) $sizeInfo[1];
+        if ($infoW > 0 && $infoH > 0 && $infoW <= $maxSize && $infoH <= $maxSize) {
+            return @copy($sourcePath, $thumbPath);
+        }
+        // Guard against extreme dimensions (>36 MP) when falling back to GD to avoid fatal OOM errors.
+        if (!class_exists('Imagick') && ($infoW * $infoH) > 36_000_000) {
+            return false;
+        }
+    }
+
     $ext = pathinfo($thumbPath, PATHINFO_EXTENSION);
     $tmpPath = $thumbPath . '.tmp' . ($ext !== '' ? '.' . $ext : '');
 
     if (class_exists('Imagick')) {
         try {
-            $img = new Imagick($sourcePath);
-            if ($img->getNumberImages() > 1) {
-                $img = $img->coalesceImages();
-                $img->setIteratorIndex(0);
-                $single = $img->getImage();
-                $img->destroy();
-                $img = $single;
-            }
+            $img = new Imagick();
+            // Append [0] so animated GIFs/WebPs only decode the first frame instead of all frames into RAM.
+            $img->readImage($sourcePath . '[0]');
             $w = $img->getImageWidth();
             $h = $img->getImageHeight();
             if ($w <= 0 || $h <= 0) {
@@ -362,7 +370,7 @@ function generate_image_thumbnail(string $sourcePath, string $thumbPath, int $ma
 }
 
 /**
- * Get the thumbnail URL for an image in a slug folder, lazily generating it if missing.
+ * Get the thumbnail URL for an image in a slug folder, deferring generation to thumb.php if missing.
  */
 function get_image_thumb_url(string $slug, string $filename): string
 {
@@ -375,8 +383,8 @@ function get_image_thumb_url(string $slug, string $filename): string
         return $thumbUrl;
     }
 
-    if (is_file($sourcePath) && generate_image_thumbnail($sourcePath, $thumbPath)) {
-        return $thumbUrl;
+    if (is_file($sourcePath) && (class_exists('Imagick') || extension_loaded('gd'))) {
+        return base_path() . '/admin/thumb.php?slug=' . urlencode($slug) . '&file=' . urlencode($filename);
     }
 
     return $fullUrl;
