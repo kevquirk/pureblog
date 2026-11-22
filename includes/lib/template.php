@@ -430,7 +430,7 @@ function get_excerpt(string $markdown, int $length = 200): string
     $excerpt = preg_replace('/[*_~]+/', '', $excerpt) ?? $excerpt;                  // inline emphasis
     $excerpt = strip_tags($excerpt);
     $excerpt = html_entity_decode($excerpt, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-    $excerpt = preg_replace('/\s+/u', ' ', $excerpt) ?? $excerpt;
+    $excerpt = preg_replace('/\s+/', ' ', $excerpt) ?? $excerpt;
     $excerpt = trim($excerpt);
 
     if (mb_strlen($excerpt) > $length) {
