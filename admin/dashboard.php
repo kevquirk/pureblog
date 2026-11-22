@@ -146,12 +146,12 @@ for ($d = 1; $d <= 7; $d++) {
     $dayLabels[$d] = t('date.days_short.' . ($d % 7));
 }
 
-// Version check — cached for 6 hours to avoid a GitHub API call on every load
+// Version check — cached for 10 minutes to avoid checking on every page load
 $currentVersion   = detect_current_pureblog_version();
 $versionCacheFile = PUREBLOG_BASE_PATH . '/content/.version-cache';
 $latestVersion    = '';
 $cacheAge         = is_file($versionCacheFile) ? (time() - (int) @filemtime($versionCacheFile)) : PHP_INT_MAX;
-if ($cacheAge > 21600) {
+if ($cacheAge > 600) {
     $release = fetch_latest_pureblog_release();
     if ($release['ok'] && $release['tag'] !== '') {
         $latestVersion = $release['tag'];

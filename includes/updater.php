@@ -808,7 +808,7 @@ function check_and_run_auto_update(array $config): ?array
     $latestVersion = '';
     $release = null;
 
-    if ($cacheAge > 21600) {
+    if ($cacheAge > 600) {
         $release = fetch_latest_pureblog_release();
         if (($release['ok'] ?? false) && ($release['tag'] ?? '') !== '') {
             $latestVersion = (string) $release['tag'];
