@@ -2976,3 +2976,76 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
 }
+
+.settings-tabs-nav {
+    margin: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.settings-tabs-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: -1px;
+}
+
+.settings-tab-item {
+    margin: 0;
+    padding: 0;
+}
+
+.settings-tab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.15rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-color);
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.settings-tab-link:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.settings-tab-link:hover .icon {
+    stroke: currentColor;
+}
+
+.settings-tab-link.active {
+    background: var(--bg-color);
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--bg-color);
+    position: relative;
+    z-index: 2;
+}
+
+.settings-tab-link.active .icon {
+    stroke: var(--accent-color);
+}
+
+.inline-warning {
+    margin: 0.75rem 0 1.25rem;
+    padding: 1rem;
+    border: 2px solid var(--red);
+    background: #fff5f5;
+    color: var(--text-color);
+}
+
+html[data-admin-theme="dark"] .inline-warning {
+    background: rgba(255, 138, 128, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-admin-theme="auto"] .inline-warning {
+        background: rgba(255, 138, 128, 0.1);
+    }
+}

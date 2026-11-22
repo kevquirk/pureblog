@@ -187,7 +187,25 @@ $adminTitle = t('admin.content.page_title');
 require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
-        <h1><?= e($tab === 'pages' ? t('admin.content.tab_pages') : t('admin.content.tab_posts')) ?></h1>
+        <h1><?= e($blogPostsEnabled ? t('admin.nav.content') : t('admin.content.tab_pages')) ?></h1>
+        <?php if ($blogPostsEnabled): ?>
+            <nav class="settings-tabs-nav" aria-label="<?= e(t('admin.nav.content')) ?>">
+                <ul class="settings-tabs-list">
+                    <li class="settings-tab-item">
+                        <a href="<?= base_path() ?>/admin/content.php?tab=posts" class="settings-tab-link<?= $tab === 'posts' ? ' active' : '' ?>">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg>
+                            <span><?= e(t('admin.content.tab_posts')) ?></span>
+                        </a>
+                    </li>
+                    <li class="settings-tab-item">
+                        <a href="<?= base_path() ?>/admin/content.php?tab=pages" class="settings-tab-link<?= $tab === 'pages' ? ' active' : '' ?>">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg>
+                            <span><?= e(t('admin.content.tab_pages')) ?></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        <?php endif; ?>
         <nav class="admin-actions">
             <?php if ($tab === 'pages'): ?>
                 <a class="button save" href="<?= base_path() ?>/admin/edit-page.php?action=new"><svg class="icon" aria-hidden="true"><use href="#icon-file-plus-corner"></use></svg> <?= e(t('admin.content.new_page')) ?></a>

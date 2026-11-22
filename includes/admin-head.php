@@ -58,6 +58,26 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
 $adminActionButtons = !$hideAdminNav ? get_admin_action_buttons() : [];
 $adminActionFlash = $_SESSION['admin_action_flash'] ?? null;
 unset($_SESSION['admin_action_flash']);
+
+if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && !empty($config['updates']['auto_update'])) {
+    require_once __DIR__ . '/updater.php';
+    $autoUpdateResult = check_and_run_auto_update($config);
+    if (is_array($autoUpdateResult)) {
+        if (!empty($autoUpdateResult['ok'])) {
+            $adminActionFlash = [
+                'ok'      => true,
+                'sticky'  => true,
+                'message' => t('admin.settings.updates.notice_auto_updated', ['version' => (string) ($autoUpdateResult['version'] ?? '')]),
+            ];
+        } elseif (!empty($autoUpdateResult['breaking'])) {
+            $adminActionFlash = [
+                'ok'      => false,
+                'sticky'  => true,
+                'message' => t('admin.settings.updates.notice_auto_update_breaking', ['version' => (string) ($autoUpdateResult['version'] ?? '')]),
+            ];
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= e(str_replace('_', '-', (string) ($config['language'] ?? 'en'))) ?>" data-admin-theme="<?= e($adminColorMode) ?>" data-admin-font="<?= e($config['theme']['admin_font_stack'] ?? 'sans') ?>">
@@ -227,12 +247,6 @@ unset($_SESSION['admin_action_flash']);
                 <?php if ($adminHomepageSetting === 'content'): ?>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
-                        <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
-                        </ul>
-                        <?php endif; ?>
                     </li>
                     <?php if (!$adminHideDashboard): ?>
                         <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
@@ -241,12 +255,6 @@ unset($_SESSION['admin_action_flash']);
                     <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
-                        <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
-                        </ul>
-                        <?php endif; ?>
                     </li>
                 <?php endif; ?>
                 <li>
@@ -254,23 +262,6 @@ unset($_SESSION['admin_action_flash']);
                 </li>
                 <li>
                     <a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.settings')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg><span><?= e(t('admin.nav.settings')) ?></span></a>
-                    <?php if ($isSettings): ?>
-                    <?php
-                    $sidebarSettingsPath = $adminPath;
-                    $sidebarSettingsItems = [
-                        'admin/settings-site.php'    => ['label' => t('admin.settings.nav.site'),    'icon' => 'globe'],
-                        'admin/settings-theme.php'   => ['label' => t('admin.settings.nav.theme'),   'icon' => 'paintbrush'],
-                        'admin/settings-css.php'     => ['label' => t('admin.settings.nav.css'),     'icon' => 'braces'],
-                        'admin/settings-user.php'    => ['label' => t('admin.settings.nav.user'),    'icon' => 'user'],
-                        'admin/settings-updates.php' => ['label' => t('admin.settings.nav.updates'), 'icon' => 'upgrade'],
-                    ];
-                    ?>
-                    <ul class="admin-nav-list sidebar-subnav">
-                        <?php foreach ($sidebarSettingsItems as $sPath => $sItem): ?>
-                            <li><a href="<?= base_path() ?>/<?= e($sPath) ?>"<?= $sidebarSettingsPath === $sPath ? ' class="current"' : '' ?> title="<?= e($sItem['label']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-<?= e($sItem['icon']) ?>"></use></svg><span><?= e($sItem['label']) ?></span></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php endif; ?>
                 </li>
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/" title="<?= e(t('admin.nav.view_site')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg><span><?= e(t('admin.nav.view_site')) ?></span></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
@@ -343,7 +334,7 @@ unset($_SESSION['admin_action_flash']);
     <?php if (!$hideAdminNav): ?>
         <?php if (is_array($adminActionFlash) && isset($adminActionFlash['message'])): ?>
             <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
-            <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
+            <p class="notice<?= $flashOk ? '' : ' delete' ?>"<?= empty($adminActionFlash['sticky']) ? ' data-auto-dismiss' : '' ?>><?= e((string) $adminActionFlash['message']) ?></p>
         <?php endif; ?>
         <?php
         $searchSlug = trim((string) ($config['search_page_slug'] ?? 'search'));

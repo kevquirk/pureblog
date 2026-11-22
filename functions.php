@@ -81,6 +81,7 @@ function default_config(): array
         'mfa_enabled' => false,
         'mfa_secret' => '',
         'mfa_backup_codes' => [],
+        'api_token_hash' => '',
         'cache' => [
             'enabled' => true,
             'rss_ttl' => 3600,
@@ -113,6 +114,10 @@ function default_config(): array
             'purecomments_enabled' => false,
             'purecomments_url' => '',
             'purecomments_autoload' => false,
+        ],
+        'updates' => [
+            'auto_update' => false,
+            'max_backups' => 0,
         ],
     ];
 }

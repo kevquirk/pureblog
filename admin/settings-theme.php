@@ -172,6 +172,7 @@ require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
         <h1><?= e(t('admin.settings.theme.heading')) ?></h1>
+        <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <nav class="admin-actions">

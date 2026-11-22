@@ -79,6 +79,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && !isset($_POST['admin_act
         if (!($applyResult['ok'] ?? false) && $backupName === '') {
             $applyResult = ['ok' => false, 'error' => t('admin.settings.updates.error_choose_delete')];
         }
+    } elseif (isset($_POST['save_update_settings'])) {
+        $config['updates']['auto_update'] = !empty($_POST['auto_update']);
+        $config['updates']['max_backups'] = max(0, (int) ($_POST['max_backups'] ?? 0));
+        if (save_config($config)) {
+            $_SESSION['admin_action_flash'] = ['ok' => true, 'message' => t('admin.settings.updates.notice_settings_saved')];
+            header('Location: ' . base_path() . '/admin/settings-updates.php');
+            exit;
+        }
+        $applyResult = ['ok' => false, 'error' => t('admin.settings.updates.error_settings_save')];
     }
 }
 
@@ -95,7 +104,8 @@ require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
         <h1><?= e(t('admin.settings.updates.heading')) ?></h1>
-
+        <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
+        <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <section class="section-divider">
             <span class="title"><?= e(t('admin.settings.updates.section_version')) ?></span>
@@ -246,6 +256,27 @@ require __DIR__ . '/../includes/admin-head.php';
         </section>
         <?php endif; ?>
 
+        <section class="section-divider">
+            <span class="title"><?= e(t('admin.settings.updates.section_settings')) ?></span>
+            <form method="post" action="<?= base_path() ?>/admin/settings-updates.php">
+                <?= csrf_field() ?>
+                <label class="inline-checkbox" for="auto_update">
+                    <input type="checkbox" id="auto_update" name="auto_update" value="1" <?= !empty($config['updates']['auto_update']) ? 'checked' : '' ?>>
+                    <?= e(t('admin.settings.updates.auto_update_label')) ?>
+                </label>
+                <p id="auto-update-warning" class="inline-warning"<?= empty($config['updates']['auto_update']) ? ' hidden' : '' ?>><?= e(t('admin.settings.updates.auto_update_warning')) ?></p>
+
+                <label for="max_backups"><?= e(t('admin.settings.updates.max_backups_label')) ?></label>
+                <input type="number" id="max_backups" name="max_backups" min="0" step="1" value="<?= e((string) ($config['updates']['max_backups'] ?? 0)) ?>">
+                <p class="help"><?= e(t('admin.settings.updates.max_backups_help')) ?></p>
+
+                <button class="save" type="submit" name="save_update_settings" value="1">
+                    <svg class="icon" aria-hidden="true"><use href="#icon-save"></use></svg>
+                    <?= e(t('admin.settings.updates.save_settings')) ?>
+                </button>
+            </form>
+        </section>
+
         <?php if ($applyResult !== null): ?>
         <section class="section-divider">
             <span class="title"><?= e(t('admin.settings.updates.section_result')) ?></span>
@@ -261,4 +292,15 @@ require __DIR__ . '/../includes/admin-head.php';
         <?php endif; ?>
 
     </main>
+    <script>
+        (() => {
+            const checkbox = document.getElementById('auto_update');
+            const warning = document.getElementById('auto-update-warning');
+            if (checkbox && warning) {
+                checkbox.addEventListener('change', () => {
+                    warning.hidden = !checkbox.checked;
+                });
+            }
+        })();
+    </script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>
