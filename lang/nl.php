@@ -641,6 +641,18 @@ return [
                 'error_htaccess_dir'         => 'Kan map niet aanmaken voor bewaard .htaccess: {path}',
                 'error_htaccess_restore'     => 'Kan bewaard .htaccess niet herstellen: {path}',
                 'error_source_missing'       => 'Bronpad niet gevonden: {path}',
+
+                'section_settings'            => 'Update-instellingen',
+                'auto_update_label'           => 'Automatische updates inschakelen',
+                'auto_update_warning'         => 'Let op: als dit is ingeschakeld, werkt Pure Blog zichzelf automatisch bij zodra je een beheerpagina opent. Je krijgt dan niet eerst de kans om de changelog te lezen. Releases met ingrijpende wijzigingen moet je nog steeds handmatig bijwerken.',
+                'max_backups_label'           => 'Maximaal aantal update-back-ups om te bewaren',
+                'max_backups_help'            => 'Na een geslaagde update worden oudere back-ups in /backup automatisch verwijderd. Stel in op 0 om automatisch verwijderen uit te schakelen.',
+                'save_settings'               => 'Update-instellingen opslaan',
+                'notice_settings_saved'       => 'Update-instellingen opgeslagen.',
+                'error_settings_save'         => 'Kan update-instellingen niet opslaan.',
+                'notice_auto_updated'         => 'Je site is zojuist automatisch bijgewerkt naar {version}.',
+                'notice_auto_update_breaking' => 'Pure Blog {version} is beschikbaar, maar bevat ingrijpende wijzigingen. Je moet deze versie handmatig bijwerken.',
+    
             ],
 
         ],
