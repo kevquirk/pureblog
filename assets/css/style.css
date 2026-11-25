@@ -587,6 +587,7 @@ details[open]> :last-child {
 table {
     border-collapse: collapse;
     margin: 1.5rem 0;
+    width: 100%;
 }
 
 figure>table {

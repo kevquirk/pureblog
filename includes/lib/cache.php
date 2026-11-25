@@ -216,3 +216,101 @@ function pureblog_http_download(string $url, string $destination, int $timeout =
     return null;
 }
 
+// ---------------------------------------------------------------------------
+// Backup & file helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * @return list<string>
+ */
+function collect_relative_files(string $root): array
+{
+    $files = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
+    );
+
+    foreach ($iterator as $item) {
+        if (!$item->isFile()) {
+            continue;
+        }
+        $fullPath = str_replace('\\', '/', $item->getPathname());
+        $prefix = rtrim(str_replace('\\', '/', $root), '/') . '/';
+        if (!str_starts_with($fullPath, $prefix)) {
+            continue;
+        }
+        $relative = substr($fullPath, strlen($prefix));
+        if ($relative === '' || str_starts_with($relative, '.git/')) {
+            continue;
+        }
+        $files[] = $relative;
+    }
+
+    sort($files);
+    return $files;
+}
+
+/**
+ * Create a full-site zip archive in the system temp directory (excluding /cache, /backup, and /.git).
+ *
+ * @return array{ok:bool,path?:string,filename?:string,error?:string}
+ */
+function create_site_backup_zip(): array
+{
+    if (!class_exists('ZipArchive')) {
+        return ['ok' => false, 'error' => t('admin.settings.updates.error_ziparchive')];
+    }
+
+    $tmpZip = rtrim(sys_get_temp_dir(), '/') . '/pureblog-site-backup-' . bin2hex(random_bytes(8)) . '.zip';
+    $zip = new ZipArchive();
+    if ($zip->open($tmpZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        return ['ok' => false, 'error' => t('admin.settings.site.error_backup_zip')];
+    }
+
+    try {
+        $files = collect_relative_files(PUREBLOG_BASE_PATH);
+        $excludedTop = ['cache' => true, 'backup' => true];
+        $added = 0;
+
+        foreach ($files as $relative) {
+            $top = (string) strtok($relative, '/');
+            if (isset($excludedTop[$top])) {
+                continue;
+            }
+            $fullPath = PUREBLOG_BASE_PATH . '/' . $relative;
+            if (!is_readable($fullPath)) {
+                continue;
+            }
+            if (!$zip->addFile($fullPath, $relative)) {
+                $zip->close();
+                @unlink($tmpZip);
+                return ['ok' => false, 'error' => t('admin.settings.site.error_backup_zip')];
+            }
+            $added++;
+        }
+
+        if (!$zip->close() || $added === 0 || !is_file($tmpZip)) {
+            @unlink($tmpZip);
+            return ['ok' => false, 'error' => t('admin.settings.site.error_backup_zip')];
+        }
+
+        $versionRaw = detect_current_pureblog_version();
+        $versionSlug = preg_replace('/[^a-zA-Z0-9._-]+/', '-', $versionRaw);
+        if (!is_string($versionSlug) || $versionSlug === '') {
+            $versionSlug = 'unknown';
+        }
+        $filename = 'pureblog-backup-' . date('Ymd-His') . '-' . $versionSlug . '.zip';
+
+        return [
+            'ok' => true,
+            'path' => $tmpZip,
+            'filename' => $filename,
+        ];
+    } catch (Throwable $e) {
+        @$zip->close();
+        @unlink($tmpZip);
+        return ['ok' => false, 'error' => t('admin.settings.site.error_backup_zip')];
+    }
+}
+
+

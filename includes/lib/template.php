@@ -429,6 +429,7 @@ function get_excerpt(string $markdown, int $length = 200): string
     $excerpt = preg_replace('/^[-*_]{2,}[ \t]*$/m', ' ', $excerpt) ?? $excerpt;    // setext headers / HR
     $excerpt = preg_replace('/[*_~]+/', '', $excerpt) ?? $excerpt;                  // inline emphasis
     $excerpt = strip_tags($excerpt);
+    $excerpt = html_entity_decode($excerpt, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $excerpt = preg_replace('/\s+/', ' ', $excerpt) ?? $excerpt;
     $excerpt = trim($excerpt);
 
@@ -473,7 +474,7 @@ function normalize_tag(string $tag): string
     ]);
 
     // Retain letters, numbers, emojis, pictographs, variation selectors, and joiners
-    $tag = preg_replace('/[^\p{L}\p{N}\p{Extended_Pictographic}\p{So}\x{1F3FB}-\x{1F3FF}\p{M}\x{200D}\x{FE0E}\x{FE0F}\s_-]/u', '', $tag) ?? '';
+    $tag = preg_replace('/[^\p{L}\p{N}\p{So}\p{M}\x{1F000}-\x{1FAFF}\x{2600}-\x{27BF}\x{200D}\x{FE0E}\x{FE0F}\s_-]/u', '', $tag) ?? '';
     $tag = preg_replace('/[\s_-]+/u', '-', $tag) ?? '';
 
     return trim($tag, '-');

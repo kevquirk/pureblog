@@ -111,36 +111,6 @@ function download_url_to_file(string $url, string $destination): ?string
     );
 }
 
-/**
- * @return list<string>
- */
-function collect_relative_files(string $root): array
-{
-    $files = [];
-    $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
-    );
-
-    foreach ($iterator as $item) {
-        if (!$item->isFile()) {
-            continue;
-        }
-        $fullPath = str_replace('\\', '/', $item->getPathname());
-        $prefix = rtrim(str_replace('\\', '/', $root), '/') . '/';
-        if (!str_starts_with($fullPath, $prefix)) {
-            continue;
-        }
-        $relative = substr($fullPath, strlen($prefix));
-        if ($relative === '' || str_starts_with($relative, '.git/')) {
-            continue;
-        }
-        $files[] = $relative;
-    }
-
-    sort($files);
-    return $files;
-}
-
 function is_htaccess_path(string $relativePath): bool
 {
     return basename(str_replace('\\', '/', $relativePath)) === '.htaccess';
@@ -732,6 +702,12 @@ function apply_release_update(string $zipballUrl, string $releaseTag = ''): arra
 
         @unlink(PUREBLOG_BASE_PATH . '/content/.version-cache');
 
+        $cfg = function_exists('load_config') ? load_config() : [];
+        $maxBackups = (int) ($cfg['updates']['max_backups'] ?? 0);
+        if ($maxBackups > 0) {
+            prune_old_backups($maxBackups);
+        }
+
         return [
             'ok' => true,
             'message' => t('admin.settings.updates.notice_update_applied'),
@@ -803,4 +779,105 @@ function fetch_latest_pureblog_release(): array
     }
 
     return $fetchManifest('https://packages.purecommons.org/blog/latest.json');
+}
+
+function prune_old_backups(int $maxBackups): void
+{
+    if ($maxBackups <= 0) {
+        return;
+    }
+    $backups = list_available_backups();
+    foreach (array_slice($backups, $maxBackups) as $oldBackup) {
+        delete_named_backup($oldBackup);
+    }
+}
+
+function check_and_run_auto_update(array $config): ?array
+{
+    if (PHP_SAPI === 'cli' || empty($config['updates']['auto_update'])) {
+        return null;
+    }
+
+    $currentVersion = detect_current_pureblog_version();
+    if ($currentVersion === 'unknown') {
+        return null;
+    }
+
+    $versionCacheFile = PUREBLOG_BASE_PATH . '/content/.version-cache';
+    $cacheAge = is_file($versionCacheFile) ? (time() - (int) @filemtime($versionCacheFile)) : PHP_INT_MAX;
+    $latestVersion = '';
+    $release = null;
+
+    if ($cacheAge > 600) {
+        $release = fetch_latest_pureblog_release();
+        if (($release['ok'] ?? false) && ($release['tag'] ?? '') !== '') {
+            $latestVersion = (string) $release['tag'];
+            @file_put_contents($versionCacheFile, $latestVersion);
+        } else {
+            return null;
+        }
+    } else {
+        $cached = @file_get_contents($versionCacheFile);
+        $latestVersion = is_string($cached) ? trim($cached) : '';
+    }
+
+    if ($latestVersion === '' || version_compare(ltrim($currentVersion, 'vV'), ltrim($latestVersion, 'vV'), '>=')) {
+        return null;
+    }
+
+    $breakingMarker = PUREBLOG_BASE_PATH . '/content/.auto-update-breaking';
+    if (is_file($breakingMarker) && trim((string) @file_get_contents($breakingMarker)) === $latestVersion) {
+        return null;
+    }
+
+    $lockFile = PUREBLOG_BASE_PATH . '/content/.auto-update.lock';
+    $lockHandle = @fopen($lockFile, 'c');
+    if ($lockHandle === false) {
+        return null;
+    }
+    if (!@flock($lockHandle, LOCK_EX | LOCK_NB)) {
+        @fclose($lockHandle);
+        return null;
+    }
+
+    try {
+        if ($release === null) {
+            $release = fetch_latest_pureblog_release();
+        }
+        if (!($release['ok'] ?? false) || empty($release['zipball_url'])) {
+            return null;
+        }
+
+        $latestTag = (string) ($release['tag'] ?? $latestVersion);
+        if (version_compare(ltrim($currentVersion, 'vV'), ltrim($latestTag, 'vV'), '>=')) {
+            return null;
+        }
+
+        $plan = build_package_upgrade_plan((string) $release['zipball_url']);
+        if (!($plan['ok'] ?? false)) {
+            return null;
+        }
+        if (!empty($plan['breaking'])) {
+            @file_put_contents($breakingMarker, $latestTag);
+            return [
+                'ok'       => false,
+                'breaking' => true,
+                'version'  => normalize_version_label($latestTag),
+            ];
+        }
+
+        $result = apply_release_update((string) $release['zipball_url'], $latestTag);
+        if (!($result['ok'] ?? false)) {
+            return null;
+        }
+
+        @unlink($breakingMarker);
+        return [
+            'ok'      => true,
+            'version' => normalize_version_label($latestTag),
+        ];
+    } finally {
+        @flock($lockHandle, LOCK_UN);
+        @fclose($lockHandle);
+    }
 }

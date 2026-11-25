@@ -172,6 +172,8 @@ body {
 
 body {
     min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -186,19 +188,21 @@ body {
 .admin-shell {
     display: flex;
     flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
 .admin-main {
     flex: 1;
     min-width: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
 }
 
 .admin-content {
-    flex: 1;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     padding: 0 1rem;
@@ -1760,6 +1764,7 @@ td {
 
 .content-filter-field select {
     margin-bottom: 0;
+    padding: 11px 6px;
 }
 
 .content-filter-actions {
@@ -1780,7 +1785,7 @@ td {
     background: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    z-index: 1;
+    z-index: 10;
 }
 
 .editor-actions {
@@ -1794,7 +1799,7 @@ td {
     background: var(--bg-color);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    z-index: 1;
+    z-index: 10;
 }
 
 @media (max-width:560px) {
@@ -1846,22 +1851,76 @@ td {
     max-width: 100%;
 }
 
-/* CodeJar & Prism Editor styling */
-.editor {
-    background-color: var(--input-bg) !important;
-    color: var(--text-color) !important;
+/* Syntax Highlighted Textarea Overlay Editor */
+.editor-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    position: relative;
+    isolation: isolate;
+    margin: 0 0 1.5rem 0;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    padding: 0.75rem;
-    margin: 0 0 1rem 0;
-    font-family: inherit !important;
-    font-size: inherit !important;
+}
+
+.editor {
+    grid-area: 1 / 1 / 2 / 2;
+    background-color: transparent !important;
+    color: var(--text-color) !important;
+    border: none !important;
+    padding: 0.75rem !important;
+    margin: 0 !important;
+    font-family: "Iosevka", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace !important;
+    font-size: 1rem !important;
     line-height: 1.6 !important;
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+    tab-size: 4 !important;
+    -moz-tab-size: 4 !important;
     min-height: 400px;
+    width: 100% !important;
     height: auto;
     outline: none;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    box-sizing: border-box;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    box-sizing: border-box !important;
+    font-variant-ligatures: none !important;
+}
+
+.editor-backdrop {
+    pointer-events: none;
+    user-select: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.editor-backdrop>code {
+    font: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    tab-size: inherit !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    display: block;
+}
+
+.editor-textarea {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    caret-color: var(--text-color) !important;
+    resize: none !important;
+    overflow: hidden !important;
+    z-index: 1;
 }
 
 /* Ensure no backgrounds and no text-shadows on any editor tokens/elements */
@@ -1878,13 +1937,18 @@ td {
 
 /* Style selected text using CodeMirror's selection background */
 .editor::selection,
-.editor *::selection {
+.editor *::selection,
+.editor-textarea::selection {
     background: var(--code-selection-bg) !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
 .editor::-moz-selection,
-.editor *::-moz-selection {
+.editor *::-moz-selection,
+.editor-textarea::-moz-selection {
     background: var(--code-selection-bg) !important;
+    color: transparent !important;
 }
 
 /* Light mode Prism Markdown styles - matching original CodeMirror colors */
@@ -1894,10 +1958,6 @@ td {
 .editor.language-markdown .token.important .token.punctuation {
     color: var(--blue) !important;
     font-weight: bold !important;
-}
-
-span.token.title.important {
-    font-size: 125%;
 }
 
 .editor.language-markdown .token.bold {
@@ -2154,9 +2214,12 @@ body.sidebar-ready .editor-grid {
         display: none !important;
     }
 
-    body.editor-sidebar-open .editor-grid,
-    body.editor-sidebar-open footer {
-        padding-right: var(--sidebar-width);
+    body.sidebar-ready .admin-main {
+        transition: margin-right 0.2s ease;
+    }
+
+    body.editor-sidebar-open .admin-main {
+        margin-right: var(--sidebar-width);
     }
 }
 
@@ -2912,4 +2975,77 @@ a.dashboard-chart-col:hover .dashboard-chart-bar {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
+}
+
+.settings-tabs-nav {
+    margin: 1.5rem 0 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.settings-tabs-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: -1px;
+}
+
+.settings-tab-item {
+    margin: 0;
+    padding: 0;
+}
+
+.settings-tab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.15rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--text-color);
+    background: var(--accent-bg-color);
+    border: 1px solid var(--border-color);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.settings-tab-link:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.settings-tab-link:hover .icon {
+    stroke: currentColor;
+}
+
+.settings-tab-link.active {
+    background: var(--bg-color);
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--bg-color);
+    position: relative;
+    z-index: 2;
+}
+
+.settings-tab-link.active .icon {
+    stroke: var(--accent-color);
+}
+
+.inline-warning {
+    margin: 0.75rem 0 1.25rem;
+    padding: 1rem;
+    border: 2px solid var(--red);
+    background: #fff5f5;
+    color: var(--text-color);
+}
+
+html[data-admin-theme="dark"] .inline-warning {
+    background: rgba(255, 138, 128, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-admin-theme="auto"] .inline-warning {
+        background: rgba(255, 138, 128, 0.1);
+    }
 }

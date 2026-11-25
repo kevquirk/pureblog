@@ -11,6 +11,9 @@ $errors = [];
 $notice = '';
 $newBackupCodes = $_SESSION['new_backup_codes'] ?? null;
 unset($_SESSION['new_backup_codes']);
+$newApiToken = $_SESSION['new_api_token'] ?? null;
+unset($_SESSION['new_api_token']);
+$apiTokenActive = !empty($config['api_token_hash']);
 
 $mfaEnabled = !empty($config['mfa_enabled']) && !empty($config['mfa_secret']);
 $isSettingUpMfa = !empty($_SESSION['mfa_setup_secret']) && !$mfaEnabled;
@@ -92,6 +95,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
         } else {
             $errors[] = t('admin.settings.user.mfa_error_password');
         }
+    } elseif (($_POST['api_action'] ?? '') === 'generate') {
+        $plainToken = 'pb_' . bin2hex(random_bytes(24));
+        $config['api_token_hash'] = hash('sha256', $plainToken);
+        if (save_config($config)) {
+            $_SESSION['new_api_token'] = $plainToken;
+            $newApiToken = $plainToken;
+            $apiTokenActive = true;
+            $notice = t('admin.settings.user.api_notice_generated');
+        } else {
+            $errors[] = t('admin.settings.user.error_save');
+        }
+    } elseif (($_POST['api_action'] ?? '') === 'revoke') {
+        $config['api_token_hash'] = '';
+        if (save_config($config)) {
+            $apiTokenActive = false;
+            $notice = t('admin.settings.user.api_notice_revoked');
+        } else {
+            $errors[] = t('admin.settings.user.error_save');
+        }
     } else {
         // Main user profile update (username / password)
         $adminUsername = trim($_POST['admin_username'] ?? '');
@@ -145,6 +167,7 @@ require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
         <h1><?= e(t('admin.settings.user.heading')) ?></h1>
+        <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <nav class="admin-actions">
@@ -252,6 +275,45 @@ require __DIR__ . '/../includes/admin-head.php';
                 <p><?= e(t('admin.settings.user.mfa_disabled_desc')) ?></p>
                 <a href="?setup_mfa=1" class="button"><svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg> <?= e(t('admin.settings.user.mfa_setup_btn')) ?></a>
             <?php endif; ?>
+        </section>
+
+        <section class="section-divider">
+            <span class="title"><?= e(t('admin.settings.user.api_section_title')) ?></span>
+            <p><?= e(t('admin.settings.user.api_desc')) ?></p>
+            <p><strong><?= e(t('admin.settings.user.api_endpoint_label')) ?></strong> <code><?= e(rtrim((string) ($config['base_url'] ?? ''), '/') . base_path() . '/api') ?></code></p>
+
+            <?php if ($newApiToken !== null): ?>
+                <p class="inline-warning"><?= e(t('admin.settings.user.api_token_warning')) ?></p>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0 1.25rem 0; flex-wrap: wrap;">
+                    <code style="font-size: 1rem; font-weight: bold; padding: 0.35rem 0.6rem; user-select: all;"><?= e($newApiToken) ?></code>
+                    <button type="button" class="link-button" onclick="navigator.clipboard.writeText('<?= e($newApiToken) ?>').then(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-circle-check\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copied'))) ?>'; setTimeout(()=>{this.innerHTML='<svg class=\'icon\' aria-hidden=\'true\'><use href=\'#icon-copy\'></use></svg> <?= e(addslashes(t('admin.settings.user.mfa_copy'))) ?>';}, 2000);})">
+                        <svg class="icon" aria-hidden="true"><use href="#icon-copy"></use></svg> <?= e(t('admin.settings.user.mfa_copy')) ?>
+                    </button>
+                </div>
+            <?php endif; ?>
+
+            <p><?= e($apiTokenActive ? t('admin.settings.user.api_status_active') : t('admin.settings.user.api_status_inactive')) ?></p>
+
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <form method="post" class="inline-form"<?= $apiTokenActive ? ' onsubmit="return confirm(\'' . e(addslashes(t('admin.settings.user.api_regenerate_confirm'))) . '\');"' : '' ?>>
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="api_action" value="generate">
+                    <button type="submit">
+                        <svg class="icon" aria-hidden="true"><use href="#icon-circle-check"></use></svg>
+                        <?= e($apiTokenActive ? t('admin.settings.user.api_regenerate_btn') : t('admin.settings.user.api_generate_btn')) ?>
+                    </button>
+                </form>
+                <?php if ($apiTokenActive): ?>
+                    <form method="post" class="inline-form" onsubmit="return confirm('<?= e(addslashes(t('admin.settings.user.api_revoke_confirm'))) ?>');">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="api_action" value="revoke">
+                        <button type="submit" class="delete">
+                            <svg class="icon" aria-hidden="true"><use href="#icon-circle-x"></use></svg>
+                            <?= e(t('admin.settings.user.api_revoke_btn')) ?>
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
         </section>
     </main>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

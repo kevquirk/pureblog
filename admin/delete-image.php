@@ -55,6 +55,15 @@ if (!unlink($targetFile)) {
     exit;
 }
 
+$thumbFile = $targetDir . '/thumbs/' . basename($filename);
+if (is_file($thumbFile)) {
+    @unlink($thumbFile);
+}
+$thumbDir = $targetDir . '/thumbs';
+if (is_dir($thumbDir) && !(glob($thumbDir . '/*') ?: [])) {
+    @rmdir($thumbDir);
+}
+
 $remaining = glob($targetDir . '/*') ?: [];
 if (!$remaining) {
     @rmdir($targetDir);

@@ -129,10 +129,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['admin_action_id'])) 
             $autosaveDir = PUREBLOG_BASE_PATH . '/content/autosaves';
             @unlink($autosaveDir . '/post-' . $originalSlug . '.json');
             @unlink($autosaveDir . '/post-' . $redirectSlug . '.json');
+            if (!empty($_POST['ajax_save'])) {
+                header('Content-Type: application/json');
+                echo json_encode(['saved' => true, 'slug' => $redirectSlug, 'date' => $post['date']]);
+                exit;
+            }
             header('Location: ' . base_path() . '/admin/edit-post.php?slug=' . urlencode($redirectSlug) . '&saved=1');
             exit;
         }
         $errors[] = $saveError !== '' ? $saveError : t('admin.editor.error_save_post');
+    }
+
+    if (!empty($_POST['ajax_save'])) {
+        header('Content-Type: application/json', true, 422);
+        echo json_encode(['saved' => false, 'errors' => $errors]);
+        exit;
     }
 }
 
@@ -147,9 +158,10 @@ if ($post['slug'] !== '') {
                 $altText = pathinfo($basename, PATHINFO_FILENAME) ?: 'image';
                 $url = base_path() . '/content/images/' . $post['slug'] . '/' . $basename;
                 $images[] = [
-                    'filename' => $basename,
-                    'markdown' => '![' . $altText . '](' . $url . ')',
-                    'url' => $url,
+                    'filename'  => $basename,
+                    'markdown'  => '![' . $altText . '](' . $url . ')',
+                    'url'       => $url,
+                    'thumb_url' => get_image_thumb_url($post['slug'], $basename),
                 ];
             }
         }
@@ -384,7 +396,7 @@ require __DIR__ . '/../includes/admin-head.php';
                             ?>
                                 <li<?= $isFeature ? ' class="is-feature"' : '' ?>>
                                     <div class="image-list-top">
-                                        <img src="<?= e($image['url']) ?>" width="30" height="30" class="image-list-preview" alt="<?= e($image['filename']) ?>" loading="lazy"/>
+                                        <img src="<?= e($image['thumb_url']) ?>" width="30" height="30" class="image-list-preview" alt="<?= e($image['filename']) ?>"/>
                                         <code><?= e($image['filename']) ?></code>
                                     </div>
                                     <div class="image-list-actions">

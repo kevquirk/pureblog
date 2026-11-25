@@ -21,6 +21,9 @@ RewriteEngine On
 # Redirect sitemap.xml to sitemap.php
 RewriteRule ^sitemap\.xml$ sitemap.php [L,QSA]
 
+# Preserve Authorization header for API requests
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
 # Block access to sensitive directories and files
 RewriteRule ^config/ - [F,L]
 RewriteRule ^data/ - [F,L]

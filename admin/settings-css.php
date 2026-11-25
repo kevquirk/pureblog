@@ -51,6 +51,7 @@ require __DIR__ . '/../includes/admin-head.php';
 ?>
     <main class="mid">
         <h1><?= e(t('admin.settings.css.heading')) ?></h1>
+        <?php require __DIR__ . '/../includes/admin-settings-nav.php'; ?>
         <?php require __DIR__ . '/../includes/admin-notices.php'; ?>
 
         <nav class="admin-actions">
@@ -72,35 +73,13 @@ require __DIR__ . '/../includes/admin-head.php';
             </section>
         </form>
     </main>
-    <script type="module">
+    <script>
         const frontCssField = document.getElementById('front_css');
         const adminCssField = document.getElementById('admin_css');
 
-        function initCssEditor(textarea) {
-            if (!textarea || typeof window.CodeJar === 'undefined') return;
-
-            const container = document.createElement('div');
-            container.className = 'editor language-css';
-            container.contentEditable = 'true';
-            container.spellcheck = false;
-            container.textContent = textarea.value;
-
-            textarea.style.display = 'none';
-            textarea.parentNode.insertBefore(container, textarea.nextSibling);
-
-            const jar = window.CodeJar(container, (editor) => {
-                Prism.highlightElement(editor);
-                if (editor.textContent.endsWith('\n')) {
-                    editor.appendChild(document.createElement('br'));
-                }
-            }, { spellcheck: false, addClosing: false, preserveIdent: false });
-
-            jar.onUpdate((code) => {
-                textarea.value = code;
-            });
+        if (typeof window.createSyntaxEditor === 'function') {
+            window.createSyntaxEditor(frontCssField, 'css');
+            window.createSyntaxEditor(adminCssField, 'css');
         }
-
-        initCssEditor(frontCssField);
-        initCssEditor(adminCssField);
     </script>
 <?php require __DIR__ . '/../includes/admin-footer.php'; ?>

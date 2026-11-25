@@ -58,13 +58,33 @@ if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && isset(
 $adminActionButtons = !$hideAdminNav ? get_admin_action_buttons() : [];
 $adminActionFlash = $_SESSION['admin_action_flash'] ?? null;
 unset($_SESSION['admin_action_flash']);
+
+if (!$hideAdminNav && ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET' && !empty($config['updates']['auto_update'])) {
+    require_once __DIR__ . '/updater.php';
+    $autoUpdateResult = check_and_run_auto_update($config);
+    if (is_array($autoUpdateResult)) {
+        if (!empty($autoUpdateResult['ok'])) {
+            $adminActionFlash = [
+                'ok'      => true,
+                'sticky'  => true,
+                'message' => t('admin.settings.updates.notice_auto_updated', ['version' => (string) ($autoUpdateResult['version'] ?? '')]),
+            ];
+        } elseif (!empty($autoUpdateResult['breaking'])) {
+            $adminActionFlash = [
+                'ok'      => false,
+                'sticky'  => true,
+                'message' => t('admin.settings.updates.notice_auto_update_breaking', ['version' => (string) ($autoUpdateResult['version'] ?? '')]),
+            ];
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= e(str_replace('_', '-', (string) ($config['language'] ?? 'en'))) ?>" data-admin-theme="<?= e($adminColorMode) ?>" data-admin-font="<?= e($config['theme']['admin_font_stack'] ?? 'sans') ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php $adminFavicon = get_base_url() . '/assets/images/favicon.png'; ?>
+    <?php $adminFavicon = base_path() . '/assets/images/favicon.png'; ?>
     <link rel="icon" href="<?= e($adminFavicon) ?>">
     <link rel="apple-touch-icon" href="<?= e($adminFavicon) ?>">
     <title><?= e($adminTitle) ?></title>
@@ -73,10 +93,7 @@ unset($_SESSION['admin_action_flash']);
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link rel="stylesheet" href="<?= e($adminFontUrl) ?>">
     <?php endif; ?>
-    <?php if ($codeMirror !== null): ?>
-        <link rel="stylesheet" href="https://unpkg.com/prismjs@1.29.0/themes/prism.min.css">
-    <?php endif; ?>
-    <link rel="stylesheet" href="<?= get_base_url() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
+    <link rel="stylesheet" href="<?= base_path() ?>/admin/css/admin.css?v=<?= e($adminCssVersion) ?>">
     <script>try{if(localStorage.getItem('pb-sidebar')==='collapsed')document.documentElement.setAttribute('data-sidebar','collapsed');}catch(e){}</script>
     <style>
         :root {
@@ -87,92 +104,89 @@ unset($_SESSION['admin_action_flash']);
 <?php endif; ?>
     </style>
     <?php if ($codeMirror !== null): ?>
-        <script src="https://unpkg.com/prismjs@1.29.0/prism.js"></script>
-        <?php if ($codeMirror === 'markdown'): ?>
-            <script src="https://unpkg.com/prismjs@1.29.0/components/prism-markdown.min.js"></script>
-        <?php endif; ?>
-        <script type="module">
-            import { CodeJar } from 'https://unpkg.com/codejar@3.7.0/codejar.js';
-            window.CodeJar = (editor, highlight, opt) => {
-                const jar = CodeJar(editor, highlight, opt);
-                
-                // Helper to insert plain text at cursor using standard Selection/Range APIs.
-                const insertTextAtCursor = (text) => {
-                    const selection = window.getSelection();
-                    if (!selection.rangeCount) return;
-                    const range = selection.getRangeAt(0);
-                    range.deleteContents();
-                    const textNode = document.createTextNode(text);
-                    range.insertNode(textNode);
-                    range.setStartAfter(textNode);
-                    range.setEndAfter(textNode);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                };
+        <script>
+            (() => {
+                const span = (cls, body) => `<span class="token ${cls}">${body}</span>`;
 
-                // Fix copy/paste formatting across all browsers (preserving tabs and newlines)
-                editor.addEventListener('paste', (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    const text = (event.originalEvent || event)
-                        .clipboardData
-                        .getData('text/plain')
-                        .replace(/\r/g, '');
-                    
-                    jar.recordHistory();
-                    
-                    const pos = jar.save();
-                    insertTextAtCursor(text);
-                    highlight(editor);
-                    
-                    const newPos = {
-                        start: Math.min(pos.start, pos.end) + text.length,
-                        end: Math.min(pos.start, pos.end) + text.length,
-                        dir: '<-'
+                const highlightInline = (s) => s.replace(
+                    /(`+[^`\n]+`+|\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\})|(!?\[)([^\]\n]+)(\]\([^)\s\n]+)(?:(\s+)("[^"\n]*"|'[^'\n]*'))?(\))|(&lt;!--[\s\S]*?--&gt;)|(&lt;\/?[a-zA-Z][a-zA-Z0-9:-]*(?:\s+[^&\n]*)?\/?&gt;)|(\*\*\*|___)([^*\n]+?)\10|(\*\*|__)([^*\n]+?)\12|(\*|_)(?!\s)([^*\n]+?)(?<!\s)\14/g,
+                    (m, code, lOpen, lTxt, lUrl, lSp, lTit, lClose, comment, tag, biP, biB, bP, bB, iP, iB) => {
+                        if (code) return span('code', code);
+                        if (lOpen) return span('url', `${lOpen}${span('content', lTxt)}${lUrl}${lSp ? lSp + span('string', lTit) : ''}${lClose}`);
+                        if (comment) return span('comment', comment);
+                        if (tag) return span('tag', tag.replace(/([a-zA-Z_:][-a-zA-Z0-9_:.]*)(=)("[^"]*"|'[^']*')/g, (_, a, eq, v) => `${span('attr-name', a)}${span('punctuation', eq)}${span('attr-value', v)}`));
+                        if (biP) return span('bold italic', `${span('punctuation', biP)}${biB}${span('punctuation', biP)}`);
+                        if (bP) return span('bold', `${span('punctuation', bP)}${bB}${span('punctuation', bP)}`);
+                        if (iP) return span('italic', `${span('punctuation', iP)}${iB}${span('punctuation', iP)}`);
+                        return m;
+                    }
+                );
+
+                const highlightMarkdown = (raw) => raw
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/(^(?:```|~~~)[^\n]*\n[\s\S]*?(?:^(?:```|~~~)[ \t]*$|(?![\s\S])))|(&lt;!--[\s\S]*?--&gt;)|(^.+)/gm, (m, fence, comment, line) => {
+                        if (fence) return span('code-block', fence);
+                        if (comment) return span('comment', comment);
+                        if (/^#{1,6}[ \t]+/.test(line)) return line.replace(/^(#{1,6}[ \t]+)(.*)$/, (_, p, t) => span('title important', span('punctuation', p) + highlightInline(t)));
+                        if (/^(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/.test(line)) return span('punctuation', line);
+                        if (/^:::(?:\s+gallery)?\s*$/.test(line)) return span('code', line);
+                        if (/^[ \t]*&gt;/.test(line)) return span('blockquote', line);
+                        if (/^[ \t]*(?:[*+-]|\d+\.)[ \t]+/.test(line)) return line.replace(/^([ \t]*(?:[*+-]|\d+\.)[ \t]+)(.*)$/, (_, p, t) => span('list punctuation', p) + highlightInline(t));
+                        return highlightInline(line);
+                    });
+
+                const highlightCss = (raw) => raw
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/(\/\*[\s\S]*?\*\/)|("[^"\n]*"|'[^'\n]*')|(@[a-zA-Z_-]+)|([a-zA-Z-]+)(\s*:)|(!important\b)|(\b[a-zA-Z_-]+)(?=\()|(\b\d+(?:\.\d+)?(?:px|em|rem|vh|vw|vmin|vmax|%|deg|s|ms|fr|ch|ex)?\b|#[0-9a-fA-F]{3,8}\b)|([{}();:,])|([^{}();:,\s/]+(?:\s+[^{}();:,\s/]+)*)/g,
+                        (m, comment, str, at, prop, colon, imp, fn, num, punc, sel) => {
+                            if (comment) return span('comment', comment);
+                            if (str) return span('string', str);
+                            if (at) return span('atrule', at);
+                            if (prop) return span('property', prop) + span('punctuation', colon);
+                            if (imp) return span('keyword', imp);
+                            if (fn) return span('function', fn);
+                            if (num) return span('number', num);
+                            if (punc) return span('punctuation', punc);
+                            if (sel) return span('selector', sel);
+                            return m;
+                        }
+                    );
+
+                window.createSyntaxEditor = (textarea, language) => {
+                    if (!textarea) return null;
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'editor-wrap';
+                    const backdrop = document.createElement('pre');
+                    backdrop.className = `editor editor-backdrop language-${language}`;
+                    backdrop.setAttribute('aria-hidden', 'true');
+                    const codeEl = document.createElement('code');
+                    codeEl.className = `language-${language}`;
+                    backdrop.appendChild(codeEl);
+
+                    textarea.parentNode.insertBefore(wrapper, textarea);
+                    wrapper.append(backdrop, textarea);
+                    textarea.classList.add('editor', 'editor-textarea', `language-${language}`);
+
+                    const syncHighlight = () => {
+                        codeEl.innerHTML = (language === 'markdown' ? highlightMarkdown(textarea.value) : highlightCss(textarea.value)) + '\n';
                     };
-                    jar.restore(newPos);
-                    
-                    jar.recordHistory();
-                    editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                }, true);
 
-                // Fix Tab key indentation across all browsers
-                editor.addEventListener('keydown', (event) => {
-                    if (event.key === 'Tab' && !event.shiftKey) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        jar.recordHistory();
-                        document.execCommand('insertText', false, '\t');
-                        jar.recordHistory();
-                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                    }
-                }, true);
+                    textarea.addEventListener('input', syncHighlight);
+                    textarea.addEventListener('keydown', (e) => {
+                        if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                            e.preventDefault();
+                            textarea.focus();
+                            if (!document.execCommand?.('insertText', false, '\t')) {
+                                textarea.setRangeText('\t', textarea.selectionStart, textarea.selectionEnd, 'end');
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                            }
+                        }
+                    });
 
-                // Fix Enter key cursor jumping across browsers (especially Safari/WebKit)
-                editor.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter' && !event.ctrlKey && !event.metaKey && !event.altKey && !event.isComposing) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        jar.recordHistory();
-
-                        const pos = jar.save();
-                        insertTextAtCursor('\n');
-                        highlight(editor);
-
-                        const newPos = {
-                            start: Math.min(pos.start, pos.end) + 1,
-                            end: Math.min(pos.start, pos.end) + 1,
-                            dir: '<-'
-                        };
-                        jar.restore(newPos);
-
-                        jar.recordHistory();
-                        editor.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-                    }
-                }, true);
-
-                return jar;
-            };
+                    syncHighlight();
+                    return { textarea, wrapper, backdrop, syncHighlight, updateCode(c) { textarea.value = c; syncHighlight(); } };
+                };
+            })();
         </script>
     <?php endif; ?>
     <?= $extraHead ?>
@@ -233,12 +247,6 @@ unset($_SESSION['admin_action_flash']);
                 <?php if ($adminHomepageSetting === 'content'): ?>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
-                        <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
-                        </ul>
-                        <?php endif; ?>
                     </li>
                     <?php if (!$adminHideDashboard): ?>
                         <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
@@ -247,12 +255,6 @@ unset($_SESSION['admin_action_flash']);
                     <li><a href="<?= base_path() ?>/admin/dashboard.php"<?= $adminPath === 'admin/dashboard.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.dashboard')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-circle-gauge"></use></svg><span><?= e(t('admin.nav.dashboard')) ?></span></a></li>
                     <li>
                         <a href="<?= base_path() ?>/admin/content.php"<?= $adminPath === 'admin/content.php' ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.content')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.nav.content')) ?></span></a>
-                        <?php if ($adminPath === 'admin/content.php' && $blogPostsEnabled): ?>
-                        <ul class="admin-nav-list sidebar-subnav">
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=posts"<?= ($tab ?? $defaultTab) === 'posts' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_posts')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-notebook-pen"></use></svg><span><?= e(t('admin.content.tab_posts')) ?></span></a></li>
-                            <li><a href="<?= base_path() ?>/admin/content.php?tab=pages"<?= ($tab ?? $defaultTab) === 'pages' ? ' class="current"' : '' ?> title="<?= e(t('admin.content.tab_pages')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-file-text"></use></svg><span><?= e(t('admin.content.tab_pages')) ?></span></a></li>
-                        </ul>
-                        <?php endif; ?>
                     </li>
                 <?php endif; ?>
                 <li>
@@ -260,23 +262,6 @@ unset($_SESSION['admin_action_flash']);
                 </li>
                 <li>
                     <a href="<?= base_path() ?>/admin/settings-site.php"<?= $isSettings ? ' class="current"' : '' ?> title="<?= e(t('admin.nav.settings')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-settings"></use></svg><span><?= e(t('admin.nav.settings')) ?></span></a>
-                    <?php if ($isSettings): ?>
-                    <?php
-                    $sidebarSettingsPath = $adminPath;
-                    $sidebarSettingsItems = [
-                        'admin/settings-site.php'    => ['label' => t('admin.settings.nav.site'),    'icon' => 'globe'],
-                        'admin/settings-theme.php'   => ['label' => t('admin.settings.nav.theme'),   'icon' => 'paintbrush'],
-                        'admin/settings-css.php'     => ['label' => t('admin.settings.nav.css'),     'icon' => 'braces'],
-                        'admin/settings-user.php'    => ['label' => t('admin.settings.nav.user'),    'icon' => 'user'],
-                        'admin/settings-updates.php' => ['label' => t('admin.settings.nav.updates'), 'icon' => 'upgrade'],
-                    ];
-                    ?>
-                    <ul class="admin-nav-list sidebar-subnav">
-                        <?php foreach ($sidebarSettingsItems as $sPath => $sItem): ?>
-                            <li><a href="<?= base_path() ?>/<?= e($sPath) ?>"<?= $sidebarSettingsPath === $sPath ? ' class="current"' : '' ?> title="<?= e($sItem['label']) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-<?= e($sItem['icon']) ?>"></use></svg><span><?= e($sItem['label']) ?></span></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <?php endif; ?>
                 </li>
                 <li><a target="_blank" rel="noopener noreferrer" href="<?= base_path() ?>/" title="<?= e(t('admin.nav.view_site')) ?>"><svg class="icon" aria-hidden="true"><use href="#icon-eye"></use></svg><span><?= e(t('admin.nav.view_site')) ?></span></a></li>
                 <?php if (!empty($config['cache']['enabled'])): ?>
@@ -349,7 +334,7 @@ unset($_SESSION['admin_action_flash']);
     <?php if (!$hideAdminNav): ?>
         <?php if (is_array($adminActionFlash) && isset($adminActionFlash['message'])): ?>
             <?php $flashOk = (bool) ($adminActionFlash['ok'] ?? false); ?>
-            <p class="notice<?= $flashOk ? '' : ' delete' ?>" data-auto-dismiss><?= e((string) $adminActionFlash['message']) ?></p>
+            <p class="notice<?= $flashOk ? '' : ' delete' ?>"<?= empty($adminActionFlash['sticky']) ? ' data-auto-dismiss' : '' ?>><?= e((string) $adminActionFlash['message']) ?></p>
         <?php endif; ?>
         <?php
         $searchSlug = trim((string) ($config['search_page_slug'] ?? 'search'));
