@@ -59,14 +59,14 @@ $paginationQueryParams = (isset($paginationQueryParams) && is_array($paginationQ
             $prevParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage - 1)]);
             $prevHref = e($paginationBase) . '?' . e(http_build_query($prevParams));
             ?>
-            <a href="<?= $prevHref ?>"><?= e(t('frontend.pagination_newer')) ?></a>
+            <a class="pagination-newer" href="<?= $prevHref ?>"><?= e(t('frontend.pagination_newer')) ?></a>
         <?php endif; ?>
         <?php if ($currentPage < $totalPages): ?>
             <?php
             $nextParams = array_merge($paginationQueryParams, ['page' => (string) ($currentPage + 1)]);
             $nextHref = e($paginationBase) . '?' . e(http_build_query($nextParams));
             ?>
-            <a href="<?= $nextHref ?>"><?= e(t('frontend.pagination_older')) ?></a>
+            <a class="pagination-older" href="<?= $nextHref ?>"><?= e(t('frontend.pagination_older')) ?></a>
         <?php endif; ?>
     </nav>
 <?php endif; ?>

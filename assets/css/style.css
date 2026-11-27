@@ -340,6 +340,10 @@ nav.pagination {
     justify-content: space-between;
 }
 
+nav.pagination .pagination-older {
+    margin-left: auto;
+}
+
 article {
     margin-bottom: 2rem;
 }
